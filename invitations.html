@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Karla:wght@400;650&display=swap">
+<style>
+html, body { margin:0; background:#1A0F1D; }
+a { color:#F1C877; } a:hover { color:#FFF6FB; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline:2px solid #F1C877; outline-offset:2px; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
+@keyframes sealIn { 0% { opacity:0; transform:scale(.6) rotate(-12deg); } 60% { opacity:1; transform:scale(1.08) rotate(3deg); } 100% { transform:scale(1) rotate(0); } }
+@keyframes glint { 0%,100% { opacity:.35; } 50% { opacity:1; } }
+@keyframes floaty { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
+</style>
+</helmet>
+
+<div style="position:relative; min-height:100vh; box-sizing:border-box; padding:clamp(14px,2.4vh,26px) clamp(16px,3vw,40px) 60px; font-family:'Karla',sans-serif; color:#FFF6FB; background:radial-gradient(60% 50% at 20% 85%, rgba(31,127,107,.4), transparent 70%), radial-gradient(55% 45% at 85% 15%, rgba(169,82,42,.32), transparent 70%), radial-gradient(60% 60% at 50% 50%, rgba(154,79,168,.32), transparent 72%), linear-gradient(180deg,#2B1730 0%,#1A0F1D 100%);">
+  <div aria-hidden="true" style="position:fixed; left:0; right:0; top:0; height:38vh; pointer-events:none; background:url('assets/bg-mossy-grove.jpg') center 35% / cover no-repeat; opacity:.2; mix-blend-mode:luminosity; filter:blur(1.5px) saturate(.6); -webkit-mask-image:linear-gradient(180deg,#000,transparent); mask-image:linear-gradient(180deg,#000,transparent);"></div>
+
+  <div style="position:relative; max-width:1080px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+    <a href="app.html" style="display:inline-flex; align-items:center; gap:8px; min-height:44px; font-size:15.5px; color:#EADCCF; text-decoration:none;"><span style="{{ ms }}">arrow_back</span>Sanctuary</a>
+    <div role="tablist" aria-label="Invitation screens (prototype)" style="display:flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:rgba(255,248,239,.06); box-shadow:inset 0 0 0 1px rgba(241,200,119,.25);">
+      <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><button role="tab" aria-selected="{{ tb.on }}" onClick="{{ tb.go }}" style="{{ tb.style }}">{{ tb.label }}</button></sc-for>
+    </div>
+  </div>
+
+  <div style="position:relative; max-width:1080px; margin:clamp(70px,14vh,150px) auto 0; display:flex; justify-content:center;">
+
+    <sc-if value="{{ isAccept }}" hint-placeholder-val="{{ true }}">
+      <div style="width:min(560px,100%); display:flex; flex-direction:column; align-items:center; text-align:center; animation: fadeUp 1s cubic-bezier(.22,.8,.3,1) both;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:clamp(24px,4vh,36px);">
+          <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 16px; border-radius:999px; background:rgba(241,200,119,.12); box-shadow:inset 0 0 0 1px rgba(241,200,119,.45); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:#FBE4AE;"><span style="{{ ms }} font-size:18px;">lock</span>Invite only</div>
+          
+        </div>
+        <div style="position:relative; width:min(440px,100%); padding:clamp(28px,5vh,44px) clamp(22px,4vw,40px) 30px; border-radius:20px; background:#FFF8EF; color:#241A20; box-shadow:inset 0 0 0 1px rgba(201,134,42,.5), inset 0 0 0 7px #FFF8EF, inset 0 0 0 8px rgba(201,134,42,.25), 0 40px 90px rgba(0,0,0,.5);">
+          
+          <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:#4E3B43;">An invitation from</div>
+          <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-top:8px;">
+            
+            <span style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(40px,6vh,56px); line-height:1;">{{ from.name }}</span>
+          </div>
+          
+          <div style="margin:16px auto 0; max-width:30ch; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; line-height:1.4; color:#241A20;">“{{ from.note }}”</div>
+          
+          
+          <button onClick="{{ accept }}" style="font-family:inherit; width:100%; margin-top:18px; min-height:54px; border-radius:999px; border:none; background:#1F6F5E; color:#fff; font-size:16px; font-weight:650; cursor:pointer;" style-hover="background:#185A4C">{{ acceptLabel }}</button>
+          <div style="font-size:14px; color:#4E3B43; margin-top:10px;">Expires in {{ daysLeft }} days. After that, the key goes back to Maya.</div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:clamp(24px,4vh,36px);">
+          <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(24px,3.4vh,30px); line-height:1.15; color:#FFF6FB; text-wrap:balance;">A small circle, chosen with care.</div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div role="img" aria-label="{{ seatsAria }}" style="display:grid; grid-template-columns:repeat(20, 6px); gap:3px;"><sc-for list="{{ seats }}" as="st" hint-placeholder-count="100"><span style="{{ st.style }}"></span></sc-for></div>
+            <span style="font-size:15.5px; color:#EADCCF; white-space:nowrap;">{{ seatsLine }}</span>
+          </div>
+        </div>
+        
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isMine }}" hint-placeholder-val="{{ false }}">
+      <div style="width:min(760px,100%); animation: fadeUp .9s cubic-bezier(.22,.8,.3,1) both;">
+        <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:#F1C877;">Your invitations</div>
+        <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+          <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(36px,5.6vh,52px); line-height:1.05;">Two keys to give</div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <sc-for list="{{ keyMarks }}" as="km" hint-placeholder-count="2"><span style="{{ km.style }}"><span style="{{ ms }} font-size:26px;">key</span></span></sc-for>
+            <span style="font-size:15.5px; color:#EADCCF;">{{ keysLine }}</span>
+          </div>
+        </div>
+        <div style="font-size:17px; line-height:1.5; color:#EADCCF; margin-top:8px; max-width:56ch;">We’re keeping Sanctuary to 100 people for now. Give your keys to someone you’d vouch for. They don’t refill.</div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:18px; margin-top:26px;">
+          <sc-for list="{{ slots }}" as="sl" hint-placeholder-count="2">
+            <div style="{{ sl.box }}">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#8A5E22;">{{ sl.kicker }}</div>
+
+              <sc-if value="{{ sl.isOpen }}" hint-placeholder-val="{{ true }}">
+                <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:28px; line-height:1.1; margin-top:4px;">For someone you’d vouch for</div>
+                <input type="email" value="{{ sl.email }}" onChange="{{ sl.setEmail }}" aria-label="Their email" placeholder="Their email" style="width:100%; box-sizing:border-box; border:none; border-bottom:1px solid rgba(36,26,32,.25); background:transparent; color:#241A20; padding:8px 2px; outline:none; margin-top:18px; font-family:'Karla',sans-serif; font-size:16px;">
+                <input value="{{ sl.note }}" onChange="{{ sl.setNote }}" aria-label="A note from you" maxLength="140" placeholder="A line from you" style="width:100%; box-sizing:border-box; border:none; border-bottom:1px solid rgba(36,26,32,.25); background:transparent; color:#241A20; padding:8px 2px; outline:none; margin-top:10px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px;">
+                <div style="font-size:14px; color:#7A2E14; min-height:20px; margin-top:6px;">{{ sl.error }}</div>
+                <div style="display:flex; align-items:center; justify-content:center; gap:18px; margin-top:auto; padding-top:10px;">
+                  <button onClick="{{ sl.send }}" style="font-family:inherit; min-height:54px; padding:0 30px; border-radius:999px; border:none; background:#1F6F5E; color:#fff; font-size:16px; font-weight:650; cursor:pointer;" style-hover="background:#185A4C">Send</button>
+                  <button onClick="{{ sl.copy }}" style="font-family:inherit; min-height:44px; padding:0; border:none; background:none; color:#4E3B43; font-size:15.5px; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">{{ sl.copyLabel }}</button>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ sl.isPending }}" hint-placeholder-val="{{ false }}">
+                <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:28px; line-height:1.1; margin-top:4px; overflow-wrap:anywhere;">{{ sl.email }}</div>
+                <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; line-height:1.35; color:#4E3B43; margin-top:12px;">“{{ sl.note }}”</div>
+                <div style="font-size:14px; color:#4E3B43; margin-top:12px;">Sent {{ sl.sentLine }} · comes back in {{ sl.expires }} days</div>
+                <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:4px 20px; margin-top:auto; padding-top:12px;">
+                  <button onClick="{{ sl.resend }}" style="font-family:inherit; min-height:44px; padding:0; border:none; background:none; color:#4E3B43; font-size:15.5px; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">{{ sl.resendLabel }}</button>
+                  <button onClick="{{ sl.preview }}" style="font-family:inherit; min-height:44px; padding:0; border:none; background:none; color:#4E3B43; font-size:15.5px; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Preview</button>
+                  <button onClick="{{ sl.revoke }}" style="font-family:inherit; min-height:44px; padding:0; border:none; background:none; color:#4E3B43; font-size:15.5px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; color:#7A2E14;">Take back</button>
+                </div>
+                <button onClick="{{ sl.simulate }}" style="font-family:inherit; align-self:center; margin-top:6px; min-height:32px; padding:0 10px; border-radius:999px; border:1px dashed #b8862c; background:#FBE4AE; color:#241A20; font-size:14px; cursor:pointer;">Prototype: accepted</button>
+              </sc-if>
+
+              <sc-if value="{{ sl.isJoined }}" hint-placeholder-val="{{ false }}">
+                <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:28px; line-height:1.1; margin-top:4px;">{{ sl.title }}</div>
+                <div style="font-size:15.5px; color:#4E3B43; margin-top:8px;">{{ sl.joinedLine }}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:14px; margin-top:28px;">
+          <sc-for list="{{ rules }}" as="r" hint-placeholder-count="3">
+            <div style="display:flex; gap:12px; align-items:flex-start;"><span style="{{ ms }} color:#F1C877; font-size:22px;">{{ r.icon }}</span><div><div style="font-size:15.5px; font-weight:650;">{{ r.title }}</div><div style="font-size:14px; line-height:1.45; color:#D9C6BA; margin-top:2px;">{{ r.body }}</div></div></div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+      <div style="width:min(520px,100%); display:flex; flex-direction:column; align-items:center; text-align:center; animation: fadeUp 1s cubic-bezier(.22,.8,.3,1) both;">
+        <div style="position:relative; width:150px; height:150px;">
+          <svg viewBox="0 0 150 150" width="150" height="150" aria-hidden="true" style="position:absolute; inset:0;">
+            <circle cx="75" cy="75" r="66" fill="none" stroke="#F1C877" stroke-opacity=".25" stroke-width="2"></circle>
+            <circle cx="75" cy="75" r="66" fill="none" stroke="#F1C877" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="{{ ringDash }}" transform="rotate(-90 75 75)" style="transition:stroke-dasharray 1.2s ease;"></circle>
+          </svg>
+          <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;"><span style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:44px; line-height:1;">{{ placeNum }}</span><span style="font-size:14px; color:#D9C6BA;">in line</span></div>
+        </div>
+        <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:#F1C877; margin-top:20px;">Your request is with us</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(34px,5vh,46px); line-height:1.05; margin-top:4px; text-wrap:balance;">We read every request by hand.</div>
+        <div style="font-size:15.5px; line-height:1.5; color:#EADCCF; margin-top:10px; max-width:40ch;">There are only a handful of places, and we’re choosing slowly. Not yet isn’t no.</div>
+        <div style="display:flex; flex-direction:column; gap:10px; width:100%; margin-top:24px; text-align:left;">
+          <sc-for list="{{ reviewSteps }}" as="rs" hint-placeholder-count="3">
+            <div style="display:flex; gap:14px; align-items:center; padding:12px 16px; border-radius:16px; background:rgba(255,248,239,.06); box-shadow:inset 0 0 0 1px rgba(241,200,119,.2);"><span style="{{ rs.dot }}"><span style="{{ ms }} font-size:18px;">{{ rs.icon }}</span></span><div><div style="font-size:15.5px; font-weight:650;">{{ rs.title }}</div><div style="font-size:14px; color:#D9C6BA;">{{ rs.sub }}</div></div></div>
+          </sc-for>
+        </div>
+        <div style="font-size:15.5px; color:#EADCCF; margin-top:20px; line-height:1.5;">Know a member? Ask them for one of their two keys.</div>
+        <button onClick="{{ toApproved }}" style="font-family:inherit; margin-top:14px; min-height:36px; padding:0 12px; border-radius:999px; border:1px dashed #b8862c; background:#FBE4AE; color:#241A20; font-size:14px; cursor:pointer;">Prototype: approve this request</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isApproved }}" hint-placeholder-val="{{ false }}">
+      <div style="width:min(520px,100%); display:flex; flex-direction:column; align-items:center; text-align:center; animation: fadeUp 1s cubic-bezier(.22,.8,.3,1) both;">
+        
+        <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:#F1C877;">The door is open</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(36px,5.6vh,52px); line-height:1.05; margin-top:4px;">You’re in, {{ firstName }}.</div>
+        <div style="font-size:17px; line-height:1.5; color:#EADCCF; margin-top:12px; max-width:40ch;">Your place is held for 7 days. Once you’re settled, you’ll have two keys of your own to give.</div>
+        <a href="onboarding.html" style="display:inline-flex; align-items:center; justify-content:center; margin-top:24px; min-height:54px; padding:0 34px; border-radius:999px; background:#1F6F5E; color:#fff; font-size:16px; font-weight:650; text-decoration:none;" style-hover="background:#185A4C; color:#fff">Enter your Sanctuary</a>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+const MS = "font-family:'Material Symbols Rounded'; font-size:22px; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;";
+const KEY = 'sanctuary-invites', DAY = 864e5, TTL = 14;
+const EMPTY = () => ({ status:'open', email:'', note:'', sentAt:0, joinedName:'' });
+const VIEWS = [['accept','Invited'],['mine','My two invites'],['review','Request pending'],['approved','Approved']];
+const code = () => Math.random().toString(36).slice(2, 6).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+
+class Component extends DCLogic {
+  state = { view: (location.hash || '').replace('#', '') || 'accept', slots: (store.get(KEY, null) || {}).slots || [EMPTY(), EMPTY()], errors:{}, copied:null, resent:null, approved:false, accepting:false };
+  componentDidMount() { this._h = () => { const v = location.hash.replace('#', ''); if (VIEWS.some(x => x[0] === v)) this.setState({ view:v }); }; window.addEventListener('hashchange', this._h); }
+  componentWillUnmount() { window.removeEventListener('hashchange', this._h); clearTimeout(this._t); }
+  save(slots) { store.set(KEY, { slots }); this.setState({ slots }); }
+  upd(i, patch) { this.save(this.state.slots.map((x, j) => j === i ? { ...x, ...patch } : x)); }
+  go(v) { try { history.replaceState(null, '', '#' + v); } catch (e) {} this.setState({ view:v }); }
+  renderVals() {
+    const s = this.state, now = Date.now();
+    const onb = store.get('sanctuary-onboarding', {}) || {}, firstName = (onb.name || 'Sam').split(' ')[0];
+    const used = s.slots.filter(x => x.status !== 'open').length;
+    return {
+      ms: MS,
+      tabs: VIEWS.map(([id, label]) => ({ label, on: s.view === id, go: () => this.go(id),
+        style:'font-family:inherit; min-height:36px; padding:0 14px; border-radius:999px; border:none; cursor:pointer; font-size:14px; ' + (s.view === id ? 'background:#FFF8EF; color:#241A20; font-weight:650;' : 'background:none; color:#EADCCF;') })),
+      isAccept: s.view === 'accept', isMine: s.view === 'mine', isReview: s.view === 'review', isApproved: s.view === 'approved',
+      from: { first:'Maya', name:'Maya Lin', initials:'ML', since:'March', note:'You keep saying your inbox runs your life. This helped me take mine back.' },
+      inviteeEmail: 'you@example.com', daysLeft: '11',
+      seats: Array.from({ length: 100 }, (_, k) => ({ style:'display:block; width:6px; height:6px; border-radius:50%; background:' + (k < 73 ? '#E8B45C' : k === 73 ? '#FFF6FB' : 'rgba(241,200,119,.22)') + ';' + (k === 73 ? ' box-shadow:0 0 8px #FFF6FB;' : '') })),
+      seatsLine: 'One is held for you', seatsAria: 'A small circle. One place is held for you.',
+      acceptLabel: s.accepting ? 'Opening the door…' : 'Accept',
+      accept: () => { this.setState({ accepting:true }); this._t = setTimeout(() => { window.location.href = 'onboarding.html'; }, 900); },
+      keyMarks: s.slots.map(x => ({ style:'display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; ' + (x.status === 'open' ? 'background:radial-gradient(circle at 40% 35%, #FBE4AE, #E8B45C 55%, #A0731F); color:#3A2410; box-shadow:0 0 20px rgba(241,200,119,.45);' : 'background:rgba(255,248,239,.06); color:rgba(241,200,119,.45); box-shadow:inset 0 0 0 1px rgba(241,200,119,.3);') })),
+      keysLine: (2 - used) === 0 ? 'Both keys given' : (2 - used) + ' of 2 left',
+      slots: s.slots.map((x, i) => { const open = x.status === 'open', pending = x.status === 'pending', joined = x.status === 'joined';
+        const days = pending ? Math.max(0, TTL - Math.floor((now - x.sentAt) / DAY)) : 0;
+        return { isOpen: open, isPending: pending, isJoined: joined, email:x.email, note:x.note, error: s.errors[i] || '',
+          title: open ? 'Key ' + (i + 1) : joined ? x.joinedName : x.email, sub: open ? 'Not given yet' : joined ? x.email : 'Waiting for them to accept',
+          tag: open ? 'Unused' : pending ? 'Sent' : 'Joined',
+          tagStyle:'flex:none; padding:4px 12px; border-radius:999px; font-size:14px; color:#241A20; background:' + (open ? '#F1E8DC' : pending ? '#FBE4AE' : '#D4EFE6') + ';',
+          icon: joined ? 'person' : 'key',
+          medal:'flex:none; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; ' + (joined ? 'background:#D4EFE6; color:#1F5F57;' : 'background:radial-gradient(circle at 40% 35%, #FBE4AE, #E8B45C 55%, #A0731F); color:#3A2410;' + (pending ? ' opacity:.7;' : '')),
+          kicker: open ? 'Key ' + ['one', 'two'][i] : pending ? 'Sent' : 'Joined',
+          box:'display:flex; flex-direction:column; text-align:center; min-height:300px; padding:26px 26px 20px; border-radius:20px; color:#241A20; background:' + (joined ? '#F1EAE0' : '#FFF8EF') + '; box-shadow:inset 0 0 0 1px rgba(201,134,42,.45), inset 0 0 0 6px ' + (joined ? '#F1EAE0' : '#FFF8EF') + ', inset 0 0 0 7px rgba(201,134,42,.22), 0 24px 60px rgba(0,0,0,.35);' + (joined ? ' opacity:.85;' : ''),
+          setEmail: e => { this.setState(p => ({ errors:{ ...p.errors, [i]:'' } })); this.upd(i, { email:e.target.value }); },
+          setNote: e => this.upd(i, { note:e.target.value }),
+          send: () => { const em = (x.email || '').trim();
+            if (!/.+@.+\..+/.test(em)) return this.setState(p => ({ errors:{ ...p.errors, [i]:'Add their email first.' } }));
+            if (s.slots.some((y, j) => j !== i && y.email.trim().toLowerCase() === em.toLowerCase() && y.status !== 'open')) return this.setState(p => ({ errors:{ ...p.errors, [i]:'You’ve already invited them.' } }));
+            this.upd(i, { status:'pending', email:em, note:(x.note || '').trim() || 'I think you’d love this.', sentAt:Date.now(), code:code() }); },
+          copyLabel: s.copied === i ? 'Link copied' : 'or copy a link',
+          copy: () => { const link = location.href.split('#')[0] + '#accept'; try { navigator.clipboard && navigator.clipboard.writeText(link); } catch (e) {}
+            this.upd(i, { status:'pending', email: (x.email || '').trim() || 'Shared link', note:(x.note || '').trim() || 'I think you’d love this.', sentAt:Date.now() }); this.setState({ copied:i }); },
+          sentLine: x.sentAt ? new Date(x.sentAt).toLocaleDateString(undefined, { day:'numeric', month:'short' }) : '', expires: String(days),
+          resendLabel: s.resent === i ? 'Reminder sent' : 'Send a reminder', resend: () => this.setState({ resent:i }),
+          preview: () => this.go('accept'),
+          revoke: () => this.upd(i, EMPTY()),
+          simulate: () => this.upd(i, { status:'joined', joinedName: (x.email.split('@')[0] || 'Your friend').replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) }),
+          joinedLine: 'Joined ' + new Date().toLocaleDateString(undefined, { day:'numeric', month:'short' }) + '. This key is used.' }; }),
+      rules: [
+        { icon:'key', title:'Two keys each', body:'Every member gets two. They don’t refill.' },
+        { icon:'schedule', title:'Fourteen days', body:'Unaccepted keys come back to you after two weeks.' },
+        { icon:'undo', title:'Take it back', body:'Until they accept, you can revoke an invitation.' }
+      ],
+      placeNum: '38', ringDash: (2 * Math.PI * 66 * 0.62).toFixed(0) + ' 999',
+      reviewSteps: [
+        { icon:'check', title:'Request received', sub:'Your answers and LinkedIn profile', dot:'flex:none; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#D4EFE6; color:#1F5F57;' },
+        { icon:'visibility', title:'Being read', sub:'Usually within 5 days', dot:'flex:none; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#FBE4AE; color:#8A5E22;' },
+        { icon:'mail', title:'You’ll hear by email', sub:'Yes or not yet, either way', dot:'flex:none; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,248,239,.1); color:#EADCCF;' }
+      ],
+      toApproved: () => this.go('approved'), firstName
+    };
+  }
+}
+</script>
+</body>
+</html>

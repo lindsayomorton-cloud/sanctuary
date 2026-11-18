@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,400&family=Karla:wght@400;500;600&display=swap">
+<style>
+  html, body { margin:0; padding:0; background:#1A0F1D; overflow:hidden; }
+  a { color:#E8B45C; } a:hover { color:#F4E5F7; }
+  @keyframes keyholePulse { 0%,100% { opacity:.55; transform:translate(-50%,-50%) scale(1); } 50% { opacity:.95; transform:translate(-50%,-50%) scale(1.06); } }
+  @keyframes keyholeRing { 0% { opacity:.8; transform:translate(-50%,-50%) scale(.6); } 100% { opacity:0; transform:translate(-50%,-50%) scale(2.4); } }
+  @keyframes doorFadeOut { from { opacity:1; } to { opacity:0; } }
+  @keyframes forestFadeIn { from { opacity:0; transform:scale(1.1) rotate(.3deg); filter:blur(6px); } to { opacity:1; transform:none; filter:blur(0); } }
+  @keyframes bloomExpand { 0% { opacity:0; transform:translate(-50%,-50%) scale(.4); } 30% { opacity:1; transform:translate(-50%,-50%) scale(3); } 65% { opacity:.85; transform:translate(-50%,-50%) scale(14); } 100% { opacity:0; transform:translate(-50%,-50%) scale(22); } }
+  @keyframes moteDrift { 0% { opacity:0; transform:translate(-50%,-50%) translate(0,0) scale(.6); } 15% { opacity:1; } 100% { opacity:0; transform:translate(-50%,-50%) translate(var(--mx),var(--my)) scale(1.3); } }
+  @keyframes cardRise { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+  @keyframes fireflyDrift { 0%,100% { opacity:.15; } 50% { opacity:.9; } }
+  @keyframes flameGrow { to { width:640px; height:640px; opacity:0; } }
+  @keyframes auraPulse { 0%,100% { transform:scale(1); opacity:.75; } 50% { transform:scale(1.12); opacity:1; } }
+@keyframes doorDrift { from { transform:scale(1.04) translateY(0); } to { transform:scale(1.1) translateY(-1.5%); } }
+@keyframes mist { 0%,100% { opacity:.55; transform:translateY(0); } 50% { opacity:.9; transform:translateY(-3%); } }
+@keyframes runeSpin { to { transform:translate(-50%,-50%) rotate(360deg); } }
+@keyframes rise { 0% { transform:translateY(0); opacity:0; } 12% { opacity:.9; } 100% { transform:translateY(-105vh); opacity:0; } }
+@keyframes bloomIn { 0% { transform:translate(-50%,-50%) scale(.15); opacity:0; filter:blur(6px); } 60% { opacity:1; filter:none; } 100% { transform:translate(-50%,-50%) scale(1); opacity:1; } }
+@keyframes boxBreath { 0%,100% { transform:translate(-50%,-50%) scale(.92); filter:brightness(.92); } 25%,50% { transform:translate(-50%,-50%) scale(1.22); filter:brightness(1.2) drop-shadow(0 0 26px rgba(246,213,142,.45)); } 75% { transform:translate(-50%,-50%) scale(.92); filter:brightness(.92); } }
+@keyframes boxTrace { 0% { left:-6px; top:-6px; } 25% { left:calc(100% - 6px); top:-6px; } 50% { left:calc(100% - 6px); top:calc(100% - 6px); } 75% { left:-6px; top:calc(100% - 6px); } 100% { left:-6px; top:-6px; } }
+@keyframes compassTurn { to { transform:rotate(360deg); } }
+@keyframes breathHalo { 0% { transform:scale(.78); opacity:.45; } 25% { transform:scale(1.12); opacity:1; } 50% { transform:scale(1.12); opacity:1; } 75% { transform:scale(.78); opacity:.45; } 100% { transform:scale(.78); opacity:.45; } }
+@keyframes breathRing { 0% { transform:scale(.86); opacity:.25; } 25% { transform:scale(1.08); opacity:.8; } 50% { transform:scale(1.08); opacity:.8; } 75% { transform:scale(.86); opacity:.25; } 100% { transform:scale(.86); opacity:.25; } }
+</style>
+</helmet>
+
+<div style="position:fixed; inset:0; font-family:'Karla',sans-serif; cursor:none;">
+
+  <sc-if value="{{ showDoor }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ openDoor }}" aria-label="Enter the Sanctuary" style="{{ doorStageStyle }}">
+      <img src="assets/door-keyhole-bg.jpg" alt="A carved wooden door with a glowing golden keyhole" style="display:block; width:100%; height:100%; object-fit:cover; object-position:center; filter:brightness(.72) saturate(.85) contrast(1.08); animation: doorDrift 26s ease-in-out infinite alternate;">
+      <span aria-hidden="true" style="position:absolute; inset:0; background:radial-gradient(38% 34% at 50% 52%, transparent 0%, rgba(26,12,30,.35) 55%, rgba(10,4,12,.92) 100%); pointer-events:none;"></span>
+      <span aria-hidden="true" style="position:absolute; inset:0; background:radial-gradient(60% 30% at 50% 100%, rgba(154,79,168,.35), transparent 70%); mix-blend-mode:screen; pointer-events:none; animation: mist 12s ease-in-out infinite;"></span>
+      <span aria-hidden="true" style="position:absolute; left:50%; top:52%; width:min(70vh,80vw); aspect-ratio:1; transform:translate(-50%,-50%); pointer-events:none; animation: runeSpin 90s linear infinite;"><svg viewBox="0 0 200 200" width="100%" height="100%"><circle cx="100" cy="100" r="96" fill="none" stroke="#F6D58E" stroke-opacity=".28" stroke-width=".5"></circle><circle cx="100" cy="100" r="88" fill="none" stroke="#F6D58E" stroke-opacity=".18" stroke-width=".5" stroke-dasharray="1 5"></circle><g fill="none" stroke="#F6D58E" stroke-opacity=".5" stroke-width=".9" stroke-linecap="round"><path d="M100 2c-2 0-3 1.5-3 3.4 0 1.9 1.5 3 3 3.8 1.5-.8 3-1.9 3-3.8C103 3.5 102 2 100 2zM96 9.6h8M100 9.6v6"></path><path d="M188 96v8M184 100h8"></path><path d="M100 186c-1.5 3-1.5 7 0 10 1.5-3 1.5-7 0-10zM95 196h10"></path><path d="M4 96c2.5 1.5 4.5 2 7 2M4 104c2.5-1.5 4.5-2 7-2M11 98v4"></path></g></svg></span>
+      <span aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; overflow:hidden;"><span style="position:absolute; bottom:-12px; left:9%; width:2px; height:2px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 16s linear infinite 0s;"></span><span style="position:absolute; bottom:-12px; left:62%; width:3px; height:3px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 20s linear infinite -1.9s;"></span><span style="position:absolute; bottom:-12px; left:19%; width:4px; height:4px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 24s linear infinite -3.8s;"></span><span style="position:absolute; bottom:-12px; left:72%; width:2px; height:2px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 28s linear infinite -5.7s;"></span><span style="position:absolute; bottom:-12px; left:29%; width:3px; height:3px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 32s linear infinite -7.6s;"></span><span style="position:absolute; bottom:-12px; left:82%; width:4px; height:4px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 16s linear infinite -9.5s;"></span><span style="position:absolute; bottom:-12px; left:39%; width:2px; height:2px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 20s linear infinite -11.4s;"></span><span style="position:absolute; bottom:-12px; left:92%; width:3px; height:3px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 24s linear infinite -13.3s;"></span><span style="position:absolute; bottom:-12px; left:49%; width:4px; height:4px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 28s linear infinite -15.2s;"></span><span style="position:absolute; bottom:-12px; left:6%; width:2px; height:2px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 32s linear infinite -17.1s;"></span><span style="position:absolute; bottom:-12px; left:59%; width:3px; height:3px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 16s linear infinite -19s;"></span><span style="position:absolute; bottom:-12px; left:16%; width:4px; height:4px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 20s linear infinite -20.9s;"></span><span style="position:absolute; bottom:-12px; left:69%; width:2px; height:2px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 24s linear infinite -22.8s;"></span><span style="position:absolute; bottom:-12px; left:26%; width:3px; height:3px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 28s linear infinite -24.7s;"></span><span style="position:absolute; bottom:-12px; left:79%; width:4px; height:4px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 32s linear infinite -26.6s;"></span><span style="position:absolute; bottom:-12px; left:36%; width:2px; height:2px; border-radius:50%; background:#F6D58E; box-shadow:0 0 10px 3px rgba(246,213,142,.55); animation: rise 16s linear infinite -28.5s;"></span></span>
+      <div style="{{ keyholeGlowStyle }}"></div>
+      <div style="{{ keyholeRingStyle }}"></div>
+      <div style="{{ doorPromptStyle }}">Enter the Sanctuary</div>
+    </button>
+  </sc-if>
+
+  <sc-if value="{{ showBloom }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ bloomStyle }}"></div>
+  </sc-if>
+
+  <sc-if value="{{ showMotes }}" hint-placeholder-val="{{ false }}">
+    <sc-for list="{{ motes }}" as="m" hint-placeholder-count="10">
+      <div style="{{ m.style }}"></div>
+    </sc-for>
+  </sc-if>
+
+  <sc-if value="{{ showForest }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ forestStageStyle }}">
+      <div style="position:absolute; inset:0; background:radial-gradient(40% 32% at 50% 18%, rgba(154,79,168,.5), transparent 72%), radial-gradient(70% 40% at 50% 100%, rgba(232,180,92,.18), transparent 70%), radial-gradient(50% 50% at 8% 70%, rgba(31,127,107,.24), transparent 70%), radial-gradient(50% 50% at 95% 60%, rgba(169,82,42,.2), transparent 70%), linear-gradient(180deg,#2B1730 0%,#1A0F1D 55%,#0D060F 100%);"></div>
+      <div style="position:absolute; left:0; right:0; top:0; height:42vh; background:url('assets/bg-mossy-grove.jpg') center 35% / cover no-repeat; opacity:.18; mix-blend-mode:luminosity; -webkit-mask-image:linear-gradient(180deg,#000,transparent); mask-image:linear-gradient(180deg,#000,transparent);"></div>
+      <div style="position:absolute; left:50%; top:-4vh; width:min(1000px,94vw); height:110vh; transform:translateX(-50%); border-radius:999px 999px 0 0; box-shadow:inset 0 0 0 1px rgba(232,180,92,.26);"></div>
+      <div style="position:absolute; left:50%; top:-2vh; width:calc(min(1000px,94vw) - 34px); height:110vh; transform:translateX(-50%); border-radius:999px 999px 0 0; box-shadow:inset 0 0 0 1px rgba(232,180,92,.12);"></div>
+
+      <sc-if value="{{ showFlower }}" hint-placeholder-val="{{ true }}">
+        <sc-if value="{{ breathing }}" hint-placeholder-val="{{ false }}">
+          <div aria-hidden="true" style="position:absolute; left:50%; top:52%; width:min(380px,78vw); aspect-ratio:1; transform:translate(-50%,-50%); z-index:1; pointer-events:none;">
+            <span style="position:absolute; inset:0; border-radius:50%; background:radial-gradient(closest-side, rgba(196,150,226,.32), rgba(31,127,107,.14) 55%, transparent 72%); animation: breathHalo 16s ease-in-out infinite;"></span>
+            <span style="position:absolute; inset:8%; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(246,231,207,.22); animation: breathRing 16s ease-in-out infinite;"></span>
+            <span style="position:absolute; inset:20%; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(246,231,207,.16); animation: breathRing 16s ease-in-out infinite .5s;"></span>
+          </div>
+          
+          
+        </sc-if>
+        
+        <button onClick="{{ startBreath }}" aria-label="Breathe with the flower" style="{{ flowerBtnStyle }}">
+          <div style="{{ flowerGlowStyle }}"></div>
+          <img src="assets/forest-flower-sm.png" alt="" style="position:relative; z-index:1; display:block; width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 8px 30px rgba(0,0,0,.5));">
+        </button>
+      </sc-if>
+
+      <sc-for list="{{ flameBlobs }}" as="fl" hint-placeholder-count="0">
+        <div style="{{ fl.style }}"></div>
+      </sc-for>
+
+      <div style="{{ loginCardWrapStyle }}">
+        <div style="position:relative; width:min(360px,90vw); padding:44px 34px 32px; border-radius:20px; background:radial-gradient(80% 50% at 50% 0%, rgba(154,79,168,.28), transparent 70%), linear-gradient(180deg, rgba(43,23,48,.92), rgba(26,15,29,.96)); box-shadow:inset 0 0 0 1px rgba(232,180,92,.45), inset 0 0 0 6px rgba(26,15,29,.6), inset 0 0 0 7px rgba(232,180,92,.18), 0 30px 80px rgba(8,4,14,.6); text-align:center; animation:cardRise .6s cubic-bezier(.2,.8,.25,1) both;">
+          <div aria-hidden="true" style="width:72px; height:72px; margin:-8px auto 10px; border-radius:46% 54% 50% 50% / 52% 48% 52% 48%; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at 38% 32%, #B87BC6, #6A2F7A 55%, #3A1446); box-shadow:0 8px 18px rgba(0,0,0,.5), inset 0 0 0 5px rgba(0,0,0,.15), inset 0 0 0 7px rgba(246,213,142,.25);"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#FBE4AE" stroke-width="1.4" stroke-linecap="round"><path d="M12 3c-2.4 0-3.8 1.8-3.8 4.1 0 2.3 1.9 3.7 3.8 4.7 1.9-1 3.8-2.4 3.8-4.7C15.8 4.8 14.4 3 12 3zM6.5 12h11M12 12v9"></path></svg></div>
+          <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#F1C877; letter-spacing:.04em;">By invitation only</div>
+          <h1 style="margin:6px 0 0; line-height:0;"><img src="assets/logo.png" alt="Sanctuary" style="display:block; margin:0 auto; height:clamp(56px,9vh,76px); width:auto; filter:drop-shadow(0 0 16px rgba(232,180,92,.35));"></h1>
+          
+          
+          
+          <sc-if value="{{ isApply }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ applyStep1 }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:24px;">
+                <button onClick="{{ connectLinkedIn }}" style="font-family:inherit; width:100%; min-height:56px; display:flex; align-items:center; justify-content:center; gap:12px; border-radius:999px; border:none; cursor:pointer; background:#FFF8EF; color:#241A20; font-size:16px; font-weight:650; box-shadow:0 8px 20px rgba(0,0,0,.35);" style-hover="background:#FFFFFF"><span style="width:26px; height:26px; border-radius:6px; background:#0A66C2 url('https://cdn.simpleicons.org/linkedin/ffffff') center / 15px no-repeat;"></span>{{ liLabel }}</button>
+                <div style="font-size:14px; line-height:1.5; color:#B79AA2; margin-top:10px;">We only see your name, headline and photo. Nothing is posted.</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ applyStep2 }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:center; gap:12px; margin-top:20px; padding:10px 12px; border-radius:14px; background:rgba(255,240,248,.05); text-align:left;"><span style="width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#D4EFE6; color:#241A20; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:18px;">SR</span><div><div style="font-size:15.5px; font-weight:650; color:#FBEDE5;">Sam Rivera</div><div style="font-size:14px; color:#B79AA2;">Product lead · LinkedIn connected</div></div></div>
+              <div style="margin-top:16px; display:flex; flex-direction:column; gap:14px; text-align:left;">
+                <label style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#B79AA2;">What are you carrying right now?<textarea rows="2" placeholder="One or two lines is plenty." style="display:block; width:100%; margin-top:6px; padding:10px 14px; border-radius:12px; background:rgba(255,240,248,.06); border:1px solid rgba(255,255,255,.14); color:#FBEDE5; font-family:'Cormorant Garamond',serif; font-size:18px; line-height:1.4; box-sizing:border-box; resize:vertical;"></textarea></label>
+                <label style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#B79AA2;">What would you do with a lighter week?<textarea rows="2" placeholder="A sentence is enough." style="display:block; width:100%; margin-top:6px; padding:10px 14px; border-radius:12px; background:rgba(255,240,248,.06); border:1px solid rgba(255,255,255,.14); color:#FBEDE5; font-family:'Cormorant Garamond',serif; font-size:18px; line-height:1.4; box-sizing:border-box; resize:vertical;"></textarea></label>
+                <label style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#B79AA2;">Who sent you? (optional)<textarea rows="1" placeholder="A member’s name" style="display:block; width:100%; margin-top:6px; padding:10px 14px; border-radius:12px; background:rgba(255,240,248,.06); border:1px solid rgba(255,255,255,.14); color:#FBEDE5; font-family:'Cormorant Garamond',serif; font-size:18px; line-height:1.4; box-sizing:border-box; resize:vertical;"></textarea></label>
+              </div>
+              <button onClick="{{ apply }}" style="width:100%; margin-top:20px; min-height:54px; border-radius:999px; border:none; background:#1F6F5E; color:#FFF8EF; font-family:inherit; font-size:16px; font-weight:650; cursor:pointer;" style-hover="background:#185A4C">Request an invitation</button>
+            </sc-if>
+            <sc-if value="{{ applyOpen }}" hint-placeholder-val="{{ true }}">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#B79AA2; margin-top:12px;">{{ invitesLeft }} places remain this moon</div>
+              <div style="display:flex; justify-content:center; gap:18px; margin-top:6px;"><button onClick="{{ toInvite }}" style="font-family:inherit; min-height:44px; padding:0; background:none; border:none; color:#E0C3C8; font-size:14px; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">I have a code</button><button onClick="{{ toSignIn }}" style="font-family:inherit; min-height:44px; padding:0; background:none; border:none; color:#E0C3C8; font-size:14px; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Sign in</button></div>
+            </sc-if>
+            <sc-if value="{{ applied }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:24px; padding:20px 18px; border-radius:16px; background:rgba(255,240,248,.05); box-shadow:inset 0 0 0 1px rgba(232,180,92,.4); animation:cardRise .6s cubic-bezier(.2,.8,.25,1) both;">
+                <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:24px; color:#FBE4AE;">Your letter is sealed.</div>
+                <div style="font-size:15.5px; line-height:1.5; color:#E0C3C8; margin-top:6px;">If a place opens for you, an invitation will arrive by email with your own code.</div>
+                <a href="invitations.html#review" style="display:inline-flex; align-items:center; min-height:44px; margin-top:6px; font-size:15.5px; color:#F1C877;">See where your request is</a>
+              </div>
+            </sc-if>
+          </sc-if>
+          <sc-if value="{{ isInvite }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:20px; display:flex; flex-direction:column; gap:14px; text-align:left;">
+              <label style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15.5px; color:#B79AA2;">Your invitation code
+                <input value="{{ code }}" onChange="{{ setCode }}" placeholder="LOTUS-7Q4K" maxlength="12" style="display:block; width:100%; margin-top:6px; padding:12px 14px; border-radius:12px; background:rgba(255,240,248,.06); border:1px solid rgba(232,180,92,.45); color:#FBE4AE; font-family:'Cormorant Garamond',serif; font-size:22px; letter-spacing:.18em; text-transform:uppercase; text-align:center; box-sizing:border-box;">
+              </label>
+              <label style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15.5px; color:#B79AA2;">Email
+                <input type="email" placeholder="you@example.com" style="display:block; width:100%; margin-top:6px; padding:12px 14px; border-radius:12px; background:rgba(255,240,248,.06); border:1px solid rgba(255,255,255,.14); color:#FBEDE5; font-family:inherit; font-size:15.5px; box-sizing:border-box;">
+              </label>
+            </div>
+            <sc-if value="{{ codeError }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px; font-size:14px; color:#FCD9CF;">That code doesn’t look right. Codes are a word, a dash and four letters.</div></sc-if>
+            <button onClick="{{ claim }}" style="width:100%; margin-top:20px; min-height:54px; border-radius:999px; border:none; background:#1F6F5E; color:#FFF8EF; font-family:inherit; font-size:16px; font-weight:650; cursor:pointer;" style-hover="background:#185A4C">Claim my invitation</button>
+            <button onClick="{{ toApply }}" style="font-family:inherit; margin-top:8px; min-height:44px; padding:0; background:none; border:none; color:#B79AA2; font-size:14px; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">No invitation? Apply</button>
+          </sc-if>
+          <sc-if value="{{ isSignIn }}" hint-placeholder-val="{{ false }}">
+
+          <div style="margin-top:28px; display:flex; flex-direction:column; gap:14px; text-align:left;">
+            <label style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15.5px; color:#B79AA2;">Email
+              <input type="email" placeholder="you@example.com" style="display:block; width:100%; margin-top:6px; padding:12px 14px; border-radius:12px; background:rgba(255,240,248,.06); border:1px solid rgba(255,255,255,.14); color:#FBEDE5; font-family:inherit; font-size:15.5px; box-sizing:border-box;">
+            </label>
+            <label style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15.5px; color:#B79AA2;">Password
+              <input type="password" placeholder="••••••••" style="display:block; width:100%; margin-top:6px; padding:12px 14px; border-radius:12px; background:rgba(255,240,248,.06); border:1px solid rgba(255,255,255,.14); color:#FBEDE5; font-family:inherit; font-size:15.5px; box-sizing:border-box;">
+            </label>
+          </div>
+
+          <button onClick="{{ enterSanctuary }}" style="width:100%; margin-top:22px; padding:13px; border-radius:999px; border:none; background:#1F6F5E; color:#FFF8EF; font-family:inherit; font-size:15.5px; font-weight:650; cursor:pointer; transition:filter .2s ease, box-shadow .2s ease;" style-hover="filter:brightness(1.08); box-shadow:0 0 22px rgba(169,82,42,.55)">Enter</button>
+          
+          <button onClick="{{ toggleForgot }}" style="font-family:inherit; margin-top:6px; min-height:44px; padding:0; background:none; border:none; color:#B79AA2; font-size:14px; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Forgot your password?</button>
+          <sc-if value="{{ forgotOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:10px; padding:14px 16px; border-radius:12px; background:rgba(255,240,248,.06); border:1px solid rgba(255,255,255,.14); text-align:left;">
+              <sc-if value="{{ forgotAsk }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:14px; line-height:1.5; color:#F5ECF7;">We will send a link to the email above.</div>
+                <button onClick="{{ sendReset }}" style="font-family:inherit; margin-top:10px; min-height:44px; padding:0 18px; border-radius:999px; border:none; background:#1F6F5E; color:#fff; font-size:14px; font-weight:650; cursor:pointer;">Send the link</button>
+              </sc-if>
+          </sc-if>
+              <sc-if value="{{ forgotSent }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:14px; line-height:1.5; color:#F5ECF7;">✓ The link is on its way. It works for one hour.</div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-for list="{{ fireflies }}" as="f" hint-placeholder-count="7">
+    <div style="{{ f.style }}"></div>
+  </sc-for>
+
+  <sc-if value="{{ showEnterBloom }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ enterBloomStyle }}"></div>
+  </sc-if>
+
+  <div style="{{ enterFadeStyle }}"></div>
+  <div style="position:fixed; left:12px; bottom:12px; z-index:60; display:flex; gap:6px; padding:6px 8px; border-radius:12px; background:rgba(255,248,239,.94); box-shadow:0 8px 22px rgba(0,0,0,.35); cursor:auto;">
+    <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15.5px; color:#4E3B43; padding:0 4px; align-self:center;">Preview</span>
+    <a href="onboarding.html" style="font-size:14px; min-height:44px; padding:0 10px; border-radius:999px; color:#241A20; display:flex; align-items:center; text-decoration:none;">Onboarding</a>
+    <a href="app.html" style="font-size:14px; font-weight:650; min-height:44px; padding:0 10px; border-radius:999px; background:#1F6F5E; color:#fff; display:flex; align-items:center; text-decoration:none;">Skip to app</a>
+  </div>
+
+  <sc-if value="{{ showEnterMotes }}" hint-placeholder-val="{{ false }}">
+    <sc-for list="{{ enterMotes }}" as="m" hint-placeholder-count="12">
+      <div style="{{ m.style }}"></div>
+    </sc-for>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = (() => { const ask = /apply|request/.test(location.hash + location.search);
+    return { stage: ask ? 'forest' : 'door', forestRevealed: ask, loginMode: ask ? 'apply' : undefined, trail: Array.from({ length: 7 }, () => ({ x: -50, y: -50 })) }; })();
+
+  componentDidMount() {
+    this._pos = { x: -50, y: -50 };
+    this._trail = this.state.trail.map(p => ({ ...p }));
+    this._onMove = (e) => { this._pos = { x: e.clientX, y: e.clientY }; };
+    window.addEventListener('mousemove', this._onMove);
+    this._raf = requestAnimationFrame(this.tick);
+  }
+  componentWillUnmount() {
+    cancelAnimationFrame(this._raf);
+    window.removeEventListener('mousemove', this._onMove);
+  }
+
+  tick = () => {
+    const trail = this._trail;
+    let px = this._pos.x, py = this._pos.y;
+    trail.forEach((p, i) => {
+      p.x += (px - p.x) * (0.3 - i * 0.025);
+      p.y += (py - p.y) * (0.3 - i * 0.025);
+      px = p.x; py = p.y;
+    });
+    this.setState({ trail: trail.map(p => ({ ...p })) });
+    this._raf = requestAnimationFrame(this.tick);
+  };
+
+  openDoor = () => {
+    this.setState({ stage: 'opening' });
+    setTimeout(() => this.setState({ stage: 'forest', forestRevealed: true }), 2000);
+  };
+
+  componentDidUpdate(pp, ps) { if (ps && ps.stage !== 'forest' && this.state.stage === 'forest' && !this.state.breathing && !this.state.forestRevealed) { clearTimeout(this._ab); this._ab = setTimeout(() => this.startBreath(null), 3200); } }
+  startBreath = (e) => { if (this.state.breathing || this.state.forestRevealed) return; this._fr = e && e.currentTarget ? e.currentTarget.getBoundingClientRect() : null; this.setState({ breathing:true, bStart: Date.now(), bTick: Date.now() });
+    clearInterval(this._bt); this._bt = setInterval(() => { const el = (Date.now() - this.state.bStart) / 1000; if (el >= 32) this.finishBreath(); else this.setState({ bTick: Date.now() }); }, 250); };
+  finishBreath = () => { clearInterval(this._bt); this.setState({ breathing:false }); this.revealLogin({ currentTarget: { getBoundingClientRect: () => this._fr || { left: innerWidth / 2 - 100, top: innerHeight / 2 - 100, width: 200, height: 200 } } }); };
+  revealLogin = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const hues = [10, 25, 40, 8, 30, 48];
+    const flames = hues.map((h, i) => ({ x: cx, y: cy, hue: h, delay: (i * 0.08) + 's' }));
+    this.setState({ forestRevealed: true, flames });
+    setTimeout(() => this.setState({ flames: [] }), 1500);
+  };
+
+  enterSanctuary = () => {
+    this.setState({ entering: true });
+    setTimeout(() => { window.location.href = 'app.html'; }, 1900);
+  };
+
+  renderVals() {
+    const s = this.state;
+    const opening = s.stage === 'opening';
+    const st = this.state, mode = st.loginMode || 'apply', given = 73, total = 100;
+    const extra = {
+      invitesGiven: String(given + (st.claimed ? 1 : 0)), invitesTotal: String(total), invitesLeft: String(total - given - (st.claimed ? 1 : 0)),
+      inviteMarks: Array.from({ length: 20 }, (_, i) => ({ style:'display:block; width:8px; height:14px; border-radius:2px; background:' + (i < Math.round((given / total) * 20) ? 'linear-gradient(180deg,#FBE4AE,#C9862A)' : 'rgba(255,240,248,.14)') + ';' })),
+      modes: [['apply','Apply'],['invite','Invitation'],['signin','Sign in']].map(([id, label]) => ({ label, on: mode === id, pick: () => this.setState({ loginMode:id }), style:'flex:1; font-family:inherit; min-height:40px; border-radius:999px; border:none; cursor:pointer; font-size:14px; ' + (mode === id ? 'background:#FFF8EF; color:#241A20; font-weight:650;' : 'background:transparent; color:#E0C3C8;') })),
+      isApply: mode === 'apply', applyOpen: !st.applied, applyStep1: !st.applied && !st.liConnected, applyStep2: !st.applied && !!st.liConnected,
+      liLabel: st.liConnecting ? 'Connecting…' : 'Continue with LinkedIn',
+      connectLinkedIn: () => { this.setState({ liConnecting:true }); setTimeout(() => this.setState({ liConnecting:false, liConnected:true }), 900); }, applied: !!st.applied, apply: () => this.setState({ applied:true }), toApply: () => this.setState({ loginMode:'apply' }), toInvite: () => this.setState({ loginMode:'invite' }), toSignIn: () => this.setState({ loginMode:'signin' }),
+      nextMoon: (() => { const SYN = 29.530588853, d = (Date.now() - Date.UTC(2000, 0, 6, 18, 14)) / 86400000, left = SYN - (((d % SYN) + SYN) % SYN); return new Date(Date.now() + left * 86400000).toLocaleDateString(undefined, { day:'numeric', month:'long' }); })(),
+      isInvite: mode === 'invite', isSignIn: mode === 'signin',
+      code: st.code || '', setCode: e => this.setState({ code: e.target.value.toUpperCase(), codeError:false }), codeError: !!st.codeError, waitlisted: !!st.waitlisted,
+      claim: () => { if (!/^[A-Z]{3,}-[A-Z0-9]{4}$/.test((st.code || '').trim())) { this.setState({ codeError:true }); return; } this.setState({ claimed:true }); setTimeout(() => { window.location.href = 'invitations.html#accept'; }, 600); },
+      joinList: () => this.setState({ waitlisted:true })
+    };
+    return { ...extra,
+      showDoor: s.stage === 'door' || opening,
+      showForest: s.stage === 'forest' || opening,
+      showBloom: opening,
+      showMotes: opening,
+      openDoor: this.openDoor,
+      doorStageStyle: 'position:fixed; inset:0; width:100%; height:100%; padding:0; border:none; cursor:none; display:block; overflow:hidden; background:#1A0F1D; transition:opacity 1.3s cubic-bezier(.3,.1,.2,1) .1s, filter 1.3s ease .1s, transform 1.5s cubic-bezier(.3,.1,.2,1) .1s;' +
+        (opening ? ' opacity:0; filter:brightness(1.6) saturate(1.25) blur(2px); transform:scale(1.22);' : ''),
+      bloomStyle: 'position:fixed; left:50%; top:44%; width:60px; height:60px; transform:translate(-50%,-50%) scale(1); border-radius:50%; pointer-events:none; z-index:40; background:radial-gradient(closest-side, rgba(255,238,204,1), rgba(255,224,150,.7) 40%, rgba(232,180,92,0) 72%); mix-blend-mode:screen; opacity:0; animation: bloomExpand 2s cubic-bezier(.2,.7,.3,1) both;',
+      motes: Array.from({ length: 10 }, (_, i) => {
+        const angle = (360 / 10) * i, dist = 40 + (i % 4) * 14, dur = 1.6 + (i % 3) * 0.3, delay = (i % 5) * 0.08;
+        const dx = Math.cos(angle * Math.PI / 180) * (300 + dist * 4), dy = Math.sin(angle * Math.PI / 180) * (300 + dist * 4) - 60;
+        return { style: 'position:fixed; left:50%; top:44%; width:' + (3 + i % 3) + 'px; height:' + (3 + i % 3) + 'px; border-radius:50%; pointer-events:none; z-index:41; background:#FCEFD0; box-shadow:0 0 10px 3px rgba(252,239,208,.8); opacity:0; --mx:' + dx + 'px; --my:' + dy + 'px; animation: moteDrift ' + dur + 's ease-out ' + delay + 's both;' };
+      }),
+      keyholeGlowStyle: 'position:absolute; left:50%; top:44%; width:min(160px,15vw); height:min(200px,20vh); transform:translate(-50%,-50%); border-radius:50%; pointer-events:none; background:radial-gradient(closest-side, rgba(255,224,150,.95), rgba(232,180,92,.4) 55%, rgba(232,180,92,0) 75%); mix-blend-mode:screen; animation: keyholePulse 2.6s ease-in-out infinite;',
+      keyholeRingStyle: 'position:absolute; left:50%; top:44%; width:80px; height:80px; transform:translate(-50%,-50%); border-radius:50%; pointer-events:none; border:1.5px solid rgba(255,224,150,.8); animation: keyholeRing 2.6s ease-out infinite;',
+      doorPromptStyle: 'position:absolute; left:50%; top:62%; transform:translateX(-50%); width:max-content; max-width:90vw; font-family:\'Cormorant Garamond\',serif; font-size:clamp(17px,2.1vw,22px); color:#FBEDE5; letter-spacing:.03em; padding:12px 26px; border-radius:999px; background:rgba(26,15,29,.72); border:1px solid rgba(232,180,92,.4); box-shadow:0 14px 34px rgba(8,3,12,.5); white-space:nowrap;',
+      forestStageStyle: 'position:fixed; inset:0; overflow:hidden; animation: forestFadeIn 1.8s cubic-bezier(.16,.7,.2,1) .5s both;',
+      showFlower: !s.forestRevealed,
+      revealLogin: this.revealLogin,
+      startBreath: this.startBreath, skipBreath: () => this.finishBreath(), breathing: !!s.breathing, preBreath: !s.breathing && !s.forestRevealed,
+      ...(() => { const el = s.breathing ? Math.max(0, ((s.bTick || Date.now()) - s.bStart) / 1000) : 0, ph = Math.floor(el / 4) % 4, left = 4 - Math.floor(el % 4);
+        return { breathCue: ['Breathe in', 'Hold', 'Breathe out', 'Hold'][ph], breathCount: left + (s.breathing ? ' · round ' + (Math.floor(el / 16) + 1) + ' of 2' : '') }; })(),
+      flameBlobs: (s.flames || []).map(fl => ({ style: 'position:fixed; left:' + fl.x + 'px; top:' + fl.y + 'px; width:14px; height:14px; border-radius:50% 50% 50% 0; transform:translate(-50%,-50%) rotate(45deg); background:radial-gradient(circle, hsla(' + fl.hue + ',90%,60%,.85), rgba(0,0,0,0) 70%); filter:blur(4px); pointer-events:none; z-index:42; animation:flameGrow 1.05s ease-out forwards ' + fl.delay + ';' })),
+      flowerBtnStyle: (s.breathing ? 'animation: boxBreath 16s cubic-bezier(.45,0,.55,1) infinite; pointer-events:none; ' : 'animation: bloomIn 3.2s cubic-bezier(.2,.8,.25,1) both; ') + 'position:absolute; left:50%; top:52%; transform:translate(-50%,-50%); width:min(220px,44vw); height:min(220px,44vw); border:none; background:none; padding:0; cursor:pointer; z-index:3; transition:opacity .6s ease, transform .6s ease; display:flex; align-items:center; justify-content:center;' +
+        (s.forestRevealed ? ' opacity:0; transform:translate(-50%,-50%) scale(1.3); pointer-events:none;' : ''),
+      flowerGlowStyle: 'position:absolute; inset:-30%; border-radius:50%; pointer-events:none; background:radial-gradient(closest-side, rgba(154,79,168,.55), rgba(154,79,168,0) 72%); filter:blur(14px); animation: auraPulse 3.4s ease-in-out infinite;',
+      loginCardWrapStyle: 'position:absolute; inset:0; z-index:2; display:flex; align-items:center; justify-content:center; padding:24px; transition:opacity .6s ease 1.4s, filter .6s ease .1s, transform .6s ease 1.4s; opacity:' + ((s.forestRevealed && !s.entering) ? '1' : '0') + '; pointer-events:' + (s.forestRevealed && !s.entering ? 'auto' : 'none') + ';' +
+        (s.entering ? ' filter:brightness(1.7) blur(2px); transform:scale(1.04);' : ''),
+      enterSanctuary: this.enterSanctuary,
+      forgotOpen: !!this.state.forgot, forgotAsk: this.state.forgot === 'ask', forgotSent: this.state.forgot === 'sent',
+      toggleForgot: () => this.setState(p => ({ forgot: p.forgot ? null : 'ask' })), sendReset: () => this.setState({ forgot:'sent' }),
+      enterFadeStyle: 'position:fixed; inset:0; z-index:60; background:#1A0F1D; pointer-events:none; transition:opacity 1.3s ease .3s; opacity:' + (s.entering ? '1' : '0') + ';',
+      showEnterBloom: !!s.entering,
+      enterBloomStyle: 'position:fixed; left:50%; top:64%; width:60px; height:60px; transform:translate(-50%,-50%) scale(1); border-radius:50%; pointer-events:none; z-index:45; background:radial-gradient(closest-side, rgba(232,196,242,1), rgba(154,79,168,.7) 40%, rgba(154,79,168,0) 72%); mix-blend-mode:screen; opacity:0; animation: bloomExpand 1.8s cubic-bezier(.2,.7,.3,1) both;',
+      showEnterMotes: !!s.entering,
+      enterMotes: Array.from({ length: 12 }, (_, i) => {
+        const angle = (360 / 12) * i, dist = 40 + (i % 4) * 16, dur = 1.5 + (i % 3) * 0.3, delay = (i % 5) * 0.06;
+        const dx = Math.cos(angle * Math.PI / 180) * (280 + dist * 4), dy = Math.sin(angle * Math.PI / 180) * (280 + dist * 4) - 40;
+        return { style: 'position:fixed; left:50%; top:64%; width:' + (3 + i % 3) + 'px; height:' + (3 + i % 3) + 'px; border-radius:50%; pointer-events:none; z-index:46; background:#F4E5F7; box-shadow:0 0 10px 3px rgba(232,196,242,.85); opacity:0; --mx:' + dx + 'px; --my:' + dy + 'px; animation: moteDrift ' + dur + 's ease-out ' + delay + 's both;' };
+      }),
+      fireflies: (s.trail || []).map((p, i) => ({
+        style: 'position:fixed; left:' + (p.x - 4) + 'px; top:' + (p.y - 4) + 'px; width:' + (8 - i * 0.5) + 'px; height:' + (8 - i * 0.5) + 'px; border-radius:50%; pointer-events:none; z-index:50; background:#F5C542; box-shadow:0 0 8px 3px rgba(245,197,66,.85), 0 0 16px 6px rgba(245,197,66,.35); animation: fireflyDrift ' + (2.4 + i * 0.4) + 's ease-in-out infinite ' + (i * 0.3) + 's;'
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

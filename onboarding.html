@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Karla:wght@400;500;600;700&display=swap">
+<style>
+  html, body { margin:0; padding:0; background:#1A0F1D; }
+  a { color:#E8B45C; } a:hover { color:#F4E5F7; }
+  button:focus-visible, input:focus-visible { outline:2px solid #E8B45C; outline-offset:2px; }
+  @keyframes drawLine { from { stroke-dashoffset:var(--len); } to { stroke-dashoffset:0; } }
+  @keyframes starOn { 0% { opacity:0; transform:scale(.2); } 60% { opacity:1; transform:scale(1.5); } 100% { opacity:1; transform:scale(1); } }
+  @keyframes twinkle { 0%,100% { opacity:.55; } 50% { opacity:1; } }
+  @keyframes sigilFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
+  @keyframes stepIn { from { opacity:0; transform: translateY(10px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
+  @keyframes drift { 0%,100% { opacity:.15; transform:translate(0,0); } 50% { opacity:.75; transform:translate(10px,-16px); } }
+  @keyframes sigilIn { from { opacity:0; transform:translateX(-50%) scale(.85); } to { opacity:1; transform:translateX(-50%) scale(1); } }
+  @keyframes dealIn { 0% { opacity:0; transform:translateY(60px) scale(.8); filter:blur(4px); } 60% { opacity:1; filter:none; } 100% { opacity:1; transform:none; } }
+  @keyframes haloIn { from { opacity:0; transform:translate(-50%,-50%) scale(.6); } to { opacity:1; transform:translate(-50%,-50%) scale(1); } }
+  @keyframes sheetIn { from { opacity:0; transform:translateY(14px) scale(.98); } to { opacity:1; transform:none; } }
+  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+  [data-hint] { display:grid !important; grid-template-rows:0fr; opacity:0; transition:grid-template-rows .45s cubic-bezier(.22,.8,.3,1), opacity .35s ease; }
+  [data-hint] > * { min-height:0; overflow:hidden; }
+  [data-row]:hover [data-hint], [data-row]:focus-visible [data-hint], [data-row]:focus-within [data-hint] { grid-template-rows:1fr; opacity:1; }
+  @media (hover: none) { [data-hint] { grid-template-rows:1fr; opacity:1; } }
+  @media (prefers-reduced-motion: reduce) { * { animation:none !important; } }
+</style>
+</helmet>
+
+<div style="position:fixed; inset:0; overflow-y:auto; font-family:'Karla',system-ui,sans-serif; color:#241A20; background:radial-gradient(60% 50% at 20% 85%, rgba(31,127,107,.45), transparent 70%), radial-gradient(55% 45% at 85% 15%, rgba(169,82,42,.38), transparent 70%), radial-gradient(60% 60% at 50% 50%, rgba(154,79,168,.35), transparent 72%), linear-gradient(180deg, #2B1730 0%, #1A0F1D 100%);">
+  <div aria-hidden="true" style="position:fixed; left:0; right:0; top:0; height:38vh; z-index:-1; pointer-events:none; background:url('assets/bg-mossy-grove.jpg') center 35% / cover no-repeat; opacity:.2; mix-blend-mode:luminosity; filter:blur(1.5px) saturate(.6); -webkit-mask-image:linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 45%, transparent 100%); mask-image:linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 45%, transparent 100%);"></div>
+  <div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; background:radial-gradient(1px 1px at 12% 18%, rgba(255,240,220,.8), transparent), radial-gradient(1px 1px at 72% 12%, rgba(255,240,220,.7), transparent), radial-gradient(1.5px 1.5px at 38% 30%, rgba(255,240,220,.6), transparent), radial-gradient(1px 1px at 88% 40%, rgba(255,240,220,.6), transparent), radial-gradient(1px 1px at 22% 60%, rgba(255,240,220,.5), transparent), radial-gradient(1px 1px at 60% 70%, rgba(255,240,220,.5), transparent), radial-gradient(1px 1px at 94% 82%, rgba(255,240,220,.5), transparent), radial-gradient(1.5px 1.5px at 6% 92%, rgba(255,240,220,.5), transparent), radial-gradient(1px 1px at 48% 8%, rgba(255,240,220,.7), transparent); opacity:.9;"></div>
+  <div aria-hidden="true" style="position:fixed; left:50%; top:-22vh; width:70vh; height:70vh; transform:translateX(-50%); border-radius:50%; pointer-events:none; background:radial-gradient(circle, rgba(244,229,247,.18), rgba(244,229,247,0) 65%);"></div>
+  <div aria-hidden="true" style="position:fixed; left:50%; top:46%; width:min(900px,120vw); height:min(900px,120vw); transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle, rgba(244,229,247,.12), rgba(154,79,168,.06) 40%, rgba(0,0,0,0) 68%); pointer-events:none;"></div>
+  <div aria-hidden="true" style="{{ themeLayer }}"></div>
+  <sc-if value="{{ motionOn }}" hint-placeholder-val="{{ true }}">
+    <sc-for list="{{ fireflies }}" as="f" hint-placeholder-count="10"><span aria-hidden="true" style="{{ f.style }}"></span></sc-for>
+  </sc-if>
+
+  <div style="position:relative; min-height:100%; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:clamp(14px,4vh,48px) 16px calc(clamp(14px,4vh,48px) + 72px);">
+
+    <div style="width:min(620px,100%); display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px; min-height:44px;">
+      <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ back }}" style="flex:none; white-space:nowrap; font-family:inherit; font-size:14px; min-height:44px; background:none; border:none; color:rgba(255,240,248,.82); cursor:pointer; padding:0;" style-hover="color:#fff; text-decoration:underline">← Back</button>
+      </sc-if>
+      <sc-if value="{{ noBack }}" hint-placeholder-val="{{ true }}"><span></span></sc-if>
+      <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:rgba(255,240,248,.88);">{{ stepName }}</span>
+          <div style="display:flex; gap:5px;">
+            <sc-for list="{{ dots }}" as="d" hint-placeholder-count="8"><span style="{{ d.style }}"></span></sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ isReady }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative; width:min(900px,100%); display:flex; flex-direction:column; align-items:center; text-align:center; color:#FFF8EF;">
+        <div aria-hidden="true" style="{{ readyHalo }}"></div>
+        <div style="{{ readyKicker }}">Your Sanctuary · {{ themeName }}</div>
+        <div style="position:relative; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(40px,7vh,68px); line-height:1.05; margin-top:10px; text-wrap:balance; text-shadow:0 2px 24px rgba(0,0,0,.5); animation: stepIn 1.1s cubic-bezier(.22,.8,.3,1) both .1s;">{{ readyTitle }}</div>
+        <div style="position:relative; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(19px,2.6vh,23px); color:#F1E8DC; margin-top:10px; animation: stepIn 1.1s cubic-bezier(.22,.8,.3,1) both .3s;">{{ readySub }}</div>
+        <div style="position:relative; display:flex; justify-content:center; align-items:flex-end; gap:clamp(10px,2vw,22px); margin-top:clamp(26px,4.5vh,44px);">
+          <sc-for list="{{ readyDecks }}" as="rd" hint-placeholder-count="3">
+            <div style="{{ rd.tilt }}">
+              <div style="{{ rd.deal }}">
+                <div style="{{ rd.face }}">
+                  <sc-if value="{{ rd.hasImg }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ rd.img }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="{{ rd.imgBg }}"></span></sc-if></sc-if>
+                  <sc-if value="{{ rd.noImg }}" hint-placeholder-val="{{ true }}"><span style="display:flex; align-items:center; justify-content:center; width:72px; height:72px; border-radius:50%; border:1px dashed rgba(241,200,119,.7); box-shadow:0 0 24px rgba(241,200,119,.3);"><span style="font-family:'Material Symbols Rounded'; font-size:38px; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; color:#F6D58E;">{{ rd.glyph }}</span></span></sc-if>
+                </div>
+                <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:20px; color:#FFF8EF; margin-top:12px; text-shadow:0 1px 10px rgba(0,0,0,.6);">{{ rd.name }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="{{ readyPlate }}">
+          <sc-for list="{{ summary }}" as="r" hint-placeholder-count="5">
+            <div style="display:grid; grid-template-columns:110px minmax(0,1fr); gap:14px; text-align:left; font-size:15.5px; line-height:1.4;">
+              <span style="{{ plateKey }}">{{ r.k }}</span>
+              <span style="color:#F1E8DC;">{{ r.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <button onClick="{{ finish }}" style="{{ enterBtn }}">Enter your Sanctuary</button>
+        <div style="position:relative; font-size:15.5px; color:#EADCCF; margin-top:14px; animation: stepIn 1s ease both 1.9s;">First, tell the Seer what is on your mind.</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ notReady }}" hint-placeholder-val="{{ true }}">
+    <div style="position:relative; width:min(620px,100%); box-sizing:border-box; margin-top:30px; padding:clamp(40px,6vh,54px) clamp(20px,4vw,44px) clamp(22px,4vh,38px); border-radius:20px; background:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42  0 0 0 0 .3  0 0 0 0 .2  0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;), linear-gradient(180deg, #FFFCF6 0%, #FFF8EF 70%, #FBEDE5 100%); box-shadow:0 30px 80px rgba(8,4,14,.6), 0 0 0 1px rgba(232,180,92,.45), inset 0 0 0 6px rgba(255,252,246,.6), inset 0 0 0 7px rgba(232,180,92,.28), 0 0 120px rgba(154,79,168,.18);">
+      <div aria-hidden="true" style="position:absolute; left:50%; top:-34px; width:68px; height:68px; border-radius:50%; background:radial-gradient(circle at 50% 40%, #3a1f3f, #1A0F1D); box-shadow:0 0 0 1px rgba(232,180,92,.7), 0 0 0 5px rgba(26,15,29,.85), 0 0 34px rgba(232,180,92,.35); display:flex; align-items:center; justify-content:center; animation: sigilIn .9s cubic-bezier(.22,.8,.3,1) both;">
+        <span aria-hidden="true" style="position:absolute; inset:5px; border-radius:50%; border:1px dotted rgba(232,180,92,.55);"></span>
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#F1C877" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><sc-for list="{{ sigilPaths }}" as="p" hint-placeholder-count="2"><path d="{{ p.d }}"></path></sc-for></svg>
+      </div>
+
+      <sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:clamp(0px,2vh,32px) 0; animation: stepIn 1.4s cubic-bezier(.22,.8,.3,1) both;">
+          <img src="assets/logo.png" alt="Sanctuary" style="display:block; margin:0 auto; height:clamp(44px,7vh,64px); width:auto;">
+          <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(22px,2.9vw,38px); line-height:1.15; margin-top:clamp(10px,1.6vh,16px); white-space:nowrap;">Your quiet magic for getting things done.</div>
+          <div role="list" aria-label="How it works" style="position:relative; display:flex; justify-content:center; gap:clamp(24px,5vw,56px); margin-top:clamp(16px,4vh,64px);">
+            <svg aria-hidden="true" viewBox="0 0 100 10" preserveAspectRatio="none" style="position:absolute; left:16%; right:16%; top:27px; width:68%; height:10px; overflow:visible;">
+              <path d="M0 5 H100" fill="none" stroke="#C9862A" stroke-opacity=".55" stroke-width="1.4" stroke-dasharray="1 5" stroke-linecap="round" vector-effect="non-scaling-stroke"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="2.4s" repeatCount="indefinite"></animate></path>
+              <path d="M47 1.5 L51 5 L47 8.5" fill="none" stroke="#C9862A" stroke-opacity=".7" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" transform="translate(-23 0)"></path>
+              <path d="M47 1.5 L51 5 L47 8.5" fill="none" stroke="#C9862A" stroke-opacity=".7" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" transform="translate(27 0)"></path>
+            </svg>
+            <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:10px; width:clamp(110px,14vw,150px); animation: stepIn 1.4s cubic-bezier(.22,.8,.3,1) both 0.5s;">
+              <span style="position:relative; width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at 38% 30%, #FFFFFF 0%, #F4E5F7 45%, #E2C9EA 100%); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9), inset 0 0 0 5px rgba(255,255,255,.35), inset 0 0 0 6px rgba(201,134,42,.35), 0 0 0 6px #FFF8EF, 0 10px 24px rgba(26,15,29,.12), 0 0 26px #E2C9EAaa; animation: sigilFloat 5s ease-in-out infinite 0s;"><span aria-hidden="true" style="position:absolute; left:16px; top:12px; width:18px; height:10px; border-radius:50%; background:rgba(255,255,255,.75); filter:blur(2px);"></span><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#6a2f7a" stroke-width="1.4" style="position:relative;" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5h16v10H4z"/><path d="M4 8l8 5.5L20 8"/></svg></span>
+              <span style="font-family:'Cormorant Garamond',serif; font-size:19px; line-height:1.3; color:#4E3B43; text-wrap:balance;">It reads.</span>
+            </div>
+            <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:10px; width:clamp(110px,14vw,150px); animation: stepIn 1.4s cubic-bezier(.22,.8,.3,1) both 0.9s;">
+              <span style="position:relative; width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at 38% 30%, #FFFFFF 0%, #FBE4AE 45%, #F1C877 100%); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9), inset 0 0 0 5px rgba(255,255,255,.35), inset 0 0 0 6px rgba(201,134,42,.35), 0 0 0 6px #FFF8EF, 0 10px 24px rgba(26,15,29,.12), 0 0 26px #F1C877aa; animation: sigilFloat 5s ease-in-out infinite 0.8s;"><span aria-hidden="true" style="position:absolute; left:16px; top:12px; width:18px; height:10px; border-radius:50%; background:rgba(255,255,255,.75); filter:blur(2px);"></span><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#8A5E22" stroke-width="1.4" style="position:relative;" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6z"/></svg></span>
+              <span style="font-family:'Cormorant Garamond',serif; font-size:19px; line-height:1.3; color:#4E3B43; text-wrap:balance;">It sorts.</span>
+            </div>
+            <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:10px; width:clamp(110px,14vw,150px); animation: stepIn 1.4s cubic-bezier(.22,.8,.3,1) both 1.3s;">
+              <span style="position:relative; width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at 38% 30%, #FFFFFF 0%, #D4EFE6 45%, #A9D8C6 100%); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9), inset 0 0 0 5px rgba(255,255,255,.35), inset 0 0 0 6px rgba(201,134,42,.35), 0 0 0 6px #FFF8EF, 0 10px 24px rgba(26,15,29,.12), 0 0 26px #A9D8C6aa; animation: sigilFloat 5s ease-in-out infinite 1.6s;"><span aria-hidden="true" style="position:absolute; left:16px; top:12px; width:18px; height:10px; border-radius:50%; background:rgba(255,255,255,.75); filter:blur(2px);"></span><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#1F5F57" stroke-width="1.4" style="position:relative;" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17z"/><path d="M8.2 12.3l2.6 2.6 5.2-5.6"/></svg></span>
+              <span style="font-family:'Cormorant Garamond',serif; font-size:19px; line-height:1.3; color:#4E3B43; text-wrap:balance;">You choose.</span>
+            </div>
+          </div>
+          <div style="font-size:15.5px; color:#4E3B43; margin-top:clamp(14px,3vh,52px); animation: stepIn 1.4s ease both 1.8s;">Nothing is sent without you.</div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-top:clamp(10px,2.4vh,34px); animation: stepIn 1.4s ease both 2s;">
+            <button onClick="{{ next }}" style="font-family:inherit; font-size:16px; font-weight:650; min-height:54px; padding:0 40px; border-radius:999px; border:none; background:#1F6F5E; color:#fff; cursor:pointer; transition:background .3s ease, box-shadow .3s ease;" style-hover="background:#185A4C; box-shadow:0 6px 16px rgba(26,15,29,.26)">Begin</button>
+            <a href="login.html" style="display:inline-flex; align-items:center; min-height:44px; font-size:15.5px; color:#4E3B43;">I already have one</a>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isAccount }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: stepIn .9s cubic-bezier(.22,.8,.3,1) both;">
+          <div data-row tabindex="0" style="outline-offset:4px; border-radius:6px; cursor:default;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(30px,4.6vh,40px); line-height:1.05;">Open the door</div><span data-hint><span style="display:block; font-size:15.5px; line-height:1.4; font-weight:600; color:#241A20; padding-top:6px;">Create your account.</span></span></div>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:22px;">
+            <button onClick="{{ signGoogle }}" style="font-family:inherit; font-size:15.5px; font-weight:600; min-height:50px; border-radius:12px; background:#FFFCF6; border:1px solid rgba(36,26,32,.18); color:#241A20; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;" style-hover="background:#fff; border-color:rgba(36,26,32,.35)"><span style="font-weight:650; color:#1F6F5E;">G</span>Continue with Google</button>
+            <button onClick="{{ signApple }}" style="font-family:inherit; font-size:15.5px; font-weight:600; min-height:50px; border-radius:12px; background:#241A20; border:none; color:#FFF8EF; cursor:pointer;" style-hover="background:#3a2a33">Continue with Apple</button>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; margin:20px 0 14px; font-size:14px; color:#4E3B43;"><span style="flex:1; height:1px; background:rgba(36,26,32,.14);"></span>or with email<span style="flex:1; height:1px; background:rgba(36,26,32,.14);"></span></div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <label style="font-size:14px; font-weight:600; color:#4E3B43;">Email
+              <input type="email" value="{{ email }}" onChange="{{ onEmail }}" placeholder="you@example.com" style="display:block; width:100%; box-sizing:border-box; margin-top:6px; padding:13px 14px; border-radius:12px; background:#FFFCF6; border:1px solid rgba(36,26,32,.2); color:#241A20; font-family:inherit; font-size:15.5px;">
+            </label>
+            <label style="font-size:14px; font-weight:600; color:#4E3B43;">Password
+              <input type="password" value="{{ password }}" onChange="{{ onPassword }}" placeholder="At least 8 characters" style="display:block; width:100%; box-sizing:border-box; margin-top:6px; padding:13px 14px; border-radius:12px; background:#FFFCF6; border:1px solid rgba(36,26,32,.2); color:#241A20; font-family:inherit; font-size:15.5px;">
+            </label>
+          </div>
+          <sc-if value="{{ accountError }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:14px; color:#4E3B43; margin-top:10px; padding:10px 12px; border-radius:12px; background:#FBE4AE;">{{ accountErrorText }}</div>
+          </sc-if>
+          <button onClick="{{ signEmail }}" style="font-family:inherit; width:100%; margin-top:18px; font-size:15.5px; font-weight:650; min-height:52px; border-radius:999px; border:none; background:#1F6F5E; color:#fff; cursor:pointer;" style-hover="box-shadow:0 8px 20px rgba(26,15,29,.3)">Create account</button>
+          <div style="display:flex; justify-content:center; margin-top:14px;"><button onClick="{{ bypass }}" style="font-family:inherit; font-size:14px; min-height:44px; padding:0 14px; border-radius:999px; background:#FBE4AE; border:1px dashed #b8862c; color:#241A20; cursor:pointer;" style-hover="background:#F6D58E">Preview: skip sign-up</button></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isName }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: stepIn .9s cubic-bezier(.22,.8,.3,1) both;">
+          <div data-row tabindex="0" style="outline-offset:4px; border-radius:6px; cursor:default;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(30px,4.6vh,40px); line-height:1.05;">What shall the Sanctuary call you?</div><span data-hint><span style="display:block; font-size:15.5px; line-height:1.4; font-weight:600; color:#241A20; padding-top:6px;">Enter your name.</span></span></div>
+          <input value="{{ name }}" onChange="{{ onName }}" placeholder="Your name" autoFocus="{{ true }}" style="display:block; width:100%; box-sizing:border-box; margin-top:22px; padding:15px 16px; border-radius:12px; background:#FFFCF6; border:1px solid rgba(36,26,32,.2); color:#241A20; font-family:'Cormorant Garamond',serif; font-size:26px;">
+          <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:#4E3B43; margin-top:14px; min-height:44px;">{{ namePreview }}</div>
+          <div style="{{ footRow }}">
+            <button onClick="{{ skip }}" style="{{ skipBtn }}">Skip</button>
+            <button onClick="{{ next }}" style="{{ nextBtn }}">Continue</button>
+          </div>
+        </div>
+      </sc-if>
+
+
+      <sc-if value="{{ isSky }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: stepIn .9s cubic-bezier(.22,.8,.3,1) both;">
+          <sc-if value="{{ skyForm }}" hint-placeholder-val="{{ true }}">
+            <div data-row tabindex="0" style="outline-offset:4px; border-radius:6px; cursor:default;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(30px,4.6vh,40px); line-height:1.05;">The sky you were born under</div><span data-hint><span style="display:block; font-size:15.5px; line-height:1.4; font-weight:600; color:#241A20; padding-top:6px;">Date, time and place give your sun, moon and rising signs.</span></span></div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:14px; margin-top:20px;">
+              <label style="display:flex; flex-direction:column; gap:6px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:#4E3B43;">Birth date
+                <input type="date" value="{{ bDate }}" onChange="{{ onBDate }}" style="min-height:52px; padding:0 14px; border-radius:12px; background:#FFFCF6; border:1px solid rgba(36,26,32,.2); color:#241A20; font-family:'Karla',sans-serif; font-size:17px;">
+              </label>
+              <label style="display:flex; flex-direction:column; gap:6px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:#4E3B43;">Where you were born
+                <select value="{{ bPlace }}" onChange="{{ onBPlace }}" style="min-height:52px; padding:0 12px; border-radius:12px; background:#FFFCF6; border:1px solid rgba(36,26,32,.2); color:#241A20; font-family:'Karla',sans-serif; font-size:17px;">
+                  <option value="">Choose a city</option>
+                  <sc-for list="{{ cities }}" as="c" hint-placeholder-count="6"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+                </select>
+              </label>
+            </div>
+            <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:#4E3B43; margin-top:18px;">Birth time</div>
+            <div role="radiogroup" aria-label="Birth time" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+              <sc-for list="{{ timeModes }}" as="tm" hint-placeholder-count="3"><button onClick="{{ tm.pick }}" role="radio" aria-checked="{{ tm.on }}" style="{{ tm.style }}">{{ tm.label }}</button></sc-for>
+            </div>
+            <sc-if value="{{ timeExact }}" hint-placeholder-val="{{ false }}">
+              <input type="time" value="{{ bTime }}" onChange="{{ onBTime }}" aria-label="Exact birth time" style="margin-top:12px; min-height:52px; padding:0 14px; border-radius:12px; background:#FFFCF6; border:1px solid rgba(36,26,32,.2); color:#241A20; font-family:'Karla',sans-serif; font-size:17px;">
+            </sc-if>
+            <sc-if value="{{ timeRange }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr)); gap:8px; margin-top:12px;">
+                <sc-for list="{{ ranges }}" as="rg" hint-placeholder-count="4"><button onClick="{{ rg.pick }}" aria-pressed="{{ rg.on }}" style="{{ rg.style }}"><span style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:20px;">{{ rg.label }}</span><span style="font-size:14px; color:#4E3B43;">{{ rg.hours }}</span></button></sc-for>
+              </div>
+            </sc-if>
+            <div style="font-size:15.5px; line-height:1.45; color:#4E3B43; margin-top:12px; min-height:22px;">{{ timeNote }}</div>
+            <div style="{{ footRow }}">
+              <button onClick="{{ skip }}" style="{{ skipBtn }}">Skip</button>
+              <button onClick="{{ readSky }}" disabled="{{ skyDisabled }}" style="{{ skyBtn }}">Read my sky</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ skyReveal }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+              <div style="position:relative; width:min(420px,100%); aspect-ratio:5 / 3; border-radius:20px; background:radial-gradient(70% 70% at 50% 45%, #2B1730, #1A0F1D 80%); box-shadow:inset 0 0 0 1px rgba(232,180,92,.35);">
+                <svg viewBox="0 0 100 60" width="100%" height="100%" aria-hidden="true" style="position:absolute; inset:0;">
+                  <sc-for list="{{ starField }}" as="sf" hint-placeholder-count="20"><circle cx="{{ sf.x }}" cy="{{ sf.y }}" r="{{ sf.r }}" fill="#F3E5CD" style="{{ sf.style }}"></circle></sc-for>
+                  <sc-for list="{{ conLines }}" as="cl" hint-placeholder-count="5"><line x1="{{ cl.x1 }}" y1="{{ cl.y1 }}" x2="{{ cl.x2 }}" y2="{{ cl.y2 }}" stroke="#E8B45C" stroke-width=".45" stroke-linecap="round" style="{{ cl.style }}"></line></sc-for>
+                  <sc-for list="{{ conStars }}" as="cs" hint-placeholder-count="6"><circle cx="{{ cs.x }}" cy="{{ cs.y }}" r="1.3" fill="#FFF3D6" style="{{ cs.style }}"></circle></sc-for>
+                </svg>
+              </div>
+              <div style="{{ signNameStyle }}">{{ sun.name }}</div>
+              <div style="{{ signMetaStyle }}">{{ sun.element }} · {{ sun.line }}</div>
+              <div style="{{ trioStyle }}">
+                <sc-for list="{{ trio }}" as="tr" hint-placeholder-count="3"><div style="display:flex; flex-direction:column; align-items:center; gap:2px; min-width:110px;"><span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#4E3B43;">{{ tr.k }}</span><span style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:22px;">{{ tr.v }}</span></div></sc-for>
+              </div>
+              <div style="{{ skyFootStyle }}">
+                <button onClick="{{ editSky }}" style="{{ skipBtn }}">Change details</button>
+                <button onClick="{{ next }}" style="{{ nextBtn }}">Continue</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isLook }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: stepIn .9s cubic-bezier(.22,.8,.3,1) both;">
+          <div data-row tabindex="0" style="outline-offset:4px; border-radius:6px; cursor:default;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(30px,4.6vh,40px); line-height:1.05;">Choose your light</div><span data-hint><span style="display:block; font-size:15.5px; line-height:1.4; font-weight:600; color:#241A20; padding-top:6px;">Pick the colours and style of your app.</span></span></div>
+          <div role="radiogroup" aria-label="Colours" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:10px; margin-top:18px;">
+            <sc-for list="{{ themes }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.pick }}" role="radio" aria-checked="{{ t.on }}" style="font-family:inherit; display:flex; flex-direction:column; gap:10px; text-align:left; padding:10px 10px 12px; border-radius:20px; background:#FFFCF6; border:none; box-shadow:0 0 0 1px rgba(36,26,32,.1); cursor:pointer;">
+                <span style="{{ t.swatch }}"><sc-for list="{{ t.dots }}" as="dt" hint-placeholder-count="3"><span style="{{ dt.style }}"></span></sc-for></span>
+                <span style="display:flex; align-items:center; gap:10px; padding:0 4px;">
+                  <span style="{{ t.radioStyle }}"></span>
+                  <span style="min-width:0;"><span style="{{ t.labelStyle }}">{{ t.name }}</span><span style="display:block; font-size:14px; line-height:1.4; color:#4E3B43;">{{ t.note }}</span></span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="font-size:15.5px; font-weight:650; color:#241A20; margin-top:20px;">What drifts through the air</div>
+          <div role="radiogroup" aria-label="Motif" style="display:flex; flex-wrap:wrap; gap:6px 22px; margin-top:6px;">
+            <sc-for list="{{ motifs }}" as="mf" hint-placeholder-count="3">
+              <button onClick="{{ mf.pick }}" role="radio" aria-checked="{{ mf.on }}" style="font-family:inherit; display:flex; align-items:center; gap:9px; min-height:44px; padding:0; background:none; border:none; cursor:pointer; color:#241A20;"><span style="{{ mf.radioStyle }}"></span><span style="{{ mf.glyphStyle }}">{{ mf.glyph }}</span><span style="{{ mf.labelStyle }}">{{ mf.label }}</span></button>
+            </sc-for>
+          </div>
+          <div style="{{ footRow }}">
+            <span></span>
+            <button onClick="{{ next }}" style="{{ nextBtn }}">Continue</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isConnectStep }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: stepIn .9s cubic-bezier(.22,.8,.3,1) both;">
+          <div data-row tabindex="0" style="outline-offset:4px; border-radius:6px; cursor:default;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(30px,4.6vh,40px); line-height:1.05;">{{ connectTitle }}</div><span data-hint><span style="display:block; font-size:15.5px; line-height:1.4; font-weight:600; color:#241A20; padding-top:6px;">{{ connectBlunt }}</span></span></div>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:20px;">
+            <sc-for list="{{ services }}" as="sv" hint-placeholder-count="4">
+              <div data-row tabindex="-1" style="display:flex; align-items:center; gap:14px; padding:12px 14px; border-radius:20px; background:#FFFCF6; box-shadow:0 0 0 1px rgba(36,26,32,.1);">
+                <span role="img" aria-label="{{ sv.name }}" style="{{ sv.logo }}"></span>
+                <span style="min-width:0; flex:1;">
+                  <span style="display:block; font-size:15.5px; font-weight:650; color:#241A20;">{{ sv.name }}</span>
+                  <span data-hint><span style="display:block; font-size:14px; line-height:1.4; color:#4E3B43; padding-top:2px;">{{ sv.status }}</span></span>
+                </span>
+                <sc-if value="{{ sv.connected }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ sv.disconnect }}" style="font-family:inherit; font-size:14px; min-height:44px; padding:0 12px; background:none; border:none; color:#4E3B43; cursor:pointer;" style-hover="color:#241A20; text-decoration:underline">Disconnect</button>
+                </sc-if>
+                <sc-if value="{{ sv.notConnected }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ sv.open }}" style="font-family:inherit; font-size:14px; font-weight:650; min-height:44px; padding:0 18px; border-radius:999px; background:none; border:1px solid rgba(36,26,32,.25); color:#241A20; cursor:pointer;" style-hover="background:rgba(36,26,32,.05)">Connect</button>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ isAiStep }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:12px; display:flex; gap:10px; align-items:flex-start; padding:12px 14px; border-radius:12px; background:#F4E5F7; font-size:14px; line-height:1.4; color:#241A20;">
+              <span style="flex:none; color:#6a2f7a;">✦</span><span style="flex:1; min-width:0;">Skip this to use the built-in AI.</span>
+            </div>
+          </sc-if>
+          <div style="{{ footRow }}">
+            <button onClick="{{ skip }}" style="{{ skipBtn }}">Not now</button>
+            <button onClick="{{ next }}" style="{{ nextBtn }}">Continue</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isDecks }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: stepIn .9s cubic-bezier(.22,.8,.3,1) both;">
+          <div data-row tabindex="0" style="outline-offset:4px; border-radius:6px; cursor:default;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(30px,4.6vh,40px); line-height:1.05;">Make your decks</div><span data-hint><span style="display:block; font-size:15.5px; line-height:1.4; font-weight:600; color:#241A20; padding-top:6px;">Name up to four areas of your life and give each a sign.</span></span></div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr)); gap:14px; margin-top:18px;">
+            <sc-for list="{{ deckSlots }}" as="dk" hint-placeholder-count="3">
+              <div style="display:flex; flex-direction:column; gap:8px; min-width:0;">
+                <button onClick="{{ dk.pickMe }}" aria-label="{{ dk.aria }}" aria-expanded="{{ dk.open }}" style="{{ dk.artStyle }}">
+                  <span style="{{ dk.ringStyle }}"><span style="{{ dk.iconStyle }}">{{ dk.icon }}</span></span>
+                  <span style="position:absolute; left:10px; right:10px; bottom:10px; font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600; font-size:19px; color:#FFF6FB; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ dk.label }}</span>
+                  <span style="{{ dk.removeStyle }}" onClick="{{ dk.remove }}" role="button" aria-label="{{ dk.removeAria }}">close</span>
+                </button>
+                <input value="{{ dk.name }}" onChange="{{ dk.setName }}" placeholder="Name this deck" aria-label="Deck name" maxLength="18" style="width:100%; box-sizing:border-box; min-height:44px; padding:0 12px; border-radius:12px; background:#FFFCF6; border:1px solid rgba(36,26,32,.2); color:#241A20; font-family:'Cormorant Garamond',serif; font-size:19px;">
+              </div>
+            </sc-for>
+            <sc-if value="{{ canAddDeck }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ addDeck }}" style="font-family:inherit; aspect-ratio:3/4; border-radius:12px; border:1.5px dashed rgba(36,26,32,.3); background:transparent; color:#4E3B43; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; font-size:15.5px;" style-hover="background:rgba(36,26,32,.04)"><span style="{{ msBig }}">add</span>Add a deck</button>
+            </sc-if>
+          </div>
+          <div style="margin-top:18px; padding:16px; border-radius:20px; background:#FFFCF6; box-shadow:inset 0 0 0 1px rgba(36,26,32,.12);">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:#4E3B43;">Choose a sign for <strong style="font-style:normal; font-weight:600; color:#241A20;">{{ pickerFor }}</strong></div>
+              <div role="tablist" aria-label="Which deck" style="display:flex; gap:6px;"><sc-for list="{{ deckTabs }}" as="dt" hint-placeholder-count="3"><button role="tab" aria-selected="{{ dt.on }}" onClick="{{ dt.pick }}" style="{{ dt.style }}"><span style="{{ dt.glyph }}">{{ dt.icon }}</span></button></sc-for></div>
+            </div>
+            <sc-for list="{{ iconGroups }}" as="g" hint-placeholder-count="4">
+              <div style="margin-top:12px;">
+                <div style="font-size:14px; color:#4E3B43;">{{ g.label }}</div>
+                <div role="radiogroup" aria-label="{{ g.label }}" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+                  <sc-for list="{{ g.icons }}" as="ic" hint-placeholder-count="6"><button onClick="{{ ic.pick }}" role="radio" aria-checked="{{ ic.on }}" aria-label="{{ ic.label }}" title="{{ ic.label }}" style="{{ ic.style }}" style-hover="transform:translateY(-2px)"><span style="{{ ic.glyph }}">{{ ic.name }}</span></button></sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="{{ footRow }}">
+            <span style="font-size:14px; color:#4E3B43;">{{ deckCountLine }}</span>
+            <button onClick="{{ next }}" disabled="{{ decksNotReady }}" style="{{ deckNextBtn }}">Continue</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isPermissions }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: stepIn .9s cubic-bezier(.22,.8,.3,1) both;">
+          <div data-row tabindex="0" style="outline-offset:4px; border-radius:6px; cursor:default;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(30px,4.6vh,40px); line-height:1.05;">Set your wards</div><span data-hint><span style="display:block; font-size:15.5px; line-height:1.4; font-weight:600; color:#241A20; padding-top:6px;">Choose what AI is allowed to do.</span></span></div>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:18px;">
+            <sc-for list="{{ perms }}" as="p" hint-placeholder-count="4">
+              <button data-row onClick="{{ p.toggle }}" disabled="{{ p.locked }}" role="switch" aria-checked="{{ p.on }}" style="font-family:inherit; display:flex; align-items:center; gap:14px; text-align:left; padding:13px 14px; border-radius:20px; background:#FFFCF6; border:none; box-shadow:0 0 0 1px rgba(36,26,32,.1); cursor:pointer;">
+                <span style="min-width:0; flex:1;">
+                  <span style="display:block; font-size:15.5px; font-weight:650; color:#241A20;">{{ p.label }}</span>
+                  <span data-hint><span style="display:block; font-size:14px; line-height:1.4; color:#4E3B43; padding-top:2px;">{{ p.note }}</span></span>
+                </span>
+                <span style="{{ p.trackStyle }}"><span style="{{ p.knobStyle }}"></span></span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="{{ footRow }}">
+            <span></span>
+            <button onClick="{{ next }}" style="{{ nextBtn }}">Continue</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isBuffer }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: stepIn .9s cubic-bezier(.22,.8,.3,1) both;">
+          <div data-row tabindex="0" style="outline-offset:4px; border-radius:6px; cursor:default;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(30px,4.6vh,40px); line-height:1.05;">Room to breathe</div><span data-hint><span style="display:block; font-size:15.5px; line-height:1.4; font-weight:600; color:#241A20; padding-top:6px;">Set the gap between calendar events.</span></span></div>
+          <div style="font-size:15.5px; line-height:1.5; color:#4E3B43; margin-top:8px;">How much free time should stay around each thing on your calendar?</div>
+          <div role="radiogroup" aria-label="Buffer time" style="display:flex; flex-direction:column; gap:8px; margin-top:18px;">
+            <sc-for list="{{ buffers }}" as="b" hint-placeholder-count="5">
+              <button data-row onClick="{{ b.pick }}" role="radio" aria-checked="{{ b.on }}" style="font-family:inherit; display:flex; align-items:center; gap:14px; text-align:left; padding:13px 14px; border-radius:20px; background:#FFFCF6; border:none; box-shadow:0 0 0 1px rgba(36,26,32,.1); cursor:pointer;">
+                <span style="{{ b.radioStyle }}"></span>
+                <span style="min-width:0; flex:1;">
+                  <span style="{{ b.labelStyle }}">{{ b.label }}</span>
+                  <span data-hint><span style="display:block; font-size:14px; line-height:1.4; color:#4E3B43; padding-top:2px;">{{ b.note }}</span></span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="{{ footRow }}">
+            <span></span>
+            <button onClick="{{ next }}" style="{{ nextBtn }}">Continue</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isComfort }}" hint-placeholder-val="{{ false }}">
+        <div style="animation: stepIn .9s cubic-bezier(.22,.8,.3,1) both;">
+          <div data-row tabindex="0" style="outline-offset:4px; border-radius:6px; cursor:default;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(30px,4.6vh,40px); line-height:1.05;">Tune the air</div><span data-hint><span style="display:block; font-size:15.5px; line-height:1.4; font-weight:600; color:#241A20; padding-top:6px;">Choose how much animation and sound you want.</span></span></div>
+          <div role="radiogroup" style="display:flex; flex-direction:column; gap:8px; margin-top:18px;">
+            <sc-for list="{{ motions }}" as="m" hint-placeholder-count="3">
+              <button data-row onClick="{{ m.pick }}" role="radio" aria-checked="{{ m.on }}" style="font-family:inherit; display:flex; align-items:center; gap:14px; text-align:left; padding:13px 14px; border-radius:20px; background:#FFFCF6; border:none; box-shadow:0 0 0 1px rgba(36,26,32,.1); cursor:pointer;">
+                <span style="{{ m.radioStyle }}"></span>
+                <span style="min-width:0; flex:1;">
+                  <span style="{{ m.labelStyle }}">{{ m.label }}</span>
+                  <span data-hint><span style="display:block; font-size:14px; line-height:1.4; color:#4E3B43; padding-top:2px;">{{ m.note }}</span></span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+          <button data-row onClick="{{ toggleSound }}" role="switch" aria-checked="{{ sound }}" style="font-family:inherit; width:100%; display:flex; align-items:center; gap:14px; text-align:left; margin-top:12px; padding:13px 14px; border-radius:20px; background:#FFFCF6; border:none; box-shadow:0 0 0 1px rgba(36,26,32,.1); cursor:pointer;">
+            <span style="min-width:0; flex:1;">
+              <span style="display:block; font-size:15.5px; font-weight:650; color:#241A20;">Soft sounds</span>
+              <span data-hint><span style="display:block; font-size:14px; line-height:1.4; color:#4E3B43; padding-top:2px;">One quiet chime when a stone is placed.</span></span>
+            </span>
+            <span style="{{ soundTrack }}"><span style="{{ soundKnob }}"></span></span>
+          </button>
+          <div style="{{ footRow }}">
+            <span></span>
+            <button onClick="{{ next }}" style="{{ nextBtn }}">Continue</button>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSheet }}" style="position:fixed; inset:0; z-index:20; background:rgba(10,4,12,.6); display:flex; align-items:center; justify-content:center; padding:16px; animation: fadeIn .25s ease both;">
+      <div onClick="{{ stop }}" role="dialog" aria-label="{{ sheet.title }}" style="width:min(460px,100%); box-sizing:border-box; padding:26px 24px 22px; border-radius:20px; background:#FFF8EF; box-shadow:0 30px 80px rgba(8,4,14,.6); animation: sheetIn .35s cubic-bezier(.2,.8,.25,1) both;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span role="img" aria-label="{{ sheet.title }}" style="{{ sheet.logo }}"></span>
+          <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:26px; line-height:1.05; color:#241A20;">{{ sheet.title }}</div>
+        </div>
+        <sc-if value="{{ sheetConnecting }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:15.5px; color:#4E3B43; margin-top:22px; padding:20px 0;">Connecting to {{ sheet.name }}…</div>
+        </sc-if>
+        <sc-if value="{{ sheetIdle }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; flex-direction:column; gap:14px; margin-top:18px;">
+            <sc-for list="{{ sheet.groups }}" as="g" hint-placeholder-count="3">
+              <div>
+                <div style="{{ g.headStyle }}">{{ g.head }}</div>
+                <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+                  <div style="font-size:15.5px; line-height:1.4; color:#241A20; margin-top:4px;">· {{ r.t }}</div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:flex-end; gap:16px; margin-top:22px;">
+            <button onClick="{{ closeSheet }}" style="font-family:inherit; font-size:15.5px; min-height:44px; background:none; border:none; color:#4E3B43; cursor:pointer;" style-hover="color:#241A20; text-decoration:underline">Cancel</button>
+            <button onClick="{{ allowSheet }}" style="font-family:inherit; font-size:15.5px; font-weight:650; min-height:48px; padding:0 24px; border-radius:999px; border:none; background:#1F6F5E; color:#fff; cursor:pointer;" style-hover="box-shadow:0 8px 20px rgba(26,15,29,.3)">Allow and connect</button>
+          </div>
+          <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button onClick="{{ sheetBypass }}" style="font-family:inherit; font-size:14px; min-height:44px; padding:0 14px; border-radius:999px; background:#FBE4AE; border:1px dashed #b8862c; color:#241A20; cursor:pointer;" style-hover="background:#F6D58E">Preview: connect instantly</button></div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showJumps }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed; left:12px; bottom:12px; z-index:25; display:flex; flex-wrap:wrap; align-items:center; gap:6px; max-width:calc(100vw - 24px); padding:6px 8px; border-radius:12px; background:rgba(255,248,239,.94); box-shadow:0 8px 22px rgba(0,0,0,.35);">
+    <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15.5px; color:#4E3B43; padding:0 4px;">Preview</span>
+    <sc-for list="{{ jumps }}" as="j" hint-placeholder-count="10">
+      <button onClick="{{ j.go }}" style="{{ j.style }}">{{ j.label }}</button>
+    </sc-for>
+    <button onClick="{{ finish }}" style="font-family:inherit; font-size:14px; font-weight:650; min-height:44px; padding:0 10px; border-radius:999px; border:none; background:#1F6F5E; color:#fff; cursor:pointer;">Skip to app</button>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ leaving }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:30; background:#1A0F1D; animation: fadeIn 1s ease both;"></div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const STORE_SCHEMA = 1;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { console.warn('[sanctuary] could not read', k, e); return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { console.warn('[sanctuary] could not save', k, e); } }
+};
+try { if (+(localStorage.getItem('sanctuary-schema') || 0) < STORE_SCHEMA) localStorage.setItem('sanctuary-schema', String(STORE_SCHEMA)); } catch (e) { console.warn('[sanctuary] storage unavailable', e); }
+const SIGNS = [
+  ['Aries','Fire','You begin before you feel ready.'],['Taurus','Earth','You make things last.'],['Gemini','Air','You find the thread between people.'],['Cancer','Water','You keep others safe.'],
+  ['Leo','Fire','You light up a room by meaning it.'],['Virgo','Earth','You make the messy thing work.'],['Libra','Air','You find the fair way through.'],['Scorpio','Water','You go deep when others stop.'],
+  ['Sagittarius','Fire','You aim far and keep going.'],['Capricorn','Earth','You climb, one sure step at a time.'],['Aquarius','Air','You see what could be different.'],['Pisces','Water','You feel what others miss.']
+];
+const SUN_START = [[3,21],[4,20],[5,21],[6,21],[7,23],[8,23],[9,23],[10,23],[11,22],[12,22],[1,20],[2,19]];
+const CON = [
+  [[[10,40],[30,30],[55,26],[80,32]],[[0,1],[1,2],[2,3]]],
+  [[[12,22],[28,30],[45,34],[60,30],[78,18],[50,46]],[[0,1],[1,2],[2,3],[3,4],[2,5]]],
+  [[[25,10],[25,50],[60,10],[60,50],[25,28],[60,28]],[[0,4],[4,1],[2,5],[5,3],[4,5]]],
+  [[[20,40],[42,30],[60,18],[62,44],[82,50]],[[0,1],[1,2],[1,3],[3,4]]],
+  [[[15,44],[35,40],[55,42],[68,28],[62,14],[78,10]],[[0,1],[1,2],[2,3],[3,4],[4,5]]],
+  [[[12,14],[30,22],[44,30],[58,26],[72,36],[60,50],[86,44]],[[0,1],[1,2],[2,3],[3,4],[4,5],[4,6]]],
+  [[[50,12],[30,30],[70,30],[22,48],[78,48]],[[0,1],[0,2],[1,3],[2,4],[1,2]]],
+  [[[10,20],[25,24],[40,30],[55,36],[68,44],[80,40],[86,30]],[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]]],
+  [[[20,48],[38,36],[56,26],[74,14],[56,44],[66,20]],[[0,1],[1,2],[2,3],[2,4],[3,5]]],
+  [[[15,18],[40,26],[65,22],[82,34],[55,46],[30,40]],[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]]],
+  [[[12,24],[28,32],[44,24],[60,32],[76,24],[88,32]],[[0,1],[1,2],[2,3],[3,4],[4,5]]],
+  [[[10,14],[24,24],[38,30],[52,40],[66,30],[80,22],[90,12]],[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]]]
+];
+const CITIES = [['london','London',51.51,-0.13,0],['dublin','Dublin',53.35,-6.26,0],['paris','Paris',48.86,2.35,1],['berlin','Berlin',52.52,13.40,1],['madrid','Madrid',40.42,-3.70,1],['rome','Rome',41.90,12.50,1],['lisbon','Lisbon',38.72,-9.14,0],['stockholm','Stockholm',59.33,18.07,1],['athens','Athens',37.98,23.73,2],['cairo','Cairo',30.04,31.24,2],['lagos','Lagos',6.52,3.38,1],['nairobi','Nairobi',-1.29,36.82,3],['johannesburg','Johannesburg',-26.20,28.05,2],['dubai','Dubai',25.20,55.27,4],['mumbai','Mumbai',19.08,72.88,5.5],['delhi','Delhi',28.61,77.21,5.5],['singapore','Singapore',1.35,103.82,8],['hongkong','Hong Kong',22.32,114.17,8],['tokyo','Tokyo',35.68,139.69,9],['seoul','Seoul',37.57,126.98,9],['sydney','Sydney',-33.87,151.21,10],['auckland','Auckland',-36.85,174.76,12],['newyork','New York',40.71,-74.01,-5],['toronto','Toronto',43.65,-79.38,-5],['chicago','Chicago',41.88,-87.63,-6],['mexico','Mexico City',19.43,-99.13,-6],['denver','Denver',39.74,-104.99,-7],['la','Los Angeles',34.05,-118.24,-8],['saopaulo','São Paulo',-23.55,-46.63,-3],['buenosaires','Buenos Aires',-34.60,-58.38,-3]];
+const RANGES = [['morning','Morning','5am – noon',5,12],['afternoon','Afternoon','noon – 5pm',12,17],['evening','Evening','5pm – 9pm',17,21],['night','Night','9pm – 5am',21,29]];
+const norm = a => ((a % 360) + 360) % 360, rad = Math.PI / 180;
+const sunSign = (m, d) => { let idx = 9; for (let i = 0; i < 12; i++) { const [sm, sd] = SUN_START[i], [nm, nd] = SUN_START[(i + 1) % 12]; const after = m > sm || (m === sm && d >= sd), before = m < nm || (m === nm && d < nd); if (sm <= nm ? (after && before) : (after || before)) { idx = i; break; } } return idx; };
+const jd = (y, mo, d, h) => Date.UTC(y, mo - 1, d) / 864e5 + 2440587.5 + h / 24 - 2451545.0;
+const moonSign = (D) => { const L = 218.316 + 13.176396 * D, M = 134.963 + 13.064993 * D; return Math.floor(norm(L + 6.289 * Math.sin(M * rad)) / 30); };
+const risingSign = (D, lat, lon) => { const ramc = norm(280.46061837 + 360.98564736629 * D + lon), e = 23.4393 * rad, r = ramc * rad;
+  const asc = Math.atan2(Math.cos(r), -(Math.sin(r) * Math.cos(e) + Math.tan(lat * rad) * Math.sin(e))) / rad; return Math.floor(norm(asc) / 30); };
+const SLACK_P = [['#E01E5A','M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313z'],['#36C5F0','M8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312z'],['#2EB67D','M18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312z'],['#ECB22E','M15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z']];
+const SLACK_URI = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' + SLACK_P.map(([c, d]) => '<path fill="' + c + '" d="' + d + '"/>').join('') + '</svg>');
+const OUTLOOK_URI = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20x%3D%228%22%20y%3D%223%22%20width%3D%2214%22%20height%3D%2218%22%20rx%3D%222%22%20fill%3D%22%2328A8EA%22%2F%3E%3Cpath%20d%3D%22M8%209l7%205%207-5v10a2%202%200%200%201-2%202H10a2%202%200%200%201-2-2z%22%20fill%3D%22%230078D4%22%2F%3E%3Crect%20x%3D%222%22%20y%3D%226%22%20width%3D%2212%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%230F6CBD%22%2F%3E%3Cellipse%20cx%3D%228%22%20cy%3D%2212%22%20rx%3D%223%22%20ry%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.6%22%2F%3E%3C%2Fsvg%3E';
+const ACAL_URI = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2220%22%20height%3D%2220%22%20rx%3D%225%22%20fill%3D%22%23fff%22%20stroke%3D%22%23E5E5EA%22%2F%3E%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2220%22%20height%3D%226%22%20rx%3D%223%22%20fill%3D%22%23FF3B30%22%2F%3E%3Crect%20x%3D%222%22%20y%3D%225%22%20width%3D%2220%22%20height%3D%223%22%20fill%3D%22%23FF3B30%22%2F%3E%3Ctext%20x%3D%2212%22%20y%3D%2218.5%22%20font-family%3D%22-apple-system%2CHelvetica%2CArial%22%20font-size%3D%229%22%20font-weight%3D%22300%22%20text-anchor%3D%22middle%22%20fill%3D%22%231C1C1E%22%3E17%3C%2Ftext%3E%3C%2Fsvg%3E';
+const LOGO = { gmail:'https://cdn.simpleicons.org/gmail', outlook:OUTLOOK_URI, gcal:'https://cdn.simpleicons.org/googlecalendar', acal:ACAL_URI, chatgpt:'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23000%22%20d%3D%22M22.282%209.821a5.985%205.985%200%200%200-.516-4.91%206.046%206.046%200%200%200-6.51-2.9A6.065%206.065%200%200%200%204.981%204.18a5.985%205.985%200%200%200-3.998%202.9%206.046%206.046%200%200%200%20.743%207.097%205.98%205.98%200%200%200%20.51%204.911%206.051%206.051%200%200%200%206.515%202.9A5.985%205.985%200%200%200%2013.26%2024a6.056%206.056%200%200%200%205.772-4.206%205.99%205.99%200%200%200%203.997-2.9%206.056%206.056%200%200%200-.747-7.073zM13.26%2022.43a4.476%204.476%200%200%201-2.876-1.04l.141-.081%204.779-2.758a.795.795%200%200%200%20.392-.681v-6.737l2.02%201.168a.071.071%200%200%201%20.038.052v5.583a4.504%204.504%200%200%201-4.494%204.494zM3.6%2018.304a4.47%204.47%200%200%201-.535-3.014l.142.085%204.783%202.759a.771.771%200%200%200%20.78%200l5.843-3.369v2.332a.08.08%200%200%201-.033.062L9.74%2019.95a4.5%204.5%200%200%201-6.14-1.646zM2.34%207.896a4.485%204.485%200%200%201%202.366-1.973V11.6a.766.766%200%200%200%20.388.676l5.815%203.355-2.02%201.168a.076.076%200%200%201-.071%200l-4.83-2.786A4.504%204.504%200%200%201%202.34%207.872zm16.597%203.855-5.833-3.387L15.119%207.2a.076.076%200%200%201%20.071%200l4.83%202.791a4.494%204.494%200%200%201-.676%208.105v-5.678a.79.79%200%200%200-.407-.667zm2.01-3.023-.141-.085-4.774-2.782a.776.776%200%200%200-.785%200L9.409%209.23V6.897a.066.066%200%200%201%20.028-.061l4.83-2.787a4.5%204.5%200%200%201%206.68%204.66zm-12.64%204.135-2.02-1.164a.08.08%200%200%201-.038-.057V6.075a4.5%204.5%200%200%201%207.375-3.453l-.142.08L8.704%205.46a.795.795%200%200%200-.393.681zm1.097-2.365%202.602-1.5%202.607%201.5v2.999l-2.597%201.5-2.607-1.5z%22%2F%3E%3C%2Fsvg%3E', claude:'https://cdn.simpleicons.org/claude', slack:SLACK_URI, notion:'https://cdn.simpleicons.org/notion/000000', drive:'https://cdn.simpleicons.org/googledrive', todoist:'https://cdn.simpleicons.org/todoist' };
+const logoStyle = (id, size) => 'flex:none; width:' + size + 'px; height:' + size + 'px; border-radius:' + Math.round(size / 4) + "px; background:#fff url('" + LOGO[id] + "') center / " + Math.round(size * 0.56) + 'px no-repeat; box-shadow:inset 0 0 0 1px rgba(36,26,32,.12), 0 2px 6px rgba(36,26,32,.08);';
+const BUFFERS = [
+  { v:0, label:'None', note:'Things can sit back to back.' },
+  { v:5, label:'5 minutes', note:'A short pause between things.' },
+  { v:10, label:'10 minutes', note:'Time to reset.' },
+  { v:15, label:'15 minutes', note:'Time to reset and prepare.' },
+  { v:30, label:'30 minutes', note:'An unhurried day.' }
+];
+const THEMES = [
+  { id:'ember', name:'Ember', note:'Plum night, rust and teal.', ground:'#1A0F1D', glows:['31,127,107','169,82,42','154,79,168'], accent:'#1F6F5E', hair:'232,180,92', spark:'244,217,160' },
+  { id:'tide', name:'Tidepool', note:'Deep sea green and sea glass.', ground:'#06171a', glows:['31,127,107','64,150,170','40,90,120'], accent:'#1F5F57', hair:'168,222,206', spark:'190,240,226' },
+  { id:'moon', name:'Moonlit', note:'Indigo sky and silver.', ground:'#0c0e24', glows:['72,86,176','128,96,190','160,176,220'], accent:'#3B4A8C', hair:'214,222,244', spark:'226,232,255' },
+  { id:'grove', name:'Grove', note:'Moss, fern and lantern gold.', ground:'#0d170f', glows:['70,120,60','150,180,110','200,150,60'], accent:'#3E6B3A', hair:'232,190,110', spark:'246,226,160' }
+];
+const MOTIFS = [
+  { id:'stars', label:'Stars', glyph:'✦' },
+  { id:'petals', label:'Petals', glyph:'❀' },
+  { id:'crystals', label:'Crystals', glyph:'◆' }
+];
+const ALL_STEPS = ['welcome','account','name','sky','look','mail','ai','tools','decks','permissions','buffer','comfort','ready'];
+const ALL_LABELS = ['Welcome','Door','Name','Sky','Light','Letters','Familiar','Instruments','Decks','Wards','Buffer','Air','Ready'];
+const QUICK = /[?&]quick\b/.test(location.search);
+const STEPS = QUICK ? ['welcome','name','mail','ai','tools','ready'] : ALL_STEPS;
+const STEP_LABELS = STEPS.map(k => ALL_LABELS[ALL_STEPS.indexOf(k)]);
+const SERVICES = {
+  mail: [
+    { id:'gmail', name:'Gmail', mark:'M', hue:'#A9522A', read:['Emails from the last 90 days','Contacts you write to'], draft:['Draft replies, held for your approval'], never:['Send anything without you','Delete or archive'] },
+    { id:'outlook', name:'Outlook', mark:'O', hue:'#2f5f8f', read:['Emails from the last 90 days','Contacts you write to'], draft:['Draft replies, held for your approval'], never:['Send anything without you','Delete or archive'] },
+    { id:'gcal', name:'Google Calendar', mark:'31', hue:'#1F6F5E', read:['Your events and free time'], draft:['Suggest times, held for your approval'], never:['Accept or decline invites for you','Move existing events'] },
+    { id:'acal', name:'Apple Calendar', mark:'◷', hue:'#4E3B43', read:['Your events and free time'], draft:['Suggest times, held for your approval'], never:['Accept or decline invites for you','Move existing events'] }
+  ],
+  ai: [
+    { id:'chatgpt', name:'ChatGPT', mark:'◎', hue:'#1F6F5E', read:['Only the card you are working on'], draft:['Prepare drafts and summaries'], never:['See your other cards','Keep your data after the card is done'] },
+    { id:'claude', name:'Claude', mark:'✳', hue:'#A9522A', read:['Only the card you are working on'], draft:['Prepare drafts and summaries'], never:['See your other cards','Keep your data after the card is done'] }
+  ],
+  tools: [
+    { id:'slack', name:'Slack', mark:'#', hue:'#6a2f7a', read:['Messages that mention you'], draft:['Draft replies, held for your approval'], never:['Post without you','Read private channels you exclude'] },
+    { id:'notion', name:'Notion', mark:'N', hue:'#241A20', read:['Pages you choose to share'], draft:['Draft new pages, held for your approval'], never:['Edit existing pages without you'] },
+    { id:'drive', name:'Google Drive', mark:'△', hue:'#b8862c', read:['Files you open from a card'], draft:['Create documents, held for your approval'], never:['Share files with anyone','Delete files'] },
+    { id:'todoist', name:'Todoist', mark:'✓', hue:'#A9522A', read:['Your open tasks'], draft:['Turn tasks into cards'], never:['Complete or delete tasks without you'] }
+  ]
+};
+const ICON_GROUPS = [
+  ['Work and mind', [['work','Work'],['laptop_mac','Desk'],['trending_up','Growth'],['school','Learning'],['lightbulb','Ideas'],['handshake','Clients']]],
+  ['Making', [['palette','Art'],['edit','Writing'],['music_note','Music'],['photo_camera','Photos'],['architecture','Design'],['auto_awesome','Magic']]],
+  ['Home and heart', [['home','Home'],['favorite','Love'],['child_care','Kids'],['pets','Pets'],['groups','Friends'],['restaurant','Food']]],
+  ['Body and world', [['spa','Rest'],['fitness_center','Fitness'],['eco','Nature'],['flight','Travel'],['savings','Money'],['menu_book','Reading']]]
+];
+const DECK_ICONS = ['work','palette','home','favorite','savings','spa','menu_book','flight','groups','fitness_center','pets','school','eco','music_note','restaurant','auto_awesome'];
+const DECK_HUES = [['#2A8E79','#12493F'],['#B8603A','#5E2A16'],['#A65CB4','#4A2253'],['#3E6E9A','#1B3450']];
+const DECK_CHOICES = [
+  { id:'pro', name:'Professional', img:'assets/card-professional-nolabel.jpg' , imgBg: 'position:absolute; inset:0; display:block; background:url(' + ('assets/card-professional-nolabel.jpg' ) + ') center top / cover no-repeat;'},
+  { id:'creative', name:'Creative Work', img:'assets/card-creative-nolabel.jpg' , imgBg: 'position:absolute; inset:0; display:block; background:url(' + ('assets/card-creative-nolabel.jpg' ) + ') center top / cover no-repeat;'},
+  { id:'home', name:'Home & Family', img:'assets/card-family-nolabel.jpg' , imgBg: 'position:absolute; inset:0; display:block; background:url(' + ('assets/card-family-nolabel.jpg' ) + ') center top / cover no-repeat;'},
+  { id:'health', name:'Health', glyph:'♡', hue:'#1F7F6B' },
+  { id:'money', name:'Money', glyph:'◇', hue:'#b8862c' },
+  { id:'move', name:'Move', glyph:'⌂', hue:'#2f5f8f' },
+  { id:'reading', name:'Reading', glyph:'❧', hue:'#6a2f7a' },
+  { id:'friends', name:'Friends', glyph:'✦', hue:'#A9522A' }
+];
+const ICON = {
+  look:['M12 3a9 9 0 1 0 0 18c1 0 1.5-.8 1.5-1.6 0-1-.8-1.4-.8-2.3 0-1 .8-1.6 1.8-1.6H17a4 4 0 0 0 4-4c0-4.4-4-8.5-9-8.5z','M7.5 11.5h.01M10 7.5h.01M15 7.5h.01'],
+  welcome:['M15.5 4.5a8 8 0 1 0 4 12.5 6.5 6.5 0 0 1-4-12.5z','M18.5 3l.5 1.5 1.5.5-1.5.5-.5 1.5-.5-1.5-1.5-.5 1.5-.5z'],
+  account:['M8.5 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z','M8.5 11v1','M12 12h8.5','M17 12v3','M19.5 12v2'],
+  name:['M19 4c-6 1-10 6-12 13','M19 4c0 5-4 9-9 10','M7 17l-2 3','M13 9.5l2 .5'],
+  mail:['M3.5 6.5h17v11h-17z','M3.5 7l8.5 6 8.5-6'],
+  ai:['M2.5 12c2.5-4 6-6 9.5-6s7 2 9.5 6c-2.5 4-6 6-9.5 6s-7-2-9.5-6z','M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z','M12 2.5v1.5M12 20v1.5'],
+  tools:['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z','M12 6.5l2.2 5.5-2.2 5.5-2.2-5.5z','M3 12h2M19 12h2'],
+  decks:['M8.5 5l6-1.5 3 13-6 1.5z','M6.5 6.5L5 17.5l5.5 1','M12.3 8.8l.6 1.4 1.4.2-1 1 .3 1.4-1.3-.7-1.3.7.3-1.4-1-1 1.4-.2z'],
+  permissions:['M12 3l7 3v5.5c0 4.5-3 7.5-7 9.5-4-2-7-5-7-9.5V6z','M12 8.5l.9 2 2.1.3-1.5 1.5.4 2.1-1.9-1-1.9 1 .4-2.1-1.5-1.5 2.1-.3z'],
+  comfort:['M3 9h11a3 3 0 1 0-3-3','M3 13h15a3 3 0 1 1-3 3','M3 17h6'],
+  ready:['M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3M6 6l2.1 2.1M15.9 15.9 18 18M6 18l2.1-2.1M15.9 8.1 18 6','M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z'],
+  calendar:['M4.5 6h15v13.5h-15z','M4.5 10h15','M8.5 4v4M15.5 4v4','M12 13l.6 1.3 1.4.2-1 1 .3 1.4-1.3-.7-1.3.7.3-1.4-1-1 1.4-.2z'],
+  sparkle:['M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z','M18.5 15.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z'],
+  sunburst:['M12 4v16M4 12h16M6.3 6.3l11.4 11.4M17.7 6.3 6.3 17.7','M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z'],
+  bubble:['M4 5.5h16v10H10l-4 3.5v-3.5H4z','M8 10.5h8'],
+  book:['M12 6.5c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5z','M12 6.5V20'],
+  folder:['M3.5 7h6l2 2h9v10h-17z','M3.5 11h17'],
+  scroll:['M6 4.5h10a2 2 0 0 1 2 2V19H8a2 2 0 0 1-2-2z','M9.5 11.5l2 2 3.5-4'],
+  heart:['M12 19s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 4.7-7 9-7 9z','M12 7.4v5'],
+  coin:['M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z','M12 7v10','M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.4 0-2.5.8-2.5 2s1 1.6 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.2 0-2.2-.6-2.7-1.6'],
+  house:['M4 11l8-6.5 8 6.5','M6 9.5v10h12v-10','M10 19.5v-5h4v5'],
+  twin:['M8 4.5l1 2.6 2.7.3-2 1.8.6 2.7L8 10.5l-2.3 1.4.6-2.7-2-1.8 2.7-.3z','M16.5 11l.8 2 2.1.2-1.6 1.4.5 2.1-1.8-1.1-1.8 1.1.5-2.1-1.6-1.4 2.1-.2z'],
+  star:['M12 4l1.9 4.6 4.9.4-3.7 3.2 1.1 4.8L12 14.5 7.8 17l1.1-4.8L5.2 9l4.9-.4z']
+};
+const SERVICE_ICON = { gmail:'mail', outlook:'mail', gcal:'calendar', acal:'calendar', chatgpt:'sparkle', claude:'sunburst', slack:'bubble', notion:'book', drive:'folder', todoist:'scroll' };
+const DECK_ICON = { health:'heart', money:'coin', move:'house', reading:'book', friends:'twin' };
+const KNOWN = ['pro','creative','home','health','move','reading'];
+
+class Component extends DCLogic {
+  later(fn, ms) { if (!this._tids) this._tids = new Set(); const id = setTimeout(() => { this._tids.delete(id); if (!this._gone) fn(); }, ms); this._tids.add(id); return id; }
+  state = { step:0, email:'', password:'', name:'', connected:{}, sheetId:null, sheetConnecting:false, decks:['pro','creative','home'], extraDecks:[], slots:[{ id:'s1', name:'', icon:'work' }, { id:'s2', name:'', icon:'palette' }, { id:'s3', name:'', icon:'home' }], pickerSlot:null, ownDeck:'',
+    perms:{ read:true, draft:true, hold:false }, motion:'gentle', buffer:15, theme:'ember', motif:'stars', sound:false, accountError:'', leaving:false };
+
+  go(n) { this.setState({ step: Math.max(0, Math.min(STEPS.length - 1, n)), accountError:'' }); }
+  findService(id) { return [...SERVICES.mail, ...SERVICES.ai, ...SERVICES.tools].find(x => x.id === id); }
+  markStyle(hue, size) { return 'flex:none; width:' + size + 'px; height:' + size + 'px; border-radius:50%; background:radial-gradient(circle at 50% 35%, #3a1f3f, #1A0F1D 75%); box-shadow:0 0 0 1px ' + hue + ', inset 0 0 0 3px rgba(26,15,29,.9), inset 0 0 0 4px rgba(241,200,119,.35), 0 4px 12px rgba(26,15,29,.25); display:flex; align-items:center; justify-content:center;'; }
+  paths(k) { return (ICON[k] || ICON.star).map(d => ({ d })); }
+  allDecks() { return [...DECK_CHOICES, ...this.state.extraDecks]; }
+  connectNow(id) { this.setState(p => ({ connected:{ ...p.connected, [id]:true }, sheetId:null, sheetConnecting:false })); }
+
+  finish = () => { try { localStorage.setItem('sanctuary-low-sensory', JSON.stringify(this.state.motion === 'still')); } catch (e) {}
+    const s = this.state;
+    const named = (s.slots || []).filter(x => x.name.trim());
+    const custom = named.map(x => ({ id:'custom-' + x.id, name:x.name.trim(), icon:x.icon, cover:null, kind:'Ongoing', count:0, waiting:0, folders:[] }));
+    const decks = named.map(x => x.id);
+    try {
+      const prev = store.get('sanctuary-custom-decks', []);
+      store.set('sanctuary-custom-decks', [...prev.filter(p => !custom.some(c => c.id === p.id)), ...custom]);
+      store.set('sanctuary-onboarding', { name:s.name.trim(), chamber:decks.map(id => 'custom-' + id), lowSensory:s.motion === 'still', buffer:s.buffer, theme:s.theme, motif:s.motif, sound:s.sound, perms:s.perms, connected:Object.keys(s.connected).filter(k => s.connected[k]), at:Date.now() });
+    } catch (e) { console.warn('[sanctuary]', e); }
+    this.setState({ leaving:true });
+    this.later(() => { window.location.href = QUICK ? 'app.html' : 'first-reading.html'; }, 900);
+  };
+
+  renderVals() {
+    const s = this.state, key = STEPS[s.step];
+    const connectKey = ['mail','ai','tools'].includes(key) ? key : null;
+    const track = (on, locked) => 'flex:none; position:relative; width:46px; height:28px; border-radius:999px; transition:background .3s ease; background:' + (locked ? 'rgba(36,26,32,.18)' : on ? '#1F6F5E' : 'rgba(36,26,32,.22)') + ';';
+    const knob = (on) => 'position:absolute; top:3px; left:' + (on ? '21px' : '3px') + '; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:left .3s cubic-bezier(.2,.8,.25,1);';
+    const sv = s.sheetId ? this.findService(s.sheetId) : null;
+    const decksReady = (s.slots || []).some(x => x.name.trim());
+    const connectedNames = Object.keys(s.connected).filter(k => s.connected[k]).map(k => (this.findService(k) || {}).name).filter(Boolean);
+    const nextBtnBase = 'font-family:inherit; font-size:15.5px; font-weight:650; min-height:54px; padding:0 30px; border-radius:999px; border:none; color:#fff; ';
+    const firstName = s.name.trim().split(' ')[0];
+    const th = THEMES.find(t => t.id === s.theme) || THEMES[0];
+    const radio = (on) => 'flex:none; width:20px; height:20px; border-radius:50%; box-sizing:border-box; border:2px solid ' + (on ? '#1F6F5E' : 'rgba(36,26,32,.35)') + '; box-shadow:inset 0 0 0 ' + (on ? '4px #FFFCF6' : '0 transparent') + '; background:' + (on ? '#1F6F5E' : 'transparent') + ';';
+    return {
+      stepName: ({ account:'The door', name:'Your name', sky:'Your sky', look:'Your light', mail:'Letters and days', ai:'Your familiar', tools:'Instruments', decks:'The decks', permissions:'Wards', buffer:'Breathing room', comfort:'The air' })[key] || '',
+      connectBlunt: ({ mail:'Connect your email and calendar.', ai:'Choose which AI model to use.', tools:'Connect other apps you use.' })[key] || '',
+      sigilPaths: this.paths(key),
+      sigilPathUnused: ({
+        welcome:'M12 3a9 9 0 1 0 0 18 7 7 0 0 1 0-18z',
+        account:'M12 3v6M9 6h6M7 12a5 5 0 1 0 10 0 5 5 0 0 0-10 0zM12 17v4',
+        name:'M5 19c3-1 5-4 7-8l3-6c1 2 1 5-1 8-2 4-5 5-9 6zM5 19l-1 2',
+        mail:'M4 7h16v10H4zM4 7l8 6 8-6',
+        ai:'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18 16l.8 2.2L21 19l-2.2.8L18 22l-.8-2.2L15 19l2.2-.8z',
+        tools:'M6 6h4v4H6zM14 6h4v4h-4zM6 14h4v4H6zM14 14h4v4h-4z',
+        decks:'M7 4h10v16H7zM4 6l3-1M20 6l-3-1M12 9l1 2 2 .3-1.5 1.4.4 2.1-1.9-1-1.9 1 .4-2.1L9 11.3l2-.3z',
+        permissions:'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z',
+        comfort:'M12 20c-4 0-7-3-7-7 3 0 5 1 7 3 2-2 4-3 7-3 0 4-3 7-7 7zM12 16V6M9 8l3-3 3 3',
+        ready:'M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5 19 19M5 19l2.5-2.5M16.5 7.5 19 5M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z'
+      })[key],
+      calmLine: ({
+        welcome:'Nothing is asked of you yet.',
+        account:'Your account is private. Nothing is shared.',
+        name:'A name is optional.',
+        look:'You can change this in settings.',
+        mail:'Nothing is read until you connect it.',
+        ai:'You can switch AI at any time.',
+        tools:'All of this can wait.',
+        decks:'Decks can be swapped whenever you like.',
+        permissions:'Sending always waits for you.',
+        buffer:'You can change this in settings.',
+        comfort:'You can change this from inside.',
+        ready:'Everything you chose can be changed later.'
+      })[key],
+      motionOn: s.motion !== 'still' && !(() => { try { return JSON.parse(localStorage.getItem('sanctuary-low-sensory')); } catch (e) { return false; } })(),
+      fireflies: Array.from({ length: key === 'ready' ? 22 : 10 }, (_, i) => { const sz = (s.motif === 'stars' ? 3 : 6) + (i % 3) * (s.motif === 'stars' ? 1 : 2);
+        const shape = s.motif === 'petals' ? 'border-radius:70% 0 70% 0;' : s.motif === 'crystals' ? 'clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);' : 'border-radius:50%;';
+        return { style:'position:fixed; pointer-events:none; z-index:0; width:' + sz + 'px; height:' + (s.motif === 'crystals' ? sz * 1.5 : sz) + 'px; ' + shape + ' left:' + ((i * 37 + 8) % 92) + '%; top:' + ((i * 53 + 12) % 86) + '%; background:rgb(' + th.spark + '); box-shadow:0 0 10px 3px rgba(' + th.spark + ',.5); animation: drift ' + (9 + (i % 4) * 3) + 's ease-in-out ' + (i * 0.9) + 's infinite;' }; }),
+      themeName: th.name,
+      themeLayer: 'position:fixed; inset:0; pointer-events:none; transition:opacity .8s ease; background:radial-gradient(60% 50% at 20% 80%, rgba(' + th.glows[0] + ',.34), transparent 70%), radial-gradient(55% 45% at 85% 20%, rgba(' + th.glows[1] + ',.32), transparent 70%), radial-gradient(50% 50% at 50% 50%, rgba(' + th.glows[2] + ',.28), transparent 70%), ' + th.ground + ';',
+      themes: THEMES.map(t => { const on = s.theme === t.id;
+        return { name:t.name, note:t.note, on, pick: () => this.setState({ theme:t.id }),
+          swatch:'position:relative; display:block; height:72px; border-radius:12px; overflow:hidden; background:radial-gradient(70% 90% at 20% 90%, rgba(' + t.glows[0] + ',.75), transparent 70%), radial-gradient(60% 80% at 85% 15%, rgba(' + t.glows[1] + ',.7), transparent 70%), radial-gradient(60% 70% at 50% 50%, rgba(' + t.glows[2] + ',.55), transparent 70%), ' + t.ground + '; box-shadow:inset 0 0 0 1px rgba(' + t.hair + ',.5);',
+          dots:[0,1,2].map(j => ({ style:'position:absolute; width:' + (3 + j) + 'px; height:' + (3 + j) + 'px; border-radius:50%; left:' + (22 + j * 27) + '%; top:' + (30 + (j % 2) * 30) + '%; background:rgb(' + t.spark + '); box-shadow:0 0 8px 2px rgba(' + t.spark + ',.6);' })),
+          labelStyle:'display:block; font-size:15.5px; color:#241A20; font-weight:' + (on ? '700' : '500') + ';', radioStyle: radio(on) }; }),
+      motifs: MOTIFS.map(m => { const on = s.motif === m.id;
+        return { ...m, on, pick: () => this.setState({ motif:m.id }), radioStyle: radio(on),
+          glyphStyle:'font-size:15.5px; color:#6a2f7a;', labelStyle:'font-size:15.5px; font-weight:' + (on ? '700' : '500') + ';' }; }),
+      readySub: (() => { const named = (s.slots || []).filter(x => x.name.trim()).length, n = Math.min(4, named || (s.slots || []).length); return (n === 1 ? 'One deck is' : ['', 'One', 'Two', 'Three', 'Four'][n] + ' decks are') + ' shuffled and waiting.'; })(),
+      readyHalo: 'position:absolute; left:50%; top:52%; width:min(1000px,130vw); height:min(760px,100vw); transform:translate(-50%,-50%); border-radius:50%; pointer-events:none; background:radial-gradient(closest-side, rgba(' + th.hair + ',.22), rgba(' + th.glows[2] + ',.14) 45%, rgba(0,0,0,0)); animation: haloIn 1.8s cubic-bezier(.22,.8,.3,1) both;',
+      readyKicker: 'font-family:\'Cormorant Garamond\',serif; font-style:italic; position:relative; font-size:17px; color:rgb(' + th.hair + '); animation: stepIn 1s ease both;',
+      readyDecks: (() => { const named = (s.slots || []).filter(x => x.name.trim()); return named.length ? named : (s.slots || []); })().slice(0, 4).map((d, i, a) => { const mid = (a.length - 1) / 2, off = i - mid;
+        return { name: d.name.trim() || 'Deck ' + (i + 1), hasImg:false, noImg:true, img:'', imgBg:'', glyph: d.icon,
+          tilt:'transform:rotate(' + (off * 7) + 'deg) translateY(' + (Math.abs(off) * 14) + 'px); transform-origin:50% 120%;',
+          deal:'animation: dealIn 1.1s cubic-bezier(.16,.9,.2,1) both ' + (0.5 + i * 0.22).toFixed(2) + 's;',
+          face:'position:relative; width:clamp(118px,15vw,170px); aspect-ratio:2/3; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:radial-gradient(90% 70% at 50% 30%, ' + DECK_HUES[i % 4][0] + ', ' + DECK_HUES[i % 4][1] + '); box-shadow:0 0 0 1px rgba(' + th.hair + ',.7), 0 0 0 5px rgba(0,0,0,.35), 0 0 0 6px rgba(' + th.hair + ',.3), 0 24px 50px rgba(0,0,0,.55), 0 0 60px rgba(' + th.glows[i % 3] + ',.45);' }; }),
+      readyPlate: 'position:relative; width:min(560px,100%); box-sizing:border-box; display:flex; flex-direction:column; gap:10px; margin-top:clamp(28px,4.5vh,44px); padding:20px 24px; border-radius:8px; background:linear-gradient(180deg, rgba(20,10,22,.72), rgba(20,10,22,.86)); box-shadow:inset 0 0 0 1px rgba(' + th.hair + ',.55), inset 0 0 0 5px rgba(0,0,0,.3), inset 0 0 0 6px rgba(' + th.hair + ',.2); animation: stepIn 1s ease both 1.3s;',
+      plateKey: 'font-family:\'Cormorant Garamond\',serif; font-style:italic; font-size:17px; color:rgb(' + th.hair + ');',
+      enterBtn: 'position:relative; font-family:inherit; margin-top:26px; font-size:17px; font-weight:650; min-height:60px; padding:0 44px; border-radius:999px; border:none; background:' + th.accent + '; color:#fff; cursor:pointer; box-shadow:0 0 0 1px rgba(' + th.hair + ',.6), 0 10px 30px rgba(0,0,0,.45); animation: stepIn 1s ease both 1.6s;',
+      ...(() => {
+        const dt = s.bDate || '', [Y, Mo, Dd] = dt.split('-').map(Number), city = CITIES.find(c => c[0] === s.bPlace), mode = s.timeMode || 'exact';
+        const chip = on => 'font-family:inherit; min-height:44px; padding:0 18px; border-radius:999px; cursor:pointer; font-size:15.5px; border:none; ' + (on ? 'background:#241A20; color:#FFF8EF; font-weight:650;' : 'background:#F1E8DC; color:#241A20;');
+        const ok = !!(Y && Mo && Dd);
+        let sunI = ok ? sunSign(Mo, Dd) : 0, moon = '—', rising = '—';
+        const at = (h) => { const D = jd(Y, Mo, Dd, h - (city ? city[4] : 0)); return { m: moonSign(D), r: city ? risingSign(D, city[2], city[3]) : null }; };
+        if (ok) {
+          if (mode === 'exact' && s.bTime) { const [hh, mm] = s.bTime.split(':').map(Number), x = at(hh + mm / 60); moon = SIGNS[x.m][0]; rising = x.r == null ? 'Add a place' : SIGNS[x.r][0]; }
+          else if (mode === 'range' && s.bRange) { const rg = RANGES.find(r => r[0] === s.bRange), a = at(rg[3]), b = at(rg[4]);
+            moon = a.m === b.m ? SIGNS[a.m][0] : SIGNS[a.m][0] + ' or ' + SIGNS[b.m][0];
+            if (!city) rising = 'Add a place'; else { const set = []; for (let h = rg[3]; h <= rg[4]; h += 0.5) { const r = at(h).r; if (!set.includes(r)) set.push(r); } rising = set.length <= 2 ? set.map(r => SIGNS[r][0]).join(' or ') : 'One of ' + set.length + ' signs'; } }
+          else { const x = at(12); moon = SIGNS[x.m][0] + ' (likely)'; rising = 'Needs a time'; } }
+        const con = CON[sunI], rev = s.skyPhase === 'reveal', motion = s.motion !== 'still';
+        const lens = con[1].map(([a, b]) => Math.hypot(con[0][a][0] - con[0][b][0], con[0][a][1] - con[0][b][1]));
+        const fade = (d) => motion ? 'opacity:0; animation: stepIn .9s ease both ' + d + 's;' : '';
+        return {
+          isSky: key === 'sky', skyForm: !rev, skyReveal: rev,
+          bDate: dt, onBDate: e => this.setState({ bDate:e.target.value }), bPlace: s.bPlace || '', onBPlace: e => this.setState({ bPlace:e.target.value }),
+          bTime: s.bTime || '', onBTime: e => this.setState({ bTime:e.target.value }),
+          cities: CITIES.map(c => ({ id:c[0], name:c[1] })),
+          timeModes: [['exact','I know the time'],['range','Roughly'],['none','I don’t know']].map(([id, label]) => ({ label, on: mode === id, pick: () => this.setState({ timeMode:id }), style: chip(mode === id) })),
+          timeExact: mode === 'exact', timeRange: mode === 'range',
+          ranges: RANGES.map(r => ({ label:r[1], hours:r[2], on: s.bRange === r[0], pick: () => this.setState({ bRange:r[0] }), style:'font-family:inherit; display:flex; flex-direction:column; align-items:flex-start; gap:2px; padding:12px 14px; border-radius:16px; cursor:pointer; color:#241A20; border:none; background:#FFFCF6; box-shadow:inset 0 0 0 ' + (s.bRange === r[0] ? '2px #241A20' : '1px rgba(36,26,32,.15)') + ';' })),
+          timeNote: mode === 'range' ? 'A rough time narrows your rising sign to one or two.' : mode === 'none' ? 'That’s common. Your sun sign is exact; we’ll leave rising open.' : (city ? '' : 'Add a place for your rising sign.'),
+          skyDisabled: !ok, skyBtn: 'font-family:inherit; font-size:17px; font-weight:650; min-height:54px; padding:0 30px; border-radius:999px; border:none; color:#fff; cursor:' + (ok ? 'pointer' : 'default') + '; background:' + (ok ? th.accent : 'rgba(36,26,32,.25)') + ';',
+          readSky: () => { if (!ok) return; const chart = { date:dt, place:s.bPlace || '', timeMode:mode, time: mode === 'exact' ? (s.bTime || '') : '', range: mode === 'range' ? (s.bRange || '') : '', sun:SIGNS[sunI][0], moon, rising };
+            store.set('sanctuary-birthday', dt); store.set('sanctuary-chart', chart); this.setState({ skyPhase:'reveal' }); },
+          editSky: () => this.setState({ skyPhase:'form' }),
+          sun: { name: SIGNS[sunI][0], element: SIGNS[sunI][1], line: SIGNS[sunI][2] },
+          trio: [{ k:'Sun', v:SIGNS[sunI][0] }, { k:'Moon', v:moon }, { k:'Rising', v:rising }],
+          starField: Array.from({ length: 26 }, (_, i) => { const x = (Math.sin(i * 91.7) * 0.5 + 0.5) * 100, y = (Math.sin(i * 37.3 + 1) * 0.5 + 0.5) * 60; return { x:x.toFixed(1), y:y.toFixed(1), r: (0.2 + (i % 3) * 0.15).toFixed(2), style: 'opacity:.5;' + (motion ? ' animation: twinkle ' + (2.5 + (i % 5) * 0.6) + 's ease-in-out infinite ' + (i * 0.17) + 's;' : '') }; }),
+          conStars: con[0].map(([x, y], i) => ({ x:String(x), y:String(y), style:'transform-box:fill-box; transform-origin:center;' + (motion ? ' opacity:0; animation: starOn .6s cubic-bezier(.3,1.5,.5,1) both ' + (0.3 + i * 0.28) + 's;' : '') + ' filter:drop-shadow(0 0 1.5px #F6D58E);' })),
+          conLines: con[1].map(([a, b], i) => ({ x1:String(con[0][a][0]), y1:String(con[0][a][1]), x2:String(con[0][b][0]), y2:String(con[0][b][1]), style: '--len:' + lens[i].toFixed(1) + '; stroke-dasharray:' + lens[i].toFixed(1) + ';' + (motion ? ' stroke-dashoffset:' + lens[i].toFixed(1) + '; animation: drawLine .7s ease forwards ' + (0.5 + con[0].length * 0.28 + i * 0.35) + 's;' : '') })),
+          signNameStyle: "font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(52px,8vh,80px); line-height:1; margin-top:22px; " + fade(0.8 + con[0].length * 0.28 + con[1].length * 0.35),
+          signMetaStyle: "font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:#4E3B43; margin-top:8px; " + fade(1.3 + con[0].length * 0.28 + con[1].length * 0.35),
+          trioStyle: 'display:flex; flex-wrap:wrap; justify-content:center; gap:8px 26px; margin-top:20px; ' + fade(1.8 + con[0].length * 0.28 + con[1].length * 0.35),
+          skyFootStyle: 'display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:18px; margin-top:22px; ' + fade(2.2 + con[0].length * 0.28 + con[1].length * 0.35)
+        }; })(),
+      isWelcome: key === 'welcome', isAccount: key === 'account', isName: key === 'name', isLook: key === 'look', notReady: key !== 'ready', isConnectStep: !!connectKey, isAiStep: key === 'ai',
+      isDecks: key === 'decks', isPermissions: key === 'permissions', isBuffer: key === 'buffer', isComfort: key === 'comfort', isReady: key === 'ready',
+      canBack: s.step > 0, noBack: s.step === 0,
+      showProgress: s.step > 0 && key !== 'ready',
+      progressLabel: 'Step ' + s.step + ' of ' + (STEPS.length - 2),
+      dots: STEPS.slice(1, -1).map((_, i) => ({ style:'width:' + (i + 1 === s.step ? '18px' : '7px') + '; height:7px; border-radius:999px; transition:width .4s ease, background .4s ease; background:' + (i + 1 <= s.step ? '#E8B45C' : 'rgba(255,240,248,.3)') + ';' })),
+      back: () => this.go(s.step - 1), next: () => this.go(s.step + 1), skip: () => this.go(s.step + 1),
+      bypass: () => this.go(s.step + 1),
+      footRow: 'display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:24px;',
+      skipBtn: 'font-family:inherit; font-size:15.5px; min-height:44px; background:none; border:none; color:#4E3B43; cursor:pointer; padding:0;',
+      nextBtn: nextBtnBase + 'background:' + th.accent + '; cursor:pointer;',
+      email: s.email, password: s.password,
+      onEmail: (e) => this.setState({ email:e.target.value }), onPassword: (e) => this.setState({ password:e.target.value }),
+      signGoogle: () => this.go(s.step + 1), signApple: () => this.go(s.step + 1),
+      signEmail: () => {
+        if (!/.+@.+\..+/.test(s.email)) return this.setState({ accountError:'That email looks incomplete. Take your time.' });
+        if (s.password.length < 8) return this.setState({ accountError:'The password needs at least 8 characters.' });
+        this.go(s.step + 1);
+      },
+      accountError: !!s.accountError, accountErrorText: s.accountError,
+      name: s.name, onName: (e) => this.setState({ name:e.target.value }),
+      namePreview: firstName ? 'Welcome back, ' + firstName + '.' : '',
+      connectTitle: { mail:'Letters and days', ai:'Choose your familiar', tools:'Gather your instruments' }[connectKey] || '',
+      connectLine: { mail:'So cards can be prepared from what is already arriving.', ai:'Your own AI account prepares the work behind each card.', tools:'Optional. Add them now or later.' }[connectKey] || '',
+      services: (SERVICES[connectKey] || []).map(x => { const on = !!s.connected[x.id];
+        return { name:x.name, mark:x.mark, logo: logoStyle(x.id, 44), markStyle:this.markStyle(x.hue, 44), paths:this.paths(SERVICE_ICON[x.id]), ink:'#F1C877', connected:on, notConnected:!on,
+          status: on ? 'Connected. Drafts wait for your approval.' : x.read[0] + '.',
+          open: () => this.setState({ sheetId:x.id, sheetConnecting:false }),
+          disconnect: () => this.setState(p => ({ connected:{ ...p.connected, [x.id]:false } })) }; }),
+      sheetOpen: !!sv, sheetConnecting: !!s.sheetConnecting, sheetIdle: !s.sheetConnecting,
+      sheet: sv ? { title:'Connect ' + sv.name, name:sv.name, mark:sv.mark, markStyle:this.markStyle(sv.hue, 48), logo: logoStyle(s.sheetId, 48), paths:this.paths(SERVICE_ICON[sv.id]), ink:'#F1C877',
+        groups:[
+          { head:'Sanctuary can read', rows:sv.read.map(t => ({ t })), headStyle:'font-family:\'Cormorant Garamond\',serif; font-style:italic; font-size:15.5px; color:#1F6F5E;' },
+          { head:'Sanctuary can prepare', rows:sv.draft.map(t => ({ t })), headStyle:'font-family:\'Cormorant Garamond\',serif; font-style:italic; font-size:15.5px; color:#6a2f7a;' },
+          { head:'Sanctuary will never', rows:sv.never.map(t => ({ t })), headStyle:'font-family:\'Cormorant Garamond\',serif; font-style:italic; font-size:15.5px; color:#4E3B43;' }
+        ] } : { title:'', name:'', mark:'', markStyle:'', paths:[], ink:'#F1C877', groups:[] },
+      closeSheet: () => this.setState({ sheetId:null, sheetConnecting:false }),
+      stop: (e) => e.stopPropagation(),
+      allowSheet: () => { const id = s.sheetId; this.setState({ sheetConnecting:true }); this.later(() => this.connectNow(id), 1300); },
+      sheetBypass: () => this.connectNow(s.sheetId),
+      deckChoices: this.allDecks().map(d => { const on = s.decks.includes(d.id), full = !on && s.decks.length >= 3;
+        return { name:d.name, on, hasImg:!!d.img, noImg:!d.img, img:d.img || '', imgBg: 'position:absolute; inset:0; display:block; background:url(' + (d.img || '') + ') center top / cover no-repeat;', glyph:d.glyph || '✦', paths:this.paths(DECK_ICON[d.id] || 'star'),
+          toggle: () => this.setState(p => ({ decks: on ? p.decks.filter(x => x !== d.id) : (p.decks.length >= 3 ? p.decks : [...p.decks, d.id]) })),
+          style:'font-family:inherit; padding:0; background:none; border:none; cursor:' + (full ? 'default' : 'pointer') + '; opacity:' + (full ? '.5' : '1') + '; transition:opacity .3s ease;',
+          artStyle:'position:relative; display:flex; align-items:center; justify-content:center; aspect-ratio:3/4; border-radius:12px; overflow:hidden; background:' + (d.hue ? 'linear-gradient(160deg,' + d.hue + ', #1A0F1D)' : '#1A0F1D') + '; box-shadow:' + (on ? '0 0 0 3px #E8B45C, 0 10px 22px rgba(26,15,29,.3)' : '0 0 0 1px rgba(36,26,32,.15)') + '; transition:box-shadow .3s ease;',
+          checkStyle:'position:absolute; top:8px; right:8px; width:24px; height:24px; border-radius:50%; background:#E8B45C; color:#241A20; font-weight:650; font-size:14px; display:' + (on ? 'flex' : 'none') + '; align-items:center; justify-content:center;' }; }),
+      ownDeck: s.ownDeck, onOwnDeck: (e) => this.setState({ ownDeck:e.target.value }),
+      addOwnDeck: () => { const n = s.ownDeck.trim(); if (!n) return; const id = 'own' + Date.now();
+        this.setState(p => ({ extraDecks:[...p.extraDecks, { id, name:n, glyph:'✦', hue:'#6a2f7a' }], ownDeck:'', decks: p.decks.length < 3 ? [...p.decks, id] : p.decks })); },
+      ...(() => { const slots = s.slots || [], MSg = "font-family:'Material Symbols Rounded'; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;";
+        const upd = (i, patch) => this.setState(p => ({ slots: p.slots.map((x, j) => j === i ? { ...x, ...patch } : x) }));
+        const ps = slots.findIndex(x => x.id === s.pickerSlot);
+        return {
+          msBig: MSg + ' font-size:30px;',
+          deckSlots: slots.map((x, i) => { const h = DECK_HUES[i % 4], open = (ps >= 0 ? ps : 0) === i;
+            return { name:x.name, icon:x.icon, label: x.name.trim() || 'Deck ' + (i + 1), open, aria:'Choose a sign for ' + (x.name.trim() || 'deck ' + (i + 1)), removeAria:'Remove ' + (x.name.trim() || 'deck ' + (i + 1)),
+              pickMe: () => this.setState({ pickerSlot: x.id }),
+              setName: ev => upd(i, { name: ev.target.value }),
+              remove: ev => { ev.stopPropagation(); this.setState(p => ({ slots: p.slots.filter((_, j) => j !== i), pickerSlot:null })); },
+              artStyle:'position:relative; font-family:inherit; width:100%; aspect-ratio:3/4; padding:0; border:none; cursor:pointer; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:radial-gradient(90% 70% at 50% 30%, ' + h[0] + ', ' + h[1] + '); box-shadow:inset 0 0 0 1px rgba(241,200,119,.5), inset 0 0 0 5px rgba(0,0,0,.12)' + (open ? ', 0 0 0 3px #E8B45C' : '') + ', 0 10px 22px rgba(26,15,29,.28); transition:box-shadow .3s ease;',
+              ringStyle:'display:flex; align-items:center; justify-content:center; width:64px; height:64px; margin-bottom:18px; border-radius:50%; border:1px dashed rgba(241,200,119,.7); box-shadow:0 0 22px rgba(241,200,119,.25);',
+              iconStyle: MSg + ' font-size:32px; color:#F6D58E;',
+              removeStyle: MSg + ' position:absolute; top:6px; right:6px; width:28px; height:28px; display:' + (slots.length > 1 ? 'flex' : 'none') + '; align-items:center; justify-content:center; border-radius:50%; font-size:18px; color:#FFF6FB; background:rgba(26,15,29,.45);' }; }),
+          canAddDeck: slots.length < 4,
+          addDeck: () => this.setState(p => ({ slots:[...p.slots, { id:'s' + Date.now(), name:'', icon: DECK_ICONS[(p.slots.length * 3) % DECK_ICONS.length] }] })),
+          ...(() => { const cur = ps >= 0 ? ps : 0, sl = slots[cur] || { icon:'', name:'' };
+            return { pickerFor: sl.name.trim() || 'deck ' + (cur + 1),
+              deckTabs: slots.map((x, j) => ({ icon:x.icon, on: j === cur, pick: () => this.setState({ pickerSlot:x.id }), glyph: MSg + ' font-size:20px;',
+                style:'font-family:inherit; width:44px; height:44px; border-radius:12px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#F6D58E; background:radial-gradient(90% 70% at 50% 30%, ' + DECK_HUES[j % 4][0] + ', ' + DECK_HUES[j % 4][1] + '); box-shadow:' + (j === cur ? '0 0 0 2px #FFFCF6, 0 0 0 4px #E8B45C' : 'inset 0 0 0 1px rgba(241,200,119,.4)') + ';' })),
+              iconGroups: ICON_GROUPS.map(([label, list]) => ({ label, icons: list.map(([n, lab]) => { const on = sl.icon === n; return { name:n, label:lab, on, pick: () => upd(cur, { icon:n }),
+                style:'font-family:inherit; width:48px; height:48px; border-radius:12px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .25s ease, background .25s ease; background:' + (on ? 'radial-gradient(90% 70% at 50% 30%, ' + DECK_HUES[cur % 4][0] + ', ' + DECK_HUES[cur % 4][1] + ')' : '#F1E8DC') + '; color:' + (on ? '#F6D58E' : '#241A20') + '; box-shadow:' + (on ? '0 0 0 2px #E8B45C' : 'none') + ';',
+                glyph: MSg + ' font-size:24px;' }; }) })) }; })(),
+          iconChoices: DECK_ICONS.map(n => { const on = ps >= 0 && slots[ps].icon === n; return { name:n, on, pick: () => { upd(ps, { icon:n }); },
+            style:'font-family:inherit; aspect-ratio:1; border-radius:12px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; background:' + (on ? '#241A20' : '#F1E8DC') + '; color:' + (on ? '#F6D58E' : '#241A20') + ';',
+            glyph: MSg + ' font-size:24px;' }; }),
+          deckCountLine: slots.length + ' of 4 decks'
+        }; })(),
+      decksNotReady: !decksReady,
+      deckNextBtn: nextBtnBase + 'background:' + (decksReady ? '#1F6F5E' : 'rgba(31,111,94,.4)') + '; cursor:' + (decksReady ? 'pointer' : 'default') + ';',
+      perms: [
+        { id:'read', label:'Read what you connected', note:'Needed to prepare cards.', locked:false },
+        { id:'draft', label:'Prepare drafts', note:'Drafts are held until you approve them.', locked:false },
+        { id:'hold', label:'Hold calendar time', note:'Tentative holds only. Nobody is invited.', locked:false },
+        { id:'send', label:'Send, post or accept invites', note:'Always asks you first. This cannot be turned off.', locked:true }
+      ].map(p => { const on = p.locked ? false : !!s.perms[p.id];
+        return { ...p, on, trackStyle:track(on, p.locked), knobStyle:knob(on), toggle: () => { if (!p.locked) this.setState(st => ({ perms:{ ...st.perms, [p.id]:!st.perms[p.id] } })); } }; }),
+      motions: [
+        { id:'full', label:'Full', note:'Light, sparkles and transitions.' },
+        { id:'gentle', label:'Gentle', note:'Slow transitions. No sparkles.' },
+        { id:'still', label:'Still', note:'Nothing moves on its own.' }
+      ].map(m => { const on = s.motion === m.id;
+        return { ...m, on, pick: () => this.setState({ motion:m.id }),
+          labelStyle:'display:block; font-size:15.5px; color:#241A20; font-weight:' + (on ? '700' : '500') + ';',
+          radioStyle:'flex:none; width:20px; height:20px; border-radius:50%; box-sizing:border-box; border:2px solid ' + (on ? '#1F6F5E' : 'rgba(36,26,32,.35)') + '; box-shadow:inset 0 0 0 ' + (on ? '4px #FFFCF6' : '0 transparent') + '; background:' + (on ? '#1F6F5E' : 'transparent') + ';' }; }),
+      buffers: BUFFERS.map(b => { const on = s.buffer === b.v;
+        return { ...b, on, pick: () => this.setState({ buffer:b.v }),
+          labelStyle:'display:block; font-size:15.5px; color:#241A20; font-weight:' + (on ? '700' : '500') + ';',
+          radioStyle:'flex:none; width:20px; height:20px; border-radius:50%; box-sizing:border-box; border:2px solid ' + (on ? '#1F6F5E' : 'rgba(36,26,32,.35)') + '; box-shadow:inset 0 0 0 ' + (on ? '4px #FFFCF6' : '0 transparent') + '; background:' + (on ? '#1F6F5E' : 'transparent') + ';' }; }),
+      sound: s.sound, toggleSound: () => this.setState(p => ({ sound:!p.sound })),
+      soundTrack: track(s.sound, false), soundKnob: knob(s.sound),
+      readyTitle: firstName ? 'Welcome home, ' + firstName + '.' : 'Your Sanctuary is awake.',
+      summary: [
+        { k:'Connected', v: connectedNames.length ? connectedNames.join(', ') : 'Nothing yet. Add connections in settings.' },
+        { k:'AI may', v: ['Read', 'Prepare drafts', 'Hold time'].filter((_, i) => [s.perms.read, s.perms.draft, s.perms.hold][i]).join(', ') + '. It always asks before sending.' },
+        { k:'Light', v: th.name + ', with ' + ((MOTIFS.find(m => m.id === s.motif) || {}).label || 'Stars').toLowerCase() },
+        { k:'Buffer', v: (BUFFERS.find(b => b.v === s.buffer) || {}).label },
+        { k:'Motion', v: { full:'Full', gentle:'Gentle', still:'Still' }[s.motion] + (s.sound ? ', with soft sounds' : '') }
+      ],
+      finish: this.finish, leaving: s.leaving, showJumps: !QUICK,
+      jumps: STEP_LABELS.map((l, i) => ({ label:l, go: () => this.go(i),
+        style:'font-family:inherit; font-size:14px; min-height:32px; padding:0 10px; border-radius:999px; cursor:pointer; border:none; background:' + (i === s.step ? '#241A20' : 'transparent') + '; color:' + (i === s.step ? '#FFF8EF' : '#241A20') + ';' }))
+    };
+  }
+  componentWillUnmount() { this._gone = true; if (this._tids) this._tids.forEach(clearTimeout); }
+}
+</script>
+</body>
+</html>

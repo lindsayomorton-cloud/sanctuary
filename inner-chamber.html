@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Karla:wght@400;650&amp;display=swap">
+<style>
+html, body { margin:0; background:#120914; }
+a { color:#F1C877; } a:hover { color:#FFF6FB; }
+button:focus-visible, input:focus-visible { outline:2px solid #F1C877; outline-offset:2px; }
+@keyframes orbBreath { 0%,100% { transform:scale(1); filter:brightness(1); } 50% { transform:scale(1.04); filter:brightness(1.1); } }
+@keyframes haloSpin { to { transform:rotate(360deg); } }
+@keyframes riseUp { 0% { opacity:0; transform:translateY(70px) scale(.92); filter:blur(8px); } 70% { opacity:1; filter:none; } 100% { opacity:1; transform:none; } }
+@keyframes drift { 0%,100% { transform:translate(0,0) rotate(var(--r0)); } 33% { transform:translate(6px,-9px) rotate(calc(var(--r0) + 1.5deg)); } 66% { transform:translate(-5px,-4px) rotate(calc(var(--r0) - 1deg)); } }
+@keyframes shimmer { 0%,100% { opacity:.35; } 50% { opacity:.9; } }
+@keyframes moteUp { 0% { transform:translateY(0); opacity:0; } 15% { opacity:.9; } 100% { transform:translateY(-60vh); opacity:0; } }
+@keyframes orbit { from { transform:rotate(0deg) translateX(var(--r)) rotate(0deg); } to { transform:rotate(360deg) translateX(var(--r)) rotate(-360deg); } }
+@keyframes ribbon { 0%,100% { transform:rotate(-2deg); } 50% { transform:rotate(2deg); } }
+@keyframes rise { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+@keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
+@keyframes pageTurn { 0% { transform:perspective(1600px) rotateY(-150deg); opacity:.2; } 100% { transform:perspective(1600px) rotateY(0); opacity:1; } }
+@keyframes inkIn { from { opacity:0; filter:blur(4px); transform:translateY(6px); } to { opacity:1; filter:none; transform:none; } }
+@keyframes listen { 0%,100% { box-shadow:0 0 0 0 rgba(169,82,42,.35); } 50% { box-shadow:0 0 0 14px rgba(169,82,42,0); } }
+@keyframes beam { 0%,100% { opacity:.55; } 50% { opacity:.85; } }
+@keyframes earned { 0% { transform:scale(.6); opacity:0; } 60% { transform:scale(1.12); opacity:1; } 100% { transform:scale(1); } }
+[data-low="true"] * { animation:none !important; transition:none !important; }
+@media (max-width: 1080px) { [data-shelf] { width:clamp(150px,20vw,250px) !important; } [data-spine-label]:not([data-potion-label]) { display:none !important; } }
+@media (max-width: 760px) { [data-shelf] { position:relative !important; top:auto !important; left:auto !important; right:auto !important; bottom:auto !important; width:auto !important; margin:16px 12px 0; background:rgba(26,12,20,.7) !important; border-radius:16px; } }
+[data-chap-spine] { filter:grayscale(1) brightness(.6); transition:filter .5s ease, transform .4s ease, box-shadow .4s ease !important; }
+[data-chap-spine]:hover, [data-chap-spine]:focus-visible, [data-chap-spine][aria-current="true"] { filter:none; }
+[data-shelf] { opacity:.42; filter:saturate(.45) brightness(.75); transition:opacity .6s ease, filter .6s ease; }
+[data-shelf]:hover, [data-shelf]:focus-within { opacity:1; filter:none; }
+[data-tip] { opacity:0; transition:opacity .25s ease; }
+[data-tip-host]:hover [data-tip], [data-tip-host]:focus-visible [data-tip] { opacity:1; }
+@keyframes twinkle { 0%,100% { opacity:.55; transform:scale(.85); } 50% { opacity:1; transform:scale(1.12); } }
+</style>
+</helmet>
+
+<div data-low="{{ lowAttr }}" style="position:relative; min-height:100vh; overflow:hidden; box-sizing:border-box; font-family:'Karla',sans-serif; color:#FFF6FB; background:radial-gradient(40% 30% at 50% 18%, rgba(154,79,168,.5), transparent 72%), radial-gradient(70% 40% at 50% 100%, rgba(232,180,92,.18), transparent 70%), radial-gradient(50% 50% at 8% 70%, rgba(31,127,107,.22), transparent 70%), radial-gradient(50% 50% at 95% 60%, rgba(169,82,42,.18), transparent 70%), linear-gradient(180deg,#2B1730 0%,#1A0F1D 55%,#0D060F 100%);">
+  <div aria-hidden="true" style="position:absolute; left:0; right:0; top:0; height:40vh; pointer-events:none; background:url('assets/bg-mossy-grove.jpg') center 35% / cover no-repeat; opacity:.16; mix-blend-mode:luminosity; -webkit-mask-image:linear-gradient(180deg,#000,transparent); mask-image:linear-gradient(180deg,#000,transparent);"></div>
+  <div aria-hidden="true" style="position:absolute; left:50%; top:clamp(-60px,-6vh,-20px); width:min(1100px,96vw); height:min(1100px,130vh); transform:translateX(-50%); border-radius:999px 999px 0 0; box-shadow:inset 0 0 0 1px rgba(232,180,92,.28); pointer-events:none;"></div>
+  <div aria-hidden="true" style="position:absolute; left:50%; top:clamp(-40px,-4vh,-10px); width:calc(min(1100px,96vw) - 36px); height:min(1100px,130vh); transform:translateX(-50%); border-radius:999px 999px 0 0; box-shadow:inset 0 0 0 1px rgba(232,180,92,.12); pointer-events:none;"></div>
+  <div aria-hidden="true" style="position:absolute; inset:0; overflow:hidden; pointer-events:none;"><sc-for list="{{ motes }}" as="mo" hint-placeholder-count="0"><span style="{{ mo.style }}"></span></sc-for></div>
+  <div aria-hidden="true" style="{{ beamStyle }}"></div>
+
+  <div style="position:relative; display:flex; align-items:center; justify-content:space-between; padding:clamp(12px,2vh,20px) clamp(14px,3vw,40px) 0;">
+    <a href="app.html" aria-label="Back to Sanctuary" title="Back to Sanctuary" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:#EADCCF; text-decoration:none;"><span style="{{ ms }}">arrow_back</span></a>
+    <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:#F1C877;">The inner chamber</span>
+    <span style="width:44px;"></span>
+  </div>
+
+  <sc-if value="{{ showCenter }}" hint-placeholder-val="{{ false }}">
+  <div style="position:relative; display:flex; flex-direction:column; align-items:center; text-align:center;">
+    <button onClick="{{ talkOrb }}" aria-label="Talk to the Seer" title="Talk to the Seer" style="{{ orbBtn }}">
+      <svg viewBox="0 0 100 100" style="position:absolute; inset:-16%; width:132%; height:132%; animation: haloSpin 70s linear infinite;"><circle cx="50" cy="50" r="47" fill="none" stroke="#F1C877" stroke-opacity=".45" stroke-width=".8" stroke-dasharray="1.5 4"></circle><circle cx="50" cy="3" r="1.4" fill="#F1C877"></circle><circle cx="97" cy="50" r="1.4" fill="#F1C877"></circle><circle cx="50" cy="97" r="1.4" fill="#F1C877"></circle><circle cx="3" cy="50" r="1.4" fill="#F1C877"></circle></svg>
+      <span style="position:absolute; inset:-30%; border-radius:50%; background:radial-gradient(circle, rgba(196,150,226,.45), transparent 65%);"></span>
+      <span style="position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.9), rgba(200,180,255,.45) 9%, transparent 24%), radial-gradient(circle at 60% 70%, rgba(246,213,142,.35), transparent 40%), radial-gradient(circle, #9A4FA8, #2a0a4e 80%); box-shadow:0 0 60px rgba(154,79,168,.7), inset 0 -10px 30px rgba(20,6,30,.6); animation: orbBreath 6s ease-in-out infinite;"></span>
+      <sc-for list="{{ orbMotes }}" as="om" hint-placeholder-count="0"><span style="{{ om.style }}"></span></sc-for>
+      <span aria-hidden="true" style="position:absolute; inset:-34%; pointer-events:none; animation: haloSpin 48s linear infinite;"><span style="position:absolute; left:50.00%; top:8.00%; margin:-11px 0 0 -11px; width:22px; height:22px;"><span style="display:block; font-family:'Material Symbols Rounded'; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-size:22px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20; color:#F3E5CD; filter:drop-shadow(0 0 6px #F3E5CD); animation: twinkle 2.4s ease-in-out infinite 0.00s;">dark_mode</span></span><span style="position:absolute; left:79.70%; top:20.30%; margin:-7px 0 0 -7px; width:14px; height:14px;"><span style="display:block; font-family:'Material Symbols Rounded'; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-size:14px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20; color:#F6D58E; filter:drop-shadow(0 0 6px #F6D58E); animation: twinkle 3.0999999999999996s ease-in-out infinite 0.35s;">star</span></span><span style="position:absolute; left:92.00%; top:50.00%; margin:-8px 0 0 -8px; width:16px; height:16px;"><span style="display:block; font-family:'Material Symbols Rounded'; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-size:16px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20; color:#E7A6C9; filter:drop-shadow(0 0 6px #E7A6C9); animation: twinkle 3.8s ease-in-out infinite 0.70s;">favorite</span></span><span style="position:absolute; left:79.70%; top:79.70%; margin:-5.5px 0 0 -5.5px; width:11px; height:11px;"><span style="display:block; font-family:'Material Symbols Rounded'; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-size:11px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20; color:#F6D58E; filter:drop-shadow(0 0 6px #F6D58E); animation: twinkle 2.4s ease-in-out infinite 1.05s;">star</span></span><span style="position:absolute; left:50.00%; top:92.00%; margin:-10px 0 0 -10px; width:20px; height:20px;"><span style="display:block; font-family:'Material Symbols Rounded'; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-size:20px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20; color:#E7C9F0; filter:drop-shadow(0 0 6px #E7C9F0); animation: twinkle 3.0999999999999996s ease-in-out infinite 1.40s;">bedtime</span></span><span style="position:absolute; left:20.30%; top:79.70%; margin:-7px 0 0 -7px; width:14px; height:14px;"><span style="display:block; font-family:'Material Symbols Rounded'; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-size:14px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20; color:#F6D58E; filter:drop-shadow(0 0 6px #F6D58E); animation: twinkle 3.8s ease-in-out infinite 1.75s;">star</span></span><span style="position:absolute; left:8.00%; top:50.00%; margin:-7px 0 0 -7px; width:14px; height:14px;"><span style="display:block; font-family:'Material Symbols Rounded'; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-size:14px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20; color:#E7A6C9; filter:drop-shadow(0 0 6px #E7A6C9); animation: twinkle 2.4s ease-in-out infinite 2.10s;">favorite</span></span><span style="position:absolute; left:20.30%; top:20.30%; margin:-8px 0 0 -8px; width:16px; height:16px;"><span style="display:block; font-family:'Material Symbols Rounded'; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-size:16px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20; color:#FBE4AE; filter:drop-shadow(0 0 6px #FBE4AE); animation: twinkle 3.0999999999999996s ease-in-out infinite 2.45s;">auto_awesome</span></span></span>
+      <span aria-hidden="true" style="{{ orbMic }}">mic</span>
+    </button>
+    <sc-if value="{{ showSeerLine }}" hint-placeholder-val="{{ true }}"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(24px,3.6vh,32px); color:#FBEDE5; margin-top:clamp(48px,7vh,70px); text-shadow:0 0 18px rgba(196,150,226,.5); animation: inkIn 1s ease both;">{{ seerLine }}</div></sc-if>
+    
+  </div>
+  </sc-if>
+  <sc-if value="{{ orbTalk }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative; z-index:3; width:min(620px,calc(100vw - 40px)); margin:clamp(52px,8vh,80px) auto 0; display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center;">
+      <sc-for list="{{ orbLines }}" as="ol" hint-placeholder-count="1"><div style="{{ ol.style }}">{{ ol.text }}</div></sc-for>
+      <sc-if value="{{ hasInterim }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:#B79AA2;">{{ interim }}…</div></sc-if>
+      <div style="display:flex; align-items:center; gap:8px; width:100%; margin-top:6px; padding:4px 4px 4px 18px; border-radius:999px; background:rgba(255,248,239,.07); box-shadow:inset 0 0 0 1px rgba(241,200,119,.35);">
+        <input value="{{ draft }}" onChange="{{ setDraft }}" onKeyDown="{{ draftKey }}" aria-label="Say something to the Seer" placeholder="Or write it…" style="flex:1; min-width:0; border:none; outline:none; background:transparent; font-family:'Cormorant Garamond',serif; font-size:19px; color:#FFF6FB; min-height:40px;">
+        <button onClick="{{ send }}" aria-label="Send" style="width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; background:#1F6F5E; color:#fff;"><span style="{{ ms }}">arrow_upward</span></button>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px;">
+        <sc-for list="{{ found }}" as="f" hint-placeholder-count="0"><span style="display:inline-flex; align-items:center; gap:6px; padding:4px 6px 4px 10px; border-radius:999px; background:rgba(244,229,247,.14); box-shadow:inset 0 0 0 1px rgba(231,201,240,.35); font-size:14px; color:#FFF6FB; animation: inkIn .6s ease both;"><span style="{{ f.iconStyle }}">{{ f.icon }}</span>{{ f.title }}<button onClick="{{ f.keep }}" style="{{ f.keepStyle }}">{{ f.keepLabel }}</button></span></sc-for>
+      </div>
+      <button onClick="{{ endOrbTalk }}" style="font-family:inherit; min-height:44px; padding:0 14px; border-radius:999px; border:none; background:none; color:#B79AA2; font-size:14px; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Rest the orb</button>
+    </div>
+  </sc-if>
+
+  <div style="{{ risenRow }}">
+    <sc-for list="{{ risen }}" as="q" hint-placeholder-count="0">
+      <div style="{{ q.wrap }}">
+        <button onClick="{{ q.go }}" style="{{ q.style }}" style-hover="filter:drop-shadow(0 0 18px rgba(246,213,142,.9)); color:#FFFFFF">
+          <span aria-hidden="true" style="position:absolute; left:50%; top:50%; width:140%; height:180%; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(closest-side, rgba(196,150,226,.28), rgba(246,213,142,.08) 60%, transparent); pointer-events:none;"></span>
+          <span style="{{ q.iconStyle }}">{{ q.icon }}</span>
+          <span style="position:relative; font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:clamp(21px,2.8vh,26px); line-height:1.2; text-wrap:balance; text-shadow:0 0 14px rgba(246,213,142,.55), 0 0 2px rgba(255,246,251,.6);">{{ q.text }}</span>
+          <span aria-hidden="true" style="position:relative; display:flex; gap:10px; margin-top:4px;"><span style="width:3px; height:3px; border-radius:50%; background:#F6D58E; box-shadow:0 0 6px 2px rgba(246,213,142,.7); animation: shimmer 2.4s ease-in-out infinite;"></span><span style="width:2px; height:2px; border-radius:50%; background:#F6D58E; box-shadow:0 0 6px 2px rgba(246,213,142,.7); animation: shimmer 3s ease-in-out infinite .6s;"></span><span style="width:3px; height:3px; border-radius:50%; background:#F6D58E; box-shadow:0 0 6px 2px rgba(246,213,142,.7); animation: shimmer 2.7s ease-in-out infinite 1.1s;"></span></span>
+        </button>
+      </div>
+    </sc-for>
+  </div>
+
+  <div data-shelf="" style="position:absolute; left:0; top:70px; bottom:0; width:clamp(150px,26vw,340px); padding:20px clamp(10px,1.6vw,20px); box-sizing:border-box; display:flex; flex-direction:column; gap:18px; overflow-y:auto; overflow-x:hidden; background:linear-gradient(90deg, rgba(26,12,20,.92), rgba(43,23,48,.55) 85%, transparent); box-shadow:inset -1px 0 0 rgba(232,180,92,.18); z-index:2;">
+    <div style="display:flex; flex-direction:column;"><div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#F1C877; padding:0 8px 4px;">Chapters</div><div style="display:flex; align-items:flex-end; gap:3px; padding:0 8px; min-height:170px; overflow:hidden;"><sc-for list="{{ chapterSpinesA }}" as="cs" hint-placeholder-count="5"><button data-chap-spine="" aria-current="{{ cs.onAttr }}" onClick="{{ cs.go }}" aria-label="{{ cs.aria }}" title="{{ cs.aria }}" style="{{ cs.style }}" style-hover="transform:translateY(-10px)"><span style="{{ cs.band }}"></span><span style="position:relative; display:flex; flex-direction:column; align-items:center; gap:7px; padding:9px 5px 12px; border-radius:999px; box-shadow:inset 0 0 0 1.2px rgba(246,213,142,.75), inset 0 0 0 3px rgba(0,0,0,.18), inset 0 0 0 4px rgba(246,213,142,.3);"><sc-for list="{{ cs.story }}" as="gl" hint-placeholder-count="4"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#F6D58E" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block; filter:drop-shadow(0 1px 0 rgba(0,0,0,.55)) drop-shadow(0 0 4px rgba(246,213,142,.3));"><path d="{{ gl.d }}"></path></svg></sc-for><span style="position:absolute; left:3px; right:3px; bottom:-5px; height:2px; border-radius:2px; background:#F6D58E; opacity:.8;"></span></span><span data-spine-label="" style="{{ cs.label }}">{{ cs.name }}</span><span style="{{ cs.band }}"></span></button></sc-for></div><div style="height:12px; border-radius:2px; background:linear-gradient(180deg,#8A5E22,#5A3A12); box-shadow:0 6px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(251,228,174,.5);"></div></div>
+    <div style="display:flex; flex-direction:column;"><div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#F1C877; padding:0 8px 4px;">&nbsp;</div><div style="display:flex; align-items:flex-end; gap:3px; padding:0 8px; min-height:170px; overflow:hidden;"><sc-for list="{{ chapterSpinesB }}" as="cs" hint-placeholder-count="5"><button data-chap-spine="" aria-current="{{ cs.onAttr }}" onClick="{{ cs.go }}" aria-label="{{ cs.aria }}" title="{{ cs.aria }}" style="{{ cs.style }}" style-hover="transform:translateY(-10px)"><span style="{{ cs.band }}"></span><span style="position:relative; display:flex; flex-direction:column; align-items:center; gap:7px; padding:9px 5px 12px; border-radius:999px; box-shadow:inset 0 0 0 1.2px rgba(246,213,142,.75), inset 0 0 0 3px rgba(0,0,0,.18), inset 0 0 0 4px rgba(246,213,142,.3);"><sc-for list="{{ cs.story }}" as="gl" hint-placeholder-count="4"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#F6D58E" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block; filter:drop-shadow(0 1px 0 rgba(0,0,0,.55)) drop-shadow(0 0 4px rgba(246,213,142,.3));"><path d="{{ gl.d }}"></path></svg></sc-for><span style="position:absolute; left:3px; right:3px; bottom:-5px; height:2px; border-radius:2px; background:#F6D58E; opacity:.8;"></span></span><span data-spine-label="" style="{{ cs.label }}">{{ cs.name }}</span><span style="{{ cs.band }}"></span></button></sc-for></div><div style="height:12px; border-radius:2px; background:linear-gradient(180deg,#8A5E22,#5A3A12); box-shadow:0 6px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(251,228,174,.5);"></div></div>
+    <div style="display:flex; flex-direction:column;"><div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#F1C877; padding:0 8px 4px;">&nbsp;</div><div style="display:flex; align-items:flex-end; gap:3px; padding:0 8px; min-height:170px; overflow:hidden;"><sc-for list="{{ decoSpines }}" as="dz" hint-placeholder-count="6"><span aria-hidden="true" style="{{ dz.style }}"></span></sc-for></div><div style="height:12px; border-radius:2px; background:linear-gradient(180deg,#8A5E22,#5A3A12); box-shadow:0 6px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(251,228,174,.5);"></div></div>
+  </div>
+  <div data-shelf="" style="position:absolute; right:0; top:70px; bottom:0; width:clamp(150px,26vw,340px); padding:20px clamp(10px,1.6vw,20px); box-sizing:border-box; display:flex; flex-direction:column; gap:18px; overflow-y:auto; overflow-x:hidden; background:linear-gradient(270deg, rgba(26,12,20,.92), rgba(43,23,48,.55) 85%, transparent); box-shadow:inset 1px 0 0 rgba(232,180,92,.18); z-index:2;">
+    <div style="position:relative; flex:1; min-height:0; display:flex; flex-direction:column; border-radius:120px 120px 10px 10px / 70px 70px 10px 10px; background:linear-gradient(180deg,#3A1E2A,#1A0F1D); box-shadow:inset 0 0 0 3px #8A5E22, inset 0 0 0 6px #1A0F1D, inset 0 0 0 7px rgba(246,213,142,.45), 0 20px 40px rgba(0,0,0,.5); perspective:900px; overflow:hidden;">
+      <div style="{{ cab.inside }}">
+    <div style="display:flex; flex-direction:column;"><div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#F1C877; padding:0 8px 4px;">Potions · {{ chap.name }}</div><div style="position:relative; display:flex; flex-direction:column; align-items:center; gap:14px; padding:18px 10px 20px; border-radius:60px 60px 0 0 / 40px 40px 0 0; background:radial-gradient(60% 80% at 50% 100%, rgba(246,213,142,.22), transparent 70%), linear-gradient(180deg, rgba(10,4,12,.55), rgba(26,12,20,.35)); box-shadow:inset 0 0 0 1px rgba(232,180,92,.28), inset 0 10px 24px rgba(0,0,0,.45);"><span aria-hidden="true" style="position:absolute; left:8px; right:8px; bottom:14px; height:2px; background:linear-gradient(90deg, transparent, #E8B45C, transparent); opacity:.6;"></span><sc-for list="{{ challengeSpines }}" as="qs" hint-placeholder-count="5"><button onClick="{{ qs.go }}" aria-label="{{ qs.aria }}" title="{{ qs.aria }}" style="{{ qs.style }}" style-hover="transform:translateY(-6px) rotate(-3deg)"><span style="{{ qs.cork }}"></span><span style="{{ qs.neck }}"></span><span style="{{ qs.body }}"><span style="{{ qs.liquid }}"></span><span style="position:absolute; left:18%; top:14%; width:22%; height:30%; border-radius:50%; background:rgba(255,255,255,.45); filter:blur(1px);"></span><span style="{{ qs.icon }}">{{ qs.glyph }}</span></span><span data-spine-label="" data-potion-label="" style="{{ qs.label }}">{{ qs.name }}</span></button></sc-for></div><div style="height:12px; border-radius:2px; background:linear-gradient(180deg,#8A5E22,#5A3A12); box-shadow:0 6px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(251,228,174,.5);"></div></div>
+    <div style="display:flex; flex-direction:column;"><div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#F1C877; padding:0 8px 4px;">Elixirs of courage</div><div style="position:relative; display:flex; flex-direction:column; align-items:center; gap:14px; padding:18px 10px 20px; border-radius:60px 60px 0 0 / 40px 40px 0 0; background:radial-gradient(60% 80% at 50% 100%, rgba(246,213,142,.22), transparent 70%), linear-gradient(180deg, rgba(10,4,12,.55), rgba(26,12,20,.35)); box-shadow:inset 0 0 0 1px rgba(232,180,92,.28), inset 0 10px 24px rgba(0,0,0,.45);"><span aria-hidden="true" style="position:absolute; left:8px; right:8px; bottom:14px; height:2px; background:linear-gradient(90deg, transparent, #E8B45C, transparent); opacity:.6;"></span><sc-for list="{{ leapSpines }}" as="ls" hint-placeholder-count="5"><button onClick="{{ ls.go }}" aria-label="{{ ls.aria }}" title="{{ ls.aria }}" style="{{ ls.style }}" style-hover="transform:translateY(-6px) rotate(-3deg)"><span style="{{ ls.cork }}"></span><span style="{{ ls.neck }}"></span><span style="{{ ls.body }}"><span style="{{ ls.liquid }}"></span><span style="position:absolute; left:18%; top:14%; width:22%; height:30%; border-radius:50%; background:rgba(255,255,255,.45); filter:blur(1px);"></span><span style="{{ ls.icon }}">{{ ls.glyph }}</span></span><span data-spine-label="" data-potion-label="" style="{{ ls.label }}">{{ ls.name }}</span></button></sc-for></div><div style="height:12px; border-radius:2px; background:linear-gradient(180deg,#8A5E22,#5A3A12); box-shadow:0 6px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(251,228,174,.5);"></div></div>
+    <div style="text-align:center;"><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:20px; color:#FBE4AE;">{{ rankName }} · {{ powers }} powers</div><div style="height:8px; margin:6px auto 0; max-width:220px; border-radius:999px; background:rgba(0,0,0,.4); overflow:hidden; box-shadow:inset 0 0 0 1px rgba(246,213,142,.35);"><div style="{{ rankBar }}"></div></div></div>
+  </div>
+      <span aria-hidden="true" style="{{ cab.doorL }}"><span style="position:absolute; inset:10px; border-radius:80px 6px 6px 6px / 60px 6px 6px 6px; box-shadow:inset 0 0 0 1.5px rgba(232,180,92,.55), inset 0 0 0 5px rgba(26,12,20,.5), inset 0 0 0 6px rgba(232,180,92,.25);"></span><span style="position:absolute; right:10px; top:50%; width:8px; height:30px; margin-top:-15px; border-radius:4px; background:linear-gradient(180deg,#FBE4AE,#A0731F); box-shadow:0 2px 4px rgba(0,0,0,.5);"></span><span style="position:absolute; left:50%; top:34%; transform:translateX(-50%); font-family:'Material Symbols Rounded'; font-size:34px; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; color:rgba(246,213,142,.55);">science</span></span><span aria-hidden="true" style="{{ cab.doorR }}"><span style="position:absolute; inset:10px; border-radius:6px 80px 6px 6px / 6px 60px 6px 6px; box-shadow:inset 0 0 0 1.5px rgba(232,180,92,.55), inset 0 0 0 5px rgba(26,12,20,.5), inset 0 0 0 6px rgba(232,180,92,.25);"></span><span style="position:absolute; left:10px; top:50%; width:8px; height:30px; margin-top:-15px; border-radius:4px; background:linear-gradient(180deg,#FBE4AE,#A0731F); box-shadow:0 2px 4px rgba(0,0,0,.5);"></span><span style="position:absolute; left:50%; top:34%; transform:translateX(-50%); font-family:'Material Symbols Rounded'; font-size:34px; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; color:rgba(246,213,142,.55);">local_drink</span></span>
+      <button data-tip-host="" onClick="{{ cab.toggle }}" aria-expanded="{{ cab.open }}" aria-label="{{ cab.aria }}" style="{{ cab.btn }}"><span style="{{ cab.x }}">close</span><span data-tip="" style="position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%); width:max-content; padding:6px 12px; border-radius:10px; background:#241A20; color:#FFF8EF; font-family:'Karla',sans-serif; font-size:14px; pointer-events:none;">{{ cab.label }}</span></button>
+    </div>
+  </div>
+  <sc-if value="{{ showCover }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; margin-top:clamp(8px,2vh,26px);">
+      <button onClick="{{ beginChapter }}" aria-label="{{ coverAria }}" style="{{ coverStyle }}" style-hover="transform:perspective(1200px) rotateY(-4deg) translateY(-6px); box-shadow:0 0 0 1px rgba(232,180,92,.8), 0 40px 80px rgba(0,0,0,.6), 0 0 90px rgba(246,213,142,.45)">
+        <span aria-hidden="true" style="position:absolute; inset:12px; border-radius:6px; box-shadow:inset 0 0 0 2px #E8B45C, inset 0 0 0 6px rgba(43,23,48,.6), inset 0 0 0 7px rgba(232,180,92,.5);"></span>
+        <span aria-hidden="true" style="position:absolute; left:0; top:0; bottom:0; width:18px; border-radius:8px 0 0 8px; background:linear-gradient(90deg, rgba(0,0,0,.45), rgba(0,0,0,0));"></span>
+        <span style="position:relative; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(54px,8vh,76px); line-height:1; color:#F6D58E; text-shadow:0 0 18px rgba(246,213,142,.5);">{{ chap.num }}</span>
+        <svg viewBox="0 0 24 24" width="54" height="54" fill="none" stroke="#F6D58E" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position:relative; margin-top:12px; filter:drop-shadow(0 0 10px rgba(246,213,142,.45));"><path d="{{ coverGlyph }}"></path></svg>
+        <span style="position:relative; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(26px,3.6vh,32px); color:#FBEDE5; margin-top:6px;">{{ chap.name }}</span>
+        <span style="position:relative; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#F1C877; margin-top:4px;">{{ chap.sub }}</span>
+      </button>
+      <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:#F3E5CD; margin-top:20px;">Open the book to begin</div>
+      <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-top:20px; width:min(560px,calc(100vw - 32px)); box-sizing:border-box; padding:16px 18px; border-radius:16px; background:rgba(26,12,20,.85); box-shadow:inset 0 0 0 1px rgba(241,200,119,.45), 0 20px 40px rgba(0,0,0,.45); animation: rise .5s ease both;">
+          <span style="{{ sel.iconStyle }}">{{ sel.icon }}</span>
+          <div style="flex:1; min-width:200px;"><div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#F1C877;">{{ sel.badge }}</div><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:22px; line-height:1.2;">{{ sel.text }}</div><div style="font-size:14px; color:#D9C6BA; margin-top:4px;">{{ sel.how }}</div></div>
+          <button onClick="{{ sel.go }}" style="font-family:inherit; min-height:54px; padding:0 24px; border-radius:999px; border:none; background:#1F6F5E; color:#fff; font-size:16px; font-weight:650; cursor:pointer;">{{ sel.cta }}</button>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isTalk }}" hint-placeholder-val="{{ false }}">
+  <div style="{{ bookOuter }}">
+    <div style="{{ bookTilt }}">
+      <div aria-hidden="true" style="position:absolute; left:-8%; right:-8%; bottom:-60px; height:120px; border-radius:50%; background:radial-gradient(closest-side, rgba(246,213,142,.22), rgba(154,79,168,.12) 50%, transparent); filter:blur(10px);"></div>
+      <div aria-hidden="true" style="position:absolute; left:2%; right:2%; bottom:-26px; height:40px; border-radius:50%; background:radial-gradient(closest-side, rgba(0,0,0,.6), transparent); filter:blur(6px);"></div>
+      <div aria-hidden="true" style="{{ ribbonStyle }}"></div>
+      <span aria-hidden="true" style="position:absolute; left:-6px; top:-6px; width:46px; height:46px; z-index:4; transform:rotate(0deg); background:linear-gradient(135deg,#FBE4AE 0%,#E8B45C 40%,#A0731F 100%); clip-path:polygon(0 0,100% 0,100% 28%,28% 28%,28% 100%,0 100%); filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));"><span style="position:absolute; left:8px; top:8px; width:7px; height:7px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #FFF3D6, #8A5E22);"></span></span><span aria-hidden="true" style="position:absolute; right:-6px; top:-6px; width:46px; height:46px; z-index:4; transform:rotate(90deg); background:linear-gradient(135deg,#FBE4AE 0%,#E8B45C 40%,#A0731F 100%); clip-path:polygon(0 0,100% 0,100% 28%,28% 28%,28% 100%,0 100%); filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));"><span style="position:absolute; left:8px; top:8px; width:7px; height:7px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #FFF3D6, #8A5E22);"></span></span><span aria-hidden="true" style="position:absolute; right:-6px; bottom:-20px; width:46px; height:46px; z-index:4; transform:rotate(180deg); background:linear-gradient(135deg,#FBE4AE 0%,#E8B45C 40%,#A0731F 100%); clip-path:polygon(0 0,100% 0,100% 28%,28% 28%,28% 100%,0 100%); filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));"><span style="position:absolute; left:8px; top:8px; width:7px; height:7px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #FFF3D6, #8A5E22);"></span></span><span aria-hidden="true" style="position:absolute; left:-6px; bottom:-20px; width:46px; height:46px; z-index:4; transform:rotate(270deg); background:linear-gradient(135deg,#FBE4AE 0%,#E8B45C 40%,#A0731F 100%); clip-path:polygon(0 0,100% 0,100% 28%,28% 28%,28% 100%,0 100%); filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));"><span style="position:absolute; left:8px; top:8px; width:7px; height:7px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #FFF3D6, #8A5E22);"></span></span>
+      <span aria-hidden="true" style="position:absolute; right:-30px; top:42%; z-index:1; width:44px; height:64px; border-radius:0 12px 12px 0; background:linear-gradient(90deg,#2B1730,#4A2650); box-shadow:0 4px 10px rgba(0,0,0,.45), inset 0 0 0 1px rgba(232,180,92,.35);"><span style="position:absolute; left:10px; top:18px; width:22px; height:28px; border-radius:6px; background:linear-gradient(135deg,#FBE4AE,#A0731F); box-shadow:inset 0 0 0 3px rgba(43,23,48,.55);"></span></span>
+      <div style="position:relative; display:grid; grid-template-columns:1fr 1fr; border-radius:34px 34px 18px 18px / 54px 54px 22px 22px; background:radial-gradient(80% 60% at 50% 40%, #4A2650, #2B1730 70%, #1A0F1D); padding:16px 16px 4px; box-shadow:0 3px 0 #F1E8DC, 0 6px 0 #E6D8C2, 0 9px 0 #D9C6BA, 0 12px 0 #D2C0A5, 0 15px 0 #C7B497, 0 19px 0 #4A2A50, 0 50px 80px rgba(0,0,0,.6);">
+        <span aria-hidden="true" style="position:absolute; inset:6px; border-radius:30px 30px 14px 14px / 48px 48px 18px 18px; border:1.5px dashed rgba(232,180,92,.5); pointer-events:none;"></span>
+        <span aria-hidden="true" style="position:absolute; left:10%; right:10%; top:6%; bottom:10%; z-index:2; border-radius:50%; background:radial-gradient(closest-side, rgba(255,236,196,.38), rgba(255,236,196,0)); mix-blend-mode:soft-light; pointer-events:none; animation: beam 7s ease-in-out infinite;"></span>
+        <div style="position:relative; min-height:{{ pageH }}; padding:clamp(22px,3.4vh,34px) clamp(20px,3vw,40px); border-radius:28px 2px 2px 14px / 46px 2px 2px 20px; background:url(" data:image="" svg+xml,%3csvg="" xmlns="http://www.w3.org/2000/svg" width="180" height="180" %3e%3cfilter="" id="n" %3e%3cfeturbulence="" type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch" %3e%3cfecolormatrix="" values="0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .22 0" %3e%3c="" filter%3e%3crect="" filter="url(%23n)" svg%3e"),="" radial-gradient(6px="" 5px="" at="" 18%="" 82%,="" rgba(140,90,40,.18),="" transparent),="" radial-gradient(9px="" 7px="" 78%="" 14%,="" rgba(140,90,40,.14),="" radial-gradient(5px="" 4px="" 64%="" 70%,="" rgba(140,90,40,.16),="" radial-gradient(120%="" 110%="" 50%="" 50%,="" transparent="" 62%,="" rgba(120,70,30,.22)="" 88%,="" rgba(80,40,16,.38)="" 100%),="" 90%="" 100%="" rgba(60,30,10,.18),="" 40%),="" linear-gradient(90deg,#e6d3ae="" 0%,#f2e4c6="" 22%,#f6ead0="" 70%,#e8d6b2="" 100%);="" transition:min-height="" .9s="" cubic-bezier(.22,.8,.3,1);="" color:#3b2a1e;="" box-shadow:inset="" -18px="" 0="" 26px="" rgba(36,26,32,.35),="" -2px="" #EADCCF,="" -4px="" #D9C6BA,="" -6px="" #d3c3a9;"="">
+          <sc-if value="{{ isTalk }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; height:100%;">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:#4E3B43;">{{ talkTitle }}</div>
+              <div style="flex:1; display:flex; flex-direction:column; gap:12px; margin-top:12px; overflow-y:auto; max-height:min(340px,38vh); padding-right:4px;">
+                <sc-for list="{{ messages }}" as="msg" hint-placeholder-count="1">
+                  <div style="{{ msg.style }}">{{ msg.text }}</div>
+                </sc-for>
+                <sc-if value="{{ hasInterim }}" hint-placeholder-val="{{ false }}"><div style="align-self:flex-end; max-width:86%; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:#7A6A70;">{{ interim }}…</div></sc-if>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ notTalk }}" hint-placeholder-val="{{ true }}">
+            <div style="{{ chapFade }}">
+              <div style="display:inline-flex; align-items:center; justify-content:center; min-width:clamp(56px,8vh,72px); height:clamp(56px,8vh,72px); padding:0 10px; box-sizing:border-box; border-radius:12px; background:radial-gradient(circle at 40% 35%, #FFFCF6, #F3E6CE); box-shadow:inset 0 0 0 2px #E8B45C, inset 0 0 0 5px #FFF8EF, inset 0 0 0 6px rgba(232,180,92,.6), 0 6px 14px rgba(36,26,32,.18); font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(32px,5vh,44px); line-height:1; color:{{ chap.ink }}; text-shadow:0 1px 0 #FBE4AE;">{{ chap.num }}</div>
+              <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(26px,3.6vh,34px); line-height:1.05; margin-top:8px;">{{ chap.name }}</div>
+              
+              
+              
+            </div>
+          </sc-if>
+        </div>
+        <div style="{{ rightPage }}">
+          <sc-if value="{{ isTalk }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; height:100%;">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <button onClick="{{ toggleMic }}" aria-pressed="{{ listening }}" aria-label="{{ micLabel }}" style="{{ micStyle }}"><span style="{{ micIcon }}">{{ micGlyph }}</span></button>
+                <div><div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:24px; line-height:1.1;">{{ micTitle }}</div><div style="font-size:14px; color:#4E3B43; margin-top:2px;">{{ micSub }}</div></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:14px; padding:4px 4px 4px 16px; border-radius:999px; background:#FFFCF6; box-shadow:inset 0 0 0 1px rgba(36,26,32,.16);">
+                <input value="{{ draft }}" onChange="{{ setDraft }}" onKeyDown="{{ draftKey }}" aria-label="Write to the Seer" placeholder="Or write it here…" style="flex:1; min-width:0; border:none; outline:none; background:transparent; font-family:'Cormorant Garamond',serif; font-size:19px; color:#241A20; min-height:40px;">
+                <button onClick="{{ send }}" aria-label="Send" style="width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; background:#1F6F5E; color:#fff;"><span style="{{ ms }}">arrow_upward</span></button>
+              </div>
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:#5E2A6C; margin-top:20px;">Woven in</div>
+              <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px; overflow-y:auto; max-height:min(220px,26vh);">
+                <sc-if value="{{ nothingYet }}" hint-placeholder-val="{{ true }}"><div style="font-size:15.5px; color:#7A6A70;">As you talk, tasks and things worth remembering appear here.</div></sc-if>
+                <sc-for list="{{ found }}" as="f" hint-placeholder-count="0">
+                  <div style="display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:14px; background:#F4E5F7; animation: inkIn .6s ease both;">
+                    <span style="{{ f.iconStyle }}">{{ f.icon }}</span>
+                    <span style="flex:1; min-width:0; font-size:15.5px; line-height:1.35;"><strong style="font-weight:650;">{{ f.title }}</strong><span style="display:block; font-size:14px; color:#4E3B43;">{{ f.where }}</span></span>
+                    <button onClick="{{ f.keep }}" style="{{ f.keepStyle }}">{{ f.keepLabel }}</button>
+                    <button onClick="{{ f.drop }}" aria-label="Drop" style="width:36px; height:36px; border-radius:50%; border:none; background:none; color:#4E3B43; cursor:pointer;"><span style="{{ ms }}">close</span></button>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ notTalk }}" hint-placeholder-val="{{ true }}">
+            <div style="{{ chapFade }} display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center;">
+              <span style="{{ chap.emblem }}">{{ chap.icon }}</span>
+              
+              <button onClick="{{ beginChapter }}" aria-label="Speak" style="font-family:inherit; margin-top:14px; display:flex; flex-direction:column; align-items:center; gap:6px; border:none; background:none; cursor:pointer; color:#3B2A1E;" style-hover="transform:scale(1.05)"><span style="width:72px; height:72px; border-radius:46% 54% 50% 50% / 52% 48% 52% 48%; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at 38% 32%, #D06A3E, #A9522A 50%, #7A2E14); box-shadow:0 6px 14px rgba(60,20,10,.45), inset 0 0 0 5px rgba(0,0,0,.12), inset 0 0 0 7px rgba(255,200,170,.15); color:#FCD9CF;"><span style="{{ micIcon }}">mic</span></span></button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+      <div role="tablist" aria-label="Chapters" style="position:absolute; right:-46px; top:18px; bottom:24px; display:flex; flex-direction:column; justify-content:space-between; gap:4px;">
+        <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="6">
+          <button role="tab" aria-selected="{{ c.on }}" onClick="{{ c.pick }}" title="{{ c.name }}" style="{{ c.tab }}" style-hover="transform:translateX(6px)">
+            <span style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:17px;">{{ c.num }}</span>
+            <span style="{{ c.label }}">{{ c.name }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+const MS = "font-family:'Material Symbols Rounded'; font-size:22px; line-height:1; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;";
+// canonical: shared/sanctuary-core.js DECKS
+const DECK = { pro:['Work','#1F7F6B','#E6F3EE'], creative:['Craft','#A9522A','#FBEDE5'], home:['Hearth','#9A4FA8','#F5ECF7'] };
+const CHAPTERS = [
+  { id:'work', num:'I', name:'Work', sub:'What’s pulling at you', deck:'pro', icon:'work', verse:'What would make this week lighter?', prompts:[['forum','A conversation you keep putting off'],['schedule','What would make this week lighter?'],['flag','A decision you’re circling'],['handshake','Someone you owe a reply']] },
+  { id:'craft', num:'II', name:'Craft', sub:'What you make', deck:'creative', icon:'brush', verse:'Make the thing only you would make.', prompts:[['edit','The piece you haven’t started'],['lightbulb','An idea that won’t leave you alone'],['palette','What would you make if no one saw it?'],['block','What’s in the way of the next draft?']] },
+  { id:'hearth', num:'III', name:'Hearth', sub:'Home and its people', deck:'home', icon:'cottage', verse:'Tend the small fires first.', prompts:[['home','One thing in the house that bothers you'],['favorite','Someone you want more time with'],['event','A date you’re worried about forgetting'],['savings','A money thing you’ve been avoiding']] },
+  { id:'worries', num:'IV', name:'Worries', sub:'Set them down', deck:'home', icon:'cloud', verse:'Named things are lighter.', prompts:[['psychology','The loudest worry right now'],['help','What are you afraid will happen?'],['balance','What’s in your control here?'],['bedtime','What keeps you up at night?']] },
+  { id:'dreams', num:'V', name:'Dreams', sub:'What you want', deck:'creative', icon:'auto_awesome', verse:'Want it out loud.', prompts:[['rocket_launch','The thing you want so badly it scares you'],['map','Where you want to be in a year'],['star','What a braver you would do'],['spa','A good ordinary day']] },
+  { id:'free', num:'VI', name:'Anything', sub:'No chapter at all', deck:'pro', icon:'all_inclusive', verse:'Begin anywhere.', prompts:[['chat','Just talk'],['mic','Say it out loud, unsorted'],['format_list_bulleted','Empty your head'],['explore','I don’t know where to start']] }
+];
+const BADGES = { work:['The Unsaid','Lighter Load','The Crossroads','Debt of Words'], craft:['First Mark','Haunting Spark','Secret Canvas','Clear Path'], hearth:['Thorn in the Hall','Kindred Time','Keeper of Dates','Coin Courage'], worries:['Loudest Voice','Named Fear','Steady Hands','Night Watch'], dreams:['Brave Want','Year Map','Bold Self','Good Day'], free:['Open Door','Raw Voice','Empty Vessel','First Step'] };
+const GLYPH = {
+  ankh:'M12 3c-2.4 0-3.8 1.8-3.8 4.1 0 2.3 1.9 3.7 3.8 4.7 1.9-1 3.8-2.4 3.8-4.7C15.8 4.8 14.4 3 12 3zM6.5 12h11M12 12v9',
+  eye:'M3 11.5c3-2.8 6-3.8 9-3.8s6 1 9 3.8c-3 2.3-6 3.3-9 3.3s-6-1-9-3.3zM12 9.3a2.2 2.2 0 1 0 0 4.4a2.2 2.2 0 0 0 0-4.4zM9.5 14.8l-1.6 5M13.6 14.8c.3 2.2 1.8 3.4 3.8 3.2',
+  lotus:'M12 19.5c-1.6-3.1-1.6-8.4 0-12.5 1.6 4.1 1.6 9.4 0 12.5zM12 19.5c-3.4-.4-6.4-3.4-6.8-7 2.8.2 5 1.6 6.8 4M12 19.5c3.4-.4 6.4-3.4 6.8-7-2.8.2-5 1.6-6.8 4M5 20.5h14',
+  feather:'M11 21V4.5c2.6-.6 5 1.2 5 4.2 0 4.2-2.3 8-5 9.8M11 8.5l3.6-1.2M11 11.5l4.2-1.1M11 14.6l3.4-1.2',
+  hathor:'M12 9.4a3.4 3.4 0 1 0 0 6.8a3.4 3.4 0 0 0 0-6.8zM5.2 5.5c0 4.6 2.8 7 6.8 7.2M18.8 5.5c0 4.6-2.8 7-6.8 7.2M12 16.2V21',
+  water:'M3 9.5l2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2 2-2M3 15.5l2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2 2-2',
+  reed:'M12 21V8.5M12 8.5c-2.2-.8-3.4-2.8-3.4-5.2 2 .1 3.4 1.4 3.4 3.4M12 8.5c2.2-.8 3.4-2.8 3.4-5.2-2 .1-3.4 1.4-3.4 3.4M9 21h6',
+  woman:'M12 3.2a1.9 1.9 0 1 0 0 3.8a1.9 1.9 0 0 0 0-3.8zM11 7.4c-1.8 1.2-2.2 3.8-1.3 6.1H15V20M9.7 13.5L7.2 20h3M13.4 9.2l3.1 1.8',
+  vulture:'M3.5 14.5c3-2 6-2.8 9-2.8 2-2.8 5-3.8 7.5-3-1 .8-2 1.2-3 1.9 1 1 1.8 2.8 1 4-2-.8-3.2-.8-5.2.2l-2.8 4.7M9 13.5l-2 3.8',
+  star:'M12 4v16M5 8.5l14 7M19 8.5l-14 7',
+  throne:'M8 3.5h5.5v6.5H17v10.5H8zM8 15h9M8 20.5v-17',
+  scarab:'M12 4.5a2.6 2.6 0 1 0 0 5.2a2.6 2.6 0 0 0 0-5.2zM8.2 10.4c0 5 1.8 9.1 3.8 9.1s3.8-4.1 3.8-9.1zM12 10.4v9M8.4 12.5 5 10.6M15.6 12.5 19 10.6M8.6 16.2 5 18M15.4 16.2 19 18',
+  sistrum:'M12 21v-7.6M8.2 13.4c0-6 1.4-9.4 3.8-9.4s3.8 3.4 3.8 9.4zM9 8h6M9 11h6',
+  shen:'M12 4.5a5.8 5.8 0 1 0 0 11.6a5.8 5.8 0 0 0 0-11.6zM7.5 18.5h9'
+};
+const STORY = { work:['feather','reed','throne','ankh'], craft:['reed','eye','lotus','hathor'], hearth:['woman','vulture','water','ankh'], worries:['water','eye','feather','shen'], dreams:['star','hathor','scarab','lotus'], free:['sistrum','ankh','star','water'] };
+const DRAW = [['bolt','A dare','Send the message you’ve been drafting in your head.'],['visibility','A mirror','What are you pretending not to know?'],['local_florist','A gift','Name one thing you can stop doing this week.'],['explore','A path','The smallest step toward the scary idea.'],['key','A key','Who could help, if you asked?'],['hourglass_top','A pause','What can honestly wait?']];
+const LEAPS = [
+  { id:'worries', name:'Ten worries', icon:'format_list_numbered', hint:'Name ten things on your mind', open:'Name ten things on your mind. Say them one at a time; I’ll count.' },
+  { id:'scary', name:'The scary idea', icon:'rocket_launch', hint:'Talk about the idea that scares you', open:'What’s the thing you want so badly it scares you?' },
+  { id:'loud', name:'Say it out loud', icon:'record_voice_over', hint:'Speak for a minute, unsorted', open:'Go. Don’t tidy it. I’ll sort it after.' },
+  { id:'ask', name:'One brave ask', icon:'front_hand', hint:'Draft the ask you’ve avoided', open:'Who do you need to ask, and what would you say if they’d say yes?' },
+  { id:'step', name:'First tiny step', icon:'footprint', hint:'Turn a dream into a ten-minute card', open:'Pick one dream. What could you do about it in ten minutes?' }
+];
+const guessDeck = t => /house|home|kid|boys|school|dentist|doctor|money|bank|bill|family|partner|mum|dad/i.test(t) ? 'home' : /essay|write|draw|paint|idea|make|music|mural|book|art/i.test(t) ? 'creative' : 'pro';
+const ACTION = /\b(need to|have to|should|must|want to|going to|gotta|reply|call|email|book|send|finish|start|ask|pay|fix|buy|plan|write)\b/i;
+const STOP = new Set(['I','I’m','I\'m','The','A','And','But','So','My','We','It','This','That','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']);
+
+class Component extends DCLogic {
+  state = { chapter:'work', mode:'chapter', turnKey:1, messages:[], draft:'', found:[], interim:'', listening:false, talkTitle:'', leap:null, worriesN:0, badges: store.get('sanctuary-leaps', {}) || {}, flash:null, drawn:null };
+  componentDidMount() { const SR = window.SpeechRecognition || window.webkitSpeechRecognition; this._SR = SR || null; }
+  componentWillUnmount() { try { this._rec && this._rec.stop(); } catch (e) {} clearTimeout(this._rt); }
+  extract(text) {
+    const parts = text.split(/[.!?\n;]|\band\b/i).map(x => x.trim()).filter(x => x.length > 6);
+    const tasks = parts.filter(p => ACTION.test(p)).slice(0, 3).map(p => ({ kind:'task', deck:guessDeck(p), title:p.replace(/^(i |we )?(need to|have to|should|must|want to|going to|gotta)\s+/i, '').replace(/^./, c => c.toUpperCase()) }));
+    const names = [...new Set((text.match(/\b[A-Z][a-z]{2,}\b/g) || []).filter(w => !STOP.has(w)))].slice(0, 2).map(n => ({ kind:'person', title:n, deck:guessDeck(text) }));
+    const feeling = /scar|afraid|anxious|worr|stress|overwhelm/i.test(text) ? [{ kind:'feeling', title: 'Weighing on you: ' + (parts[0] || text).slice(0, 60), deck:'home' }] : [];
+    return [...tasks, ...names, ...feeling].map(x => ({ ...x, id: Date.now() + Math.random(), kept:false }));
+  }
+  reply(text) { const l = text.toLowerCase();
+    return /scar|afraid|fear|anxious|worr/.test(l) ? 'That sounds heavy. What’s the smallest part of it you could touch this week?'
+      : /idea|dream|want/.test(l) ? 'Say more about the version where it works. What would have to be true first?'
+      : /don.t know|stuck|start/.test(l) ? 'Start anywhere. What’s been on your mind since you woke?'
+      : 'I hear you. Is there something in that you’d like to do, or something to set down?'; }
+  say(text) { text = (text || '').trim(); if (!text) return;
+    const items = this.extract(text);
+    let leapN = this.state.worriesN;
+    if (this.state.leap === 'worries') leapN += Math.max(1, text.split(/[,.;\n]|\band\b/).filter(x => x.trim().length > 2).length);
+    this.setState(p => ({ draft:'', interim:'', messages:[...p.messages, { who:'me', text }], found:[...items, ...p.found], worriesN:leapN }));
+    if (this.state.leap === 'worries' && leapN >= 10 && !this.state.badges.worries) this.earn('worries');
+    else if (this.state.leap && this.state.leap !== 'worries' && !this.state.badges[this.state.leap] && text.length > (/-\d$/.test(this.state.leap) ? 20 : 40)) this.earn(this.state.leap);
+    clearTimeout(this._rt); this._rt = setTimeout(() => this.setState(p => ({ messages:[...p.messages, { who:'seer', text: this.state.leap === 'worries' ? (leapN >= 10 ? 'That’s ten. Look how much lighter that is.' : leapN + ' of 10. Keep going.') : this.reply(text) }] })), 900); }
+  earn(id) { const b = { ...this.state.badges, [id]: Date.now() }; store.set('sanctuary-leaps', b); this.setState({ badges:b, flash:id }); setTimeout(() => this.setState({ flash:null }), 1800); }
+  startTalk(title, opener, leap) { this.setState({ mode:'talk', talkTitle:title, messages: opener ? [{ who:'seer', text:opener }] : [], found:[], leap: leap || null, worriesN:0 }); }
+  toggleMic() {
+    if (this.state.listening) { try { this._rec && this._rec.stop(); } catch (e) {} this.setState({ listening:false }); return; }
+    if (!this._SR) { this.setState({ micUnavailable:true }); return; }
+    const rec = new this._SR(); rec.continuous = true; rec.interimResults = true; rec.lang = 'en-GB';
+    rec.onresult = (e) => { let fin = '', mid = ''; for (let i = e.resultIndex; i < e.results.length; i++) { const r = e.results[i]; if (r.isFinal) fin += r[0].transcript; else mid += r[0].transcript; } if (fin) this.say(fin); this.setState({ interim: mid }); };
+    rec.onend = () => this.setState({ listening:false, interim:'' }); rec.onerror = () => this.setState({ listening:false });
+    this._rec = rec; try { rec.start(); this.setState({ listening:true }); } catch (e) {}
+  }
+  renderVals() {
+    const s = this.state, chap = CHAPTERS.find(c => c.id === s.chapter) || CHAPTERS[0], dk = DECK[chap.deck], talk = s.mode === 'talk';
+    const low = !!store.get('sanctuary-low-sensory', false);
+    const slip = (icon, text, go, i, special) => ({ icon, text, go,
+      wrap:'margin-top:' + [10, 0, 22, 6][i % 4] + 'px; animation: riseUp 1.4s cubic-bezier(.2,.8,.25,1) both ' + (0.2 + i * 0.25).toFixed(2) + 's;',
+      style:'position:relative; font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:8px; max-width:230px; text-align:center; padding:10px 8px; border:none; background:none; cursor:pointer; color:#FBEDE5; --r0:' + [-2, 1.5, -1, 2][i % 4] + 'deg; transition:filter .4s ease, color .4s ease; animation: drift ' + (8 + i * 1.3).toFixed(1) + 's ease-in-out infinite ' + (1.4 + i * .4).toFixed(1) + 's;',
+      iconStyle: MS + " position:relative; font-size:26px; font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; color:" + (special ? '#E7C9F0' : '#F6D58E') + '; filter:drop-shadow(0 0 8px ' + (special ? 'rgba(231,201,240,.8)' : 'rgba(246,213,142,.8)') + ');' });
+    const risen = talk ? [] : s.drawn ? [slip(s.drawn[0], s.drawn[1] + ': ' + s.drawn[2], () => this.startTalk('Drawn · ' + s.drawn[1], s.drawn[2]), 0, true)]
+      : [];
+    const micLive = s.listening;
+    return {
+      ms: MS, lowAttr: String(low),
+      showCenter: true,
+      orbBtn: 'position:relative; z-index:3; display:flex; align-items:center; justify-content:center; aspect-ratio:1; border:none; padding:0; background:none; cursor:pointer; transition:width 1s cubic-bezier(.22,.8,.3,1), margin 1s ease; width:' + ((s.picked || talk) ? 'clamp(96px,16vh,170px)' : 'clamp(170px,30vh,280px)') + '; margin-top:' + ((s.picked || talk) ? 'clamp(4px,2vh,24px)' : 'clamp(40px,12vh,120px)') + ';', showCover: !talk && !!s.picked && !s.orbTalk,
+      beamStyle: 'position:absolute; left:50%; top:clamp(140px,22vh,210px); width:min(520px,70vw); height:46vh; transform:translateX(-50%); background:linear-gradient(180deg, rgba(220,190,255,.22), rgba(246,213,142,.08) 70%, transparent); clip-path:polygon(44% 0,56% 0,100% 100%,0 100%); filter:blur(18px); pointer-events:none; transition:opacity 1.2s ease; opacity:1;',
+      motes: low ? [] : Array.from({ length:14 }, (_, i) => ({ style:'position:absolute; bottom:-10px; left:' + ((i * 61 + 7) % 96) + '%; width:' + (2 + i % 3) + 'px; height:' + (2 + i % 3) + 'px; border-radius:50%; background:#F6D58E; box-shadow:0 0 8px 2px rgba(246,213,142,.55); animation: moteUp ' + (14 + (i % 5) * 3) + 's linear infinite ' + (-i * 1.7).toFixed(1) + 's;' })),
+      orbMotes: low ? [] : [0,1,2,3].map(k => ({ style:'position:absolute; left:50%; top:50%; width:4px; height:4px; margin:-2px 0 0 -2px; border-radius:50%; background:' + (k % 2 ? '#E7C9F0' : '#F6D58E') + '; box-shadow:0 0 8px 2px rgba(246,213,142,.6); --r:' + (70 + k * 8) + 'px; animation: orbit ' + (9 + k * 3) + 's linear infinite ' + (-k * 2.3) + 's;' })),
+      ribbonStyle:'position:absolute; left:calc(50% + 14px); bottom:-64px; z-index:3; width:16px; height:84px; transform-origin:50% 0; background:linear-gradient(180deg, ' + dk[1] + ', ' + dk[1] + 'cc); clip-path:polygon(0 0,100% 0,100% 100%,50% 86%,0 100%); box-shadow:0 4px 8px rgba(0,0,0,.4); animation: ribbon 6s ease-in-out infinite;',
+      boltStyle: MS + " font-size:30px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#3A2410; background:radial-gradient(circle at 40% 35%, #FBE4AE, #E8B45C 60%, #A0731F); box-shadow:0 0 24px rgba(241,200,119,.45);",
+      seerLine: talk ? (micLive ? 'Listening…' : 'I’m here. Speak or write.') : s.drawn ? 'The orb has chosen.' : 'Touch the orb and just talk.',
+      showSeerLine: !s.orbTalk && !s.picked && s.mode !== 'talk' && !s.drawn,
+      talkOrb: () => { if (s.orbTalk) { this.toggleMic(); return; } this.setState({ orbTalk:true, mode:'chapter', messages:[{ who:'seer', text:'I’m listening. Say whatever is on your mind.' }], found:[], leap:null }); setTimeout(() => this.toggleMic(), 400); },
+      orbTalk: !!s.orbTalk, endOrbTalk: () => { try { this._rec && this._rec.stop(); } catch (e) {} this.setState({ orbTalk:false, listening:false }); },
+      orbLines: s.messages.slice(-3).map((m, i, a) => ({ text:m.text, style:"font-family:'Cormorant Garamond',serif; font-size:" + (m.who === 'seer' ? 'clamp(22px,3vh,28px)' : 'clamp(18px,2.4vh,21px)') + "; line-height:1.35; color:" + (m.who === 'seer' ? '#FBEDE5' : '#D4EFE6') + "; font-style:" + (m.who === 'seer' ? 'normal' : 'italic') + "; opacity:" + (i === a.length - 1 ? '1' : '.55') + "; text-shadow:0 0 16px rgba(196,150,226,.4); animation: inkIn .7s ease both;" })),
+      orbMic: MS + " position:relative; z-index:2; font-size:clamp(34px,6vh,56px); font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; color:rgba(255,246,251,.92); text-shadow:0 0 18px rgba(255,255,255,.6);",
+      risenRow: 'position:relative; z-index:3; display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-end; gap:24px; max-width:1100px; margin:' + (risen.length ? 'clamp(10px,2vh,20px)' : '0') + ' auto 0; padding:0 16px; min-height:' + (risen.length ? 'clamp(110px,16vh,150px)' : '0') + ';',
+      risen: risen.map((r, i) => ({ ...r, key: s.turnKey + '-' + i })),
+      isTalk: talk, notTalk: !talk,
+      chapFade:'animation: inkIn .8s ease both .2s;',
+      pageH: talk ? 'min(420px,48vh)' : 'min(170px,20vh)',
+      bookOuter:'position:relative; z-index:2; width:' + (talk ? 'min(1000px,calc(100vw - 72px))' : 'min(440px,calc(100vw - 96px))') + '; margin:' + (talk ? 'clamp(6px,1.4vh,14px)' : 'clamp(14px,2.6vh,28px)') + ' auto 0; padding-right:46px; box-sizing:content-box; transition:width 1s cubic-bezier(.22,.8,.3,1), margin 1s ease;',
+      bookTilt:'position:relative; transform-origin:50% 100%; transition:transform 1.1s cubic-bezier(.22,.8,.3,1); transform:perspective(1100px) rotateX(' + (talk ? '6' : '50') + 'deg) scale(' + (talk ? '1' : '.94') + ');',
+      rightPage:'position:relative; min-height:' + (talk ? 'min(420px,48vh)' : 'min(170px,20vh)') + '; padding:clamp(22px,3.4vh,34px) clamp(20px,3vw,40px); border-radius:2px 28px 14px 2px / 2px 46px 20px 2px; background:url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3CfeColorMatrix values=\'0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .22 0\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E"), radial-gradient(6px 5px at 18% 82%, rgba(140,90,40,.18), transparent), radial-gradient(9px 7px at 78% 14%, rgba(140,90,40,.14), transparent), radial-gradient(5px 4px at 64% 70%, rgba(140,90,40,.16), transparent), radial-gradient(120% 110% at 50% 50%, transparent 62%, rgba(120,70,30,.22) 88%, rgba(80,40,16,.38) 100%), radial-gradient(120% 90% at 0% 50%, rgba(60,30,10,.18), transparent 40%), linear-gradient(90deg,#E8D6B2 0%,#F6EAD0 30%,#F2E4C6 78%,#E6D3AE 100%); transition:min-height .9s cubic-bezier(.22,.8,.3,1); color:#3B2A1E; transform-origin:left center; box-shadow:inset 18px 0 26px -18px rgba(36,26,32,.35), 2px 0 0 #EADCCF, 4px 0 0 #D9C6BA, 6px 0 0 #D3C3A9;' + (talk ? '' : ' animation: pageTurn .9s cubic-bezier(.22,.8,.3,1) both;'),
+      chap: { num:chap.num, name:chap.name, sub:chap.sub, verse:chap.verse, icon:chap.icon, ink:dk[1],
+        emblem: MS + " font-size:clamp(40px,6vh,56px); font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; color:#5A3A22; width:clamp(80px,12vh,104px); height:clamp(80px,12vh,104px); border-radius:50%; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle, rgba(255,240,200,.6), rgba(255,240,200,0) 70%); box-shadow:inset 0 0 0 1.5px rgba(90,58,34,.55), inset 0 0 0 7px rgba(246,234,208,.9), inset 0 0 0 8px rgba(90,58,34,.35); filter:drop-shadow(0 0 1px rgba(90,58,34,.4));" },
+      chapters: CHAPTERS.map(c => { const on = c.id === s.chapter && !talk, d = DECK[c.deck];
+        return { num:c.num, name:c.name, on, pick: () => this.setState({ chapter:c.id, mode:'chapter', drawn:null, turnKey: s.turnKey + 1 }),
+          tab:'font-family:inherit; flex:1; min-height:48px; width:' + (on ? '58px' : '44px') + '; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:6px 4px; border:none; cursor:pointer; border-radius:0 14px 14px 0; color:#F6D58E; text-shadow:0 1px 0 rgba(0,0,0,.4); background:' + (on ? 'linear-gradient(90deg,' + d[1] + ',' + d[1] + 'dd)' : 'linear-gradient(90deg,#2B1730,#4A2650)') + '; box-shadow:inset 0 0 0 1px rgba(232,180,92,.45), inset 4px 0 0 rgba(0,0,0,.25), 0 4px 10px rgba(0,0,0,.35); transition:width .4s ease, background .4s ease, transform .3s ease;',
+          label:"font-size:11px; letter-spacing:.02em; writing-mode:vertical-rl; transform:rotate(180deg); display:" + (on ? 'block' : 'none') + ';' }; }),
+      talkTitle: s.talkTitle,
+      messages: s.messages.map(m => ({ text:m.text, style: m.who === 'me'
+        ? 'align-self:flex-end; max-width:86%; font-size:16px; line-height:1.5; color:#241A20; padding:10px 14px; border-radius:16px 16px 4px 16px; background:#E6F3EE; animation: inkIn .5s ease both;'
+        : "align-self:flex-start; max-width:92%; font-family:'Cormorant Garamond',serif; font-size:21px; line-height:1.4; color:#3A2140; animation: inkIn .7s ease both;" })),
+      hasInterim: !!s.interim, interim: s.interim,
+      listening: micLive, micGlyph: micLive ? 'graphic_eq' : 'mic',
+      micLabel: micLive ? 'Stop listening' : 'Start talking',
+      micTitle: micLive ? 'Listening' : s.micUnavailable ? 'Write instead' : 'Tap to talk',
+      micSub: micLive ? 'Speak freely. Tap again to stop.' : s.micUnavailable ? 'Voice isn’t available in this browser.' : 'Everything you say is saved to this chapter.',
+      micStyle:'flex:none; width:72px; height:72px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; background:' + (micLive ? 'radial-gradient(circle at 40% 35%, #D06A3E, #A9522A 60%, #7A2E14)' : 'radial-gradient(circle at 40% 35%, #2A8E79, #1F6F5E 60%, #12493F)') + ';' + (micLive ? ' animation: listen 1.6s ease-in-out infinite;' : ' box-shadow:0 8px 18px rgba(31,111,94,.35);'),
+      micIcon: MS + ' font-size:34px;',
+      toggleMic: () => this.toggleMic(),
+      draft: s.draft, setDraft: e => this.setState({ draft:e.target.value }), draftKey: e => { if (e.key === 'Enter') this.say(e.target.value); }, send: () => this.say(s.draft),
+      nothingYet: s.found.length === 0,
+      found: s.found.map((f, i) => { const d = DECK[f.deck] || DECK.pro, isTask = f.kind === 'task';
+        return { title:f.title, icon: isTask ? 'task_alt' : f.kind === 'person' ? 'person' : 'favorite',
+          where: isTask ? 'A task for ' + d[0] : f.kind === 'person' ? 'Someone to remember' : 'Something to hold gently',
+          iconStyle: MS + ' flex:none; width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#FFFCF6; color:' + d[1] + ';',
+          keepLabel: f.kept ? (isTask ? 'In ' + d[0] : 'Kept') : (isTask ? 'Add' : 'Keep'),
+          keepStyle:'font-family:inherit; flex:none; min-height:36px; padding:0 14px; border-radius:999px; border:none; cursor:pointer; font-size:14px; font-weight:650; ' + (f.kept ? 'background:#D4EFE6; color:#1F5F57;' : 'background:#1F6F5E; color:#fff;'),
+          keep: () => { if (f.kept) return;
+            if (isTask) { const ex = store.get('sanctuary-extra-cards', {}) || {}; ex[f.deck] = [...(ex[f.deck] || []), { title:f.title, gist:'From the inner chamber', key:'ic' + Date.now() }]; store.set('sanctuary-extra-cards', ex); }
+            else { const tch = store.get('sanctuary-teach', {}) || {}; if (f.kind === 'person') tch.people = [...(tch.people || []), { name:f.title, role:'Mentioned in the chamber', deck:d[0], level:2, seen:'From a conversation' }]; else tch.notes = [...(tch.notes || []), f.title]; store.set('sanctuary-teach', tch); }
+            this.setState(p => ({ found: p.found.map((x, j) => j === i ? { ...x, kept:true } : x) })); },
+          drop: () => this.setState(p => ({ found: p.found.filter((_, j) => j !== i) })) }; }),
+      beginChapter: () => this.startTalk(chap.name, 'Tell me what’s on your mind about ' + chap.name.toLowerCase() + '.'),
+      ...(() => { const list = chap.prompts.map(([icon, text], i) => { const id = chap.id + '-' + i, done = !!s.badges[id], on = s.selBadge === id, badge = (BADGES[chap.id] || [])[i] || 'Badge';
+          return { id, icon, text, badge, done, on, power: done ? 'Earned' : '+1 power', aria: badge + (done ? ', earned' : ', not earned yet'),
+            select: () => this.setState({ selBadge: on ? null : id }),
+            go: () => this.startTalk(badge, text, id),
+            btn:'font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:6px; width:128px; padding:8px 6px; border-radius:16px; border:none; cursor:pointer; color:#FFF6FB; background:' + (on ? 'rgba(255,248,239,.08)' : 'none') + '; box-shadow:' + (on ? 'inset 0 0 0 1px rgba(241,200,119,.5)' : 'none') + '; transition:transform .3s ease, background .3s ease;',
+            medal:'position:relative; width:76px; height:76px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:' + (done ? 'radial-gradient(circle at 40% 35%, #FBE4AE, #E8B45C 55%, #A0731F)' : 'radial-gradient(circle, rgba(241,200,119,.18), rgba(241,200,119,0) 70%)') + ';' + (done ? ' box-shadow:0 0 28px rgba(241,200,119,.5);' : '') + (s.flash === id ? ' animation: earned .9s cubic-bezier(.22,.8,.3,1) both;' : ''),
+            ringO: done ? '.9' : '.4',
+            iconStyle: MS + ' position:relative; font-size:30px; color:' + (done ? '#3A2410' : 'rgba(241,200,119,.55)') + ';',
+            chip:'padding:2px 10px; border-radius:999px; font-size:14px; ' + (done ? 'background:rgba(241,200,119,.25); color:#FBE4AE;' : 'background:rgba(255,248,239,.08); color:#EADCCF;') }; });
+        const sl = list.find(x => x.on);
+        return { challenges: list, hasSel: !!sl, sel: sl ? { ...sl, how: sl.done ? 'You’ve earned this. Talk again any time.' : 'Talk it through with the Seer to earn this badge and +1 power.', cta: sl.done ? 'Talk again' : 'Take the challenge',
+          iconStyle: MS + " flex:none; width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; color:" + (sl.done ? '#3A2410' : '#F1C877') + '; background:' + (sl.done ? 'radial-gradient(circle at 40% 35%, #FBE4AE, #E8B45C 55%, #A0731F)' : 'rgba(241,200,119,.14)') + '; box-shadow:inset 0 0 0 1px rgba(241,200,119,.5);' } : { icon:'', badge:'', text:'', how:'', cta:'', go:null, iconStyle:'' } }; })(),
+      coverAria: 'Open the ' + chap.name + ' chapter',
+      coverGlyph: GLYPH[(STORY[chap.id] || ['ankh'])[0]],
+      coverStyle: 'position:relative; font-family:inherit; display:flex; flex-direction:column; align-items:center; justify-content:center; width:clamp(180px,26vh,270px); aspect-ratio:3 / 4; border:none; cursor:pointer; border-radius:8px 12px 12px 8px; background:radial-gradient(80% 60% at 50% 35%, #4A2650, #2B1730 70%, #1A0F1D); box-shadow:0 0 0 1px rgba(232,180,92,.55), 0 30px 60px rgba(0,0,0,.6), 0 0 70px rgba(246,213,142,.28); transform:perspective(1200px) rotateY(-8deg); transition:transform .6s cubic-bezier(.22,.8,.3,1), box-shadow .6s ease; animation: orbBreath 7s ease-in-out infinite;',
+      coverIcon: MS + " position:relative; font-size:40px; font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; color:" + dk[1] + '; margin-top:10px; filter:brightness(1.6) drop-shadow(0 0 8px rgba(246,213,142,.4));',
+      ...(() => { const spine = (h, w, bg, on, i) => ({ style:'position:relative; font-family:inherit; flex:1 1 0; min-width:22px; max-width:' + w + 'px; height:' + h + 'px; padding:8px 0; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:space-between; border-radius:3px 3px 2px 2px; color:#FBE4AE; background:linear-gradient(90deg, rgba(0,0,0,.35), rgba(255,255,255,.06) 40%, rgba(0,0,0,.25)), ' + bg + '; box-shadow:' + (on ? '0 0 0 1px #F6D58E, 0 0 24px rgba(246,213,142,.55)' : 'inset 0 0 0 1px rgba(232,180,92,.25), 2px 0 4px rgba(0,0,0,.4)') + '; transform:' + (on ? 'translateY(-12px)' : 'none') + '; transition:transform .4s ease, box-shadow .4s ease;',
+          band:'display:block; width:70%; height:3px; background:linear-gradient(90deg,#A0731F,#F6D58E,#A0731F); border-radius:2px;',
+          label:"font-family:'Cormorant Garamond',serif; font-weight:600; font-size:14px; writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; overflow:hidden; max-height:" + (h - 50) + 'px;' });
+
+        const potion = (col, got, on, i, nm, glyph, aria, go) => ({ name:nm, glyph, aria, go,
+          style:'font-family:inherit; flex:none; width:64px; display:flex; flex-direction:column; align-items:center; padding:0; border:none; background:none; cursor:pointer; color:#FBE4AE; transition:transform .4s ease;' + (on ? ' transform:translateY(-8px);' : ''),
+          cork:'display:block; width:12px; height:9px; border-radius:3px 3px 1px 1px; background:linear-gradient(180deg,#B88A4A,#7A5226);',
+          neck:'display:block; width:14px; height:12px; margin-top:-1px; background:linear-gradient(90deg, rgba(255,255,255,.25), rgba(255,255,255,.08)); box-shadow:inset 0 0 0 1px rgba(255,236,200,.35);',
+          body:'position:relative; display:flex; align-items:center; justify-content:center; width:100%; max-width:' + [48,54,46,52,50][i % 5] + 'px; aspect-ratio:1; margin-top:-2px; border-radius:' + ['50%','42% 42% 46% 46%','50%','34% 34% 46% 46%','50%'][i % 5] + '; overflow:hidden; background:rgba(255,255,255,.08); box-shadow:inset 0 0 0 1.5px rgba(255,236,200,.5), 0 6px 12px rgba(0,0,0,.45)' + (got || on ? ', 0 0 22px ' + col + 'aa' : '') + ';',
+          liquid:'position:absolute; left:0; right:0; bottom:0; height:' + (got ? '88%' : '52%') + '; background:linear-gradient(180deg, ' + col + 'cc, ' + col + ');' + (got ? '' : ' opacity:.85;'),
+          icon: MS + " position:relative; font-size:clamp(16px,1.6vw,22px); font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24; color:#FFF6FB; text-shadow:0 0 8px rgba(255,255,255,.6), 0 1px 3px rgba(0,0,0,.5);",
+          label:"display:none;" });
+        const PC = ['#9A4FA8','#1F7F6B','#E8B45C','#A9522A','#4A6FA5'];
+        const icon = (got) => MS + ' font-size:18px; color:' + (got ? '#3A2410' : '#F6D58E') + '; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:' + (got ? 'radial-gradient(circle at 40% 35%, #FBE4AE, #E8B45C 60%, #A0731F)' : 'rgba(0,0,0,.25)') + ';';
+        return {
+          chapterSpines: [],
+          ...(() => { const mk = (c, i) => { const d = DECK[c.deck], on = c.id === s.chapter, sp = spine([176,160,184,168,188,164][i], [64,58,68,60,70,62][i], 'linear-gradient(180deg,' + d[1] + ',' + d[1] + 'aa)', on, i);
+              return { ...sp, band:'display:block; width:84%; height:6px; border-radius:2px; background:linear-gradient(90deg,#A0731F,#F6D58E,#A0731F); box-shadow:0 1px 0 rgba(0,0,0,.4), 0 -1px 0 rgba(255,236,200,.3);', name: c.num + ' · ' + c.name, glyph: c.icon,
+                icon: MS + " font-size:20px; font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 20; color:#F6D58E; filter:drop-shadow(0 1px 0 rgba(0,0,0,.6)) drop-shadow(0 0 5px rgba(246,213,142,.3));",
+                story: (STORY[c.id] || ['ankh']).map(g => ({ d: GLYPH[g] })),
+                onAttr: String(on && !!s.picked), aria:'Chapter ' + c.num + ': ' + c.name, go: () => this.setState({ chapter:c.id, mode:'chapter', drawn:null, selBadge:null, picked:true, turnKey: s.turnKey + 1 }) }; };
+            return { chapterSpinesA: CHAPTERS.slice(0, 3).map((c, i) => mk(c, i)), chapterSpinesB: CHAPTERS.slice(3).map((c, i) => mk(c, i + 3)) }; })(),
+          challengeSpines: chap.prompts.map(([ic], i) => { const id = chap.id + '-' + i, got = !!s.badges[id], on = s.selBadge === id, nm = (BADGES[chap.id] || [])[i] || 'Badge'; return potion(PC[i % 5], got, on, i, nm, ic, nm + (got ? ', earned' : ''), () => this.setState({ selBadge: on ? null : id, picked:true })); }),
+          leapSpines: LEAPS.map((l, i) => { const got = !!s.badges[l.id]; return potion(PC[(i + 2) % 5], got, false, i + 1, l.name, l.icon, l.name + (got ? ', earned' : ''), () => this.startTalk(l.name, l.open, l.id)); }),
+          decoSpines: [['#1F4F44',168,62],['#5E2A16',150,52],['#3A2140',176,66]].map(([c, h, w]) => ({ style:'display:block; flex:1 1 0; min-width:16px; max-width:' + w + 'px; height:' + h + 'px; border-radius:3px 3px 2px 2px; background:linear-gradient(90deg, rgba(0,0,0,.35), rgba(255,255,255,.05) 40%, rgba(0,0,0,.25)), ' + c + '; box-shadow:inset 0 10px 0 -7px rgba(232,180,92,.5), inset 0 -10px 0 -7px rgba(232,180,92,.5);' })) }; })(),
+      cab: (() => { const o = !!s.cabOpen, low2 = low;
+        const door = (left) => 'position:absolute; top:0; bottom:0; ' + (left ? 'left:0;' : 'right:0;') + ' width:50%; z-index:5; background:radial-gradient(70% 50% at 50% 40%, #5A2A3A, #3A1E2A 70%), linear-gradient(90deg,#241A20,#3A1E2A); border-radius:' + (left ? '120px 0 0 10px / 70px 0 0 10px' : '0 120px 10px 0 / 0 70px 10px 0') + '; box-shadow:inset 0 0 30px rgba(0,0,0,.5), ' + (left ? 'inset -1px 0 0 rgba(0,0,0,.6)' : 'inset 1px 0 0 rgba(0,0,0,.6)') + '; transform-origin:' + (left ? 'left' : 'right') + ' center; transition:transform ' + (low2 ? '0s' : '1.1s') + ' cubic-bezier(.22,.8,.3,1); transform:rotateY(' + (o ? (left ? '-112deg' : '112deg') : '0deg') + '); pointer-events:none;';
+        return { open:o, label: o ? 'Close the cabinet' : 'Open the cabinet', aria: o ? 'Close the potion cabinet' : 'Open the potion cabinet', toggle: () => this.setState({ cabOpen: !o }),
+          doorL: door(true), doorR: door(false),
+          inside:'flex:1; min-height:0; display:flex; flex-direction:column; gap:18px; padding:30px 12px 70px; overflow-y:auto; overflow-x:hidden; background:radial-gradient(60% 40% at 50% 30%, rgba(246,213,142,.18), transparent 70%); transition:opacity .6s ease ' + (o ? '.35s' : '0s') + '; opacity:' + (o ? '1' : '0') + ';' + (o ? '' : ' pointer-events:none;'),
+          btn: o ? 'position:absolute; right:10px; top:44px; z-index:6; width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; background:rgba(26,12,20,.8); box-shadow:inset 0 0 0 1px rgba(246,213,142,.5);' : 'position:absolute; left:0; right:0; top:0; bottom:0; z-index:6; border:none; cursor:pointer; background:transparent;',
+          x: o ? MS + ' font-size:20px; color:#FBE4AE;' : 'display:none;' }; })(),
+      powers: Object.keys(s.badges).length,
+      ...(() => { const p = Object.keys(s.badges).length, RANKS = [['Initiate',0],['Seeker',3],['Adept',7],['Sage',13],['Oracle',20]];
+        let r = 0; RANKS.forEach((x, k) => { if (p >= x[1]) r = k; }); const next = RANKS[r + 1], base = RANKS[r][1], pct = next ? Math.round((p - base) / (next[1] - base) * 100) : 100;
+        return { rankName: RANKS[r][0], rankNext: next ? (next[1] - p) + ' more to ' + next[0] : 'Highest rank', rankBar: 'width:' + Math.max(4, pct) + '%; height:100%; border-radius:999px; background:linear-gradient(90deg,#A0731F,#F6D58E); box-shadow:0 0 10px rgba(246,213,142,.6); transition:width .8s ease;' }; })(),
+      ribbonA: 'position:absolute; left:50%; top:62px; width:16px; height:26px; margin-left:-17px; background:' + dk[1] + '; clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%); transform:rotate(12deg); transform-origin:top;',
+      ribbonB: 'position:absolute; left:50%; top:62px; width:16px; height:26px; margin-left:1px; background:' + dk[1] + '; clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%); transform:rotate(-12deg); transform-origin:top;',
+      draw: () => { const pick = DRAW[Math.floor(Math.random() * DRAW.length)]; this.setState({ mode:'chapter', drawn:pick, turnKey: s.turnKey + 1 }); },
+      leaps: LEAPS.map(l => { const got = !!s.badges[l.id], fl = s.flash === l.id;
+        return { name:l.name, icon:l.icon, hint: got ? 'Earned · ' + l.hint : l.hint, ringO: got ? '.9' : '.4',
+          go: () => this.startTalk(l.name, l.open, l.id),
+          medal:'position:relative; width:76px; height:76px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:' + (got ? 'radial-gradient(circle at 40% 35%, #FBE4AE, #E8B45C 55%, #A0731F)' : 'radial-gradient(circle, rgba(241,200,119,.18), rgba(241,200,119,0) 70%)') + ';' + (fl ? ' animation: earned .9s cubic-bezier(.22,.8,.3,1) both;' : '') + (got ? ' box-shadow:0 0 30px rgba(241,200,119,.5);' : ''),
+          iconStyle: MS + ' position:relative; font-size:32px; color:' + (got ? '#3A2410' : '#F1C877') + ';' }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0..1,0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Karla:wght@400;500;600;700&display=swap">
+<style>
+  html, body { margin:0; min-height:100%; background:#1A0F1D; }
+  a { color:#F1C877; } a:hover { color:#F4E5F7; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline:2px solid #E8B45C; outline-offset:3px; }
+  @keyframes riseIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+  @keyframes lightOnce { 0% { box-shadow:0 0 0 0 rgba(241,200,119,0); } 35% { box-shadow:0 0 22px 8px rgba(241,200,119,.75); } 100% { box-shadow:0 0 0 0 rgba(241,200,119,0); } }
+  @keyframes sigilSpin { to { transform:rotate(360deg); } }
+@keyframes sigilFloat { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-3px) scale(1.04); } }
+@keyframes moteOrbit { 0% { transform:rotate(0deg) translateX(var(--r)) rotate(0deg); opacity:.2; } 50% { opacity:1; } 100% { transform:rotate(360deg) translateX(var(--r)) rotate(-360deg); opacity:.2; } }
+@keyframes ringOnce { 0% { transform:scale(.8); opacity:.9; } 100% { transform:scale(2.1); opacity:0; } }
+  [data-more] { display:grid; grid-template-rows:0fr; opacity:0; transition:grid-template-rows .45s cubic-bezier(.22,.8,.3,1), opacity .35s ease .05s; }
+  [data-row]:hover [data-more], [data-row]:focus-within [data-more], [data-row][data-open="true"] [data-more] { grid-template-rows:1fr; opacity:1; }
+  [data-full] { display:grid; grid-template-rows:0fr; opacity:0; transition:grid-template-rows .45s cubic-bezier(.22,.8,.3,1), opacity .35s ease .05s; }
+  [data-row][data-open="true"] [data-full] { grid-template-rows:1fr; opacity:1; }
+  @media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
+</style>
+<script src="./guide-tips.js"></script>
+</helmet>
+
+<div style="position:relative; z-index:0; min-height:100vh; box-sizing:border-box; font-family:'Karla',sans-serif; color:#fff6fb; padding:clamp(18px,3vh,32px) clamp(18px,4vw,56px) 72px; background:radial-gradient(60% 50% at 20% 85%, rgba(31,127,107,.45), transparent 70%), radial-gradient(55% 45% at 85% 15%, rgba(169,82,42,.38), transparent 70%), radial-gradient(60% 60% at 50% 50%, rgba(154,79,168,.35), transparent 72%), linear-gradient(180deg, #2B1730 0%, #1A0F1D 100%);">
+  <div aria-hidden="true" style="position:fixed; left:0; right:0; top:0; height:38vh; z-index:-1; pointer-events:none; background:url('assets/bg-mossy-grove.jpg') center 35% / cover no-repeat; opacity:.2; mix-blend-mode:luminosity; filter:blur(1.5px) saturate(.6); -webkit-mask-image:linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 45%, transparent 100%); mask-image:linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 45%, transparent 100%);"></div>
+  <div style="position:relative; z-index:1; max-width:760px; margin:0 auto;">
+    <div data-guide="spellbook" style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <a href="app.html" style="white-space:nowrap; display:inline-flex; align-items:center; min-height:44px; font-size:14px; text-decoration:none; color:rgba(255,240,248,.82);">← Back to Sanctuary</a>
+      <button onClick="{{ togglePauseAll }}" style="font-family:inherit; white-space:nowrap; min-height:44px; padding:0; background:none; border:none; color:rgba(255,240,248,.82); font-size:14px; cursor:pointer; text-decoration:underline; text-underline-offset:3px;" style-hover="color:#fff">{{ pauseAllLabel }}</button>
+    </div>
+
+    <div style="margin-top:12px;">
+      <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(38px,5.6vh,52px); line-height:1;">Book of Rituals</div>
+      <div style="font-size:17px; line-height:1.5; color:rgba(255,240,248,.92); margin-top:10px; max-width:52ch;">Things Claude does for you on its own, on a schedule.<br>Turn any of them on or off.</div>
+    </div>
+
+    <sc-if value="{{ allPaused }}" hint-placeholder-val="{{ false }}">
+      <div role="status" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:20px; padding:14px 18px; border-radius:20px; background:#FBE4AE; color:#241A20; animation: slideIn .4s ease both;">
+        <span style="font-size:15.5px; line-height:1.4;">All rituals are paused.<br>Nothing will run until you resume.</span>
+        <button onClick="{{ togglePauseAll }}" style="font-family:inherit; min-height:44px; padding:0 18px; border-radius:999px; border:none; background:#1F6F5E; color:#fff; font-size:15.5px; font-weight:650; cursor:pointer;">Resume all</button>
+      </div>
+    </sc-if>
+
+    <div style="display:flex; flex-direction:column; margin-top:24px; border-radius:20px; overflow:hidden; background:linear-gradient(180deg,#FFFCF6,#FBEDE5); color:#241A20; box-shadow:0 24px 60px rgba(0,0,0,.4);">
+      <sc-if value="{{ noSpells }}" hint-placeholder-val="{{ false }}"><div style="padding:30px 22px; text-align:center; font-size:17px; line-height:1.5;"><span style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:26px;">Your book is empty.</span><br>Pick an idea below, or write your own.</div></sc-if>
+      <sc-for list="{{ spells }}" as="sp" hint-placeholder-count="4">
+        <div data-row data-open="{{ sp.open }}" style="{{ sp.rowStyle }}">
+          <span aria-hidden="true" style="{{ sp.symStyle }}" data-sigil>
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="{{ sp.ringStyle }}"><circle cx="50" cy="50" r="46" fill="none" stroke="{{ sp.symInk }}" stroke-opacity=".55" stroke-width="1.2" stroke-dasharray="2 5"></circle><circle cx="50" cy="50" r="38" fill="none" stroke="{{ sp.symInk }}" stroke-opacity=".35" stroke-width="1"></circle><sc-for list="{{ sp.ticks }}" as="tk" hint-placeholder-count="8"><circle cx="{{ tk.x }}" cy="{{ tk.y }}" r="1.8" fill="{{ sp.symInk }}" fill-opacity=".7"></circle></sc-for></svg>
+            <sc-for list="{{ sp.motes }}" as="mo" hint-placeholder-count="3"><span style="{{ mo.style }}"></span></sc-for>
+            <span style="{{ sp.glyphWrap }}"><svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="{{ sp.symInk }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><sc-for list="{{ sp.iconPaths }}" as="p" hint-placeholder-count="3"><path d="{{ p.d }}"></path></sc-for></svg></span>
+            <sc-if value="{{ sp.flash }}" hint-placeholder-val="{{ false }}"><span style="position:absolute; inset:0; border-radius:50%; border:1.5px solid #E8B45C; animation: ringOnce 1.4s ease-out both;"></span></sc-if>
+          </span>
+          <div style="flex:1; min-width:0;">
+            <button onClick="{{ sp.expand }}" aria-expanded="{{ sp.open }}" style="font-family:inherit; display:block; width:100%; text-align:left; background:none; border:none; padding:0; color:inherit; cursor:pointer;">
+              <span style="display:block; font-family:'Cormorant Garamond',serif; font-weight:650; font-size:22px; line-height:1.05;">{{ sp.name }} <span aria-hidden="true" style="{{ sp.chevStyle }}">›</span></span>
+              <span style="display:block; font-size:15.5px; line-height:1.5; margin-top:2px;">{{ sp.sentence }}</span>
+            </button>
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-top:6px;"><span style="{{ sp.powerStyle }}">{{ sp.powerLabel }}</span><span style="display:flex; gap:4px;" aria-label="{{ sp.appsAria }}"><sc-for list="{{ sp.apps }}" as="ap" hint-placeholder-count="2"><span aria-hidden="true" title="{{ ap.name }}" style="{{ ap.dotStyle }}">{{ ap.mark }}</span></sc-for></span></div>
+            <sc-if value="{{ sp.hasResult }}" hint-placeholder-val="{{ false }}">
+              <div role="status" style="margin-top:8px; font-size:14px; font-weight:650; color:#1F6F5E; animation: slideIn .45s ease both;">✓ {{ sp.result }}</div>
+            </sc-if>
+            <div data-more><div style="min-height:0; overflow:hidden;">
+              <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px 16px; padding-top:6px; font-size:14px; color:#4E3B43;">
+                <span>{{ sp.last }}</span>
+                <button onClick="{{ sp.edit }}" style="font-family:inherit; font-size:14px; min-height:44px; padding:0; background:none; border:none; color:#241A20; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Change</button>
+                <button onClick="{{ sp.cast }}" disabled="{{ sp.castDisabled }}" style="font-family:inherit; font-size:14px; min-height:44px; padding:0; background:none; border:none; color:#241A20; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">{{ sp.castLabel }}</button>
+              </div>
+            </div></div>
+            <div data-full><div style="min-height:0; overflow:hidden;">
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#4E3B43; margin-top:14px;">Works with</div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">
+                <sc-for list="{{ sp.apps }}" as="ap" hint-placeholder-count="2"><span title="{{ ap.title }}" aria-label="{{ ap.title }}" role="img" style="{{ ap.style }}"><span aria-hidden="true" style="{{ ap.markStyle }}">{{ ap.mark }}</span><sc-if value="{{ ap.off }}" hint-placeholder-val="{{ false }}"><span style="font-weight:600; color:#7A3E12;"> · not connected</span></sc-if></span></sc-for>
+              </div>
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#4E3B43; margin-top:16px;">Examples</div>
+              <div role="group" aria-roledescription="carousel" aria-label="Examples of {{ sp.name }}" style="margin-top:6px; padding:14px 16px 10px; border-radius:12px; background:#F4E5F7;">
+                <div aria-live="polite" style="min-height:96px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="{{ sp.ex.appStyle }}"><span aria-hidden="true" style="{{ sp.ex.markStyle }}">{{ sp.ex.mark }}</span>{{ sp.ex.app }}</span>
+                    <span style="margin-left:auto; font-size:14px; color:#4E3B43;">{{ sp.exCount }}</span>
+                  </div>
+                  <div style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px 14px; margin-top:10px; font-size:15.5px; line-height:1.4;">
+                    <span style="color:#4E3B43;">Comes in</span><span>{{ sp.ex.in }}</span>
+                    <span style="color:#4E3B43;">Claude</span><span style="font-weight:600;">{{ sp.ex.out }}</span>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px;">
+                  <button onClick="{{ sp.exPrev }}" aria-label="Previous example" style="font-family:inherit; width:44px; height:44px; border-radius:50%; border:none; background:none; color:#241A20; font-size:22px; cursor:pointer;" style-hover="background:rgba(106,47,122,.1)">‹</button>
+                  <div style="display:flex; gap:7px;"><sc-for list="{{ sp.exDots }}" as="d" hint-placeholder-count="3"><button onClick="{{ d.go }}" aria-label="{{ d.label }}" aria-current="{{ d.on }}" style="{{ d.style }}"></button></sc-for></div>
+                  <button onClick="{{ sp.exNext }}" aria-label="Next example" style="font-family:inherit; width:44px; height:44px; border-radius:50%; border:none; background:none; color:#241A20; font-size:22px; cursor:pointer;" style-hover="background:rgba(106,47,122,.1)">›</button>
+                </div>
+              </div>
+              <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#4E3B43; margin-top:14px;">Recent runs</div>
+              <sc-if value="{{ sp.noRuns }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px; color:#4E3B43; margin-top:4px;">It hasn't run yet.</div></sc-if>
+              <div style="display:flex; flex-direction:column; margin-top:4px;">
+                <sc-for list="{{ sp.runs }}" as="r" hint-placeholder-count="2">
+                  <div style="display:grid; grid-template-columns:96px 1fr auto; align-items:center; gap:12px; min-height:44px; font-size:14px; border-top:1px solid rgba(36,26,32,.08);">
+                    <span style="color:#4E3B43;">{{ r.ago }}</span>
+                    <span style="{{ r.textStyle }}">{{ r.text }}</span>
+                    <sc-if value="{{ r.canUndo }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.undo }}" style="font-family:inherit; font-size:14px; font-weight:650; min-height:44px; padding:0 12px; border-radius:999px; background:none; border:1px solid rgba(36,26,32,.25); color:#241A20; cursor:pointer;">Undo</button></sc-if>
+                    <sc-if value="{{ r.undone }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px; color:#4E3B43;">Undone</span></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:grid; grid-template-columns:auto 1fr; gap:4px 14px; margin-top:12px; font-size:14px; line-height:1.4;">
+                <span style="color:#4E3B43;">Uses</span><span>{{ sp.uses }}</span>
+                <span style="color:#4E3B43;">Never</span><span>{{ sp.never }}</span>
+              </div>
+            </div></div>
+          </div>
+          <button onClick="{{ sp.toggle }}" role="switch" aria-checked="{{ sp.on }}" aria-label="{{ sp.switchAria }}" disabled="{{ allPaused }}" style="font-family:inherit; flex:none; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:56px; min-height:44px; padding:0; background:none; border:none; color:#241A20; cursor:pointer; font-size:14px; font-weight:650;">
+            <span style="{{ sp.trackStyle }}"><span style="{{ sp.knobStyle }}"></span></span>{{ sp.onLabel }}
+          </button>
+        </div>
+      </sc-for>
+    </div>
+
+    <button onClick="{{ openNew }}" style="font-family:inherit; margin-top:18px; width:100%; min-height:56px; border-radius:20px; border:1.5px dashed rgba(241,200,119,.55); background:rgba(241,200,119,.06); color:#fff6fb; font-size:15.5px; font-weight:650; cursor:pointer;" style-hover="background:rgba(241,200,119,.12)">+ Write a new ritual</button>
+
+    <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:26px; margin-top:40px;">Ideas from your decks</div>
+    <div style="font-size:15.5px; color:rgba(255,240,248,.82); margin-top:4px;">Based on the work waiting in your decks. Add one with a tap.</div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr)); gap:18px; margin-top:16px;">
+      <sc-for list="{{ starters }}" as="st" hint-placeholder-count="5">
+        <div style="{{ st.cardStyle }}" style-hover="transform:translateY(-4px); box-shadow:inset 0 0 0 1px rgba(241,200,119,.55), 0 18px 40px rgba(0,0,0,.4), 0 0 40px rgba(241,200,119,.14)">
+          <div aria-hidden="true" style="position:absolute; inset:6px; border-radius:16px; box-shadow:inset 0 0 0 1px rgba(241,200,119,.22); pointer-events:none;"></div>
+          <div aria-hidden="true" style="position:relative; align-self:center; width:150px; height:150px; display:flex; align-items:center; justify-content:center; margin:6px 0 10px;">
+            <div style="position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle, {{ st.glow }} 0%, rgba(0,0,0,0) 70%); animation: sigilFloat 5s ease-in-out infinite;"></div>
+            <svg viewBox="0 0 100 100" width="150" height="150" style="position:absolute; inset:0; animation: sigilSpin 44s linear infinite;"><circle cx="50" cy="50" r="46" fill="none" stroke="#F1C877" stroke-opacity=".5" stroke-width="1" stroke-dasharray="2 6"></circle><circle cx="50" cy="50" r="36" fill="none" stroke="#F1C877" stroke-opacity=".3" stroke-width="1"></circle></svg>
+            <sc-for list="{{ st.motes }}" as="mo" hint-placeholder-count="3"><span style="{{ mo.style }}"></span></sc-for>
+            <svg viewBox="0 0 24 24" width="72" height="72" fill="none" stroke="#F6D58E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="position:relative; filter:drop-shadow(0 0 8px rgba(246,213,142,.55)); animation: sigilFloat 4.5s ease-in-out infinite;"><sc-for list="{{ st.iconPaths }}" as="p" hint-placeholder-count="3"><path d="{{ p.d }}"></path></sc-for></svg>
+          </div>
+          <span style="text-align:center; font-family:'Cormorant Garamond',serif; font-weight:650; font-size:26px; line-height:1.05;">{{ st.name }}</span>
+          <span style="text-align:center; font-size:14px; line-height:1.4; color:rgba(255,240,248,.88);">{{ st.line }}</span>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; margin-top:6px; text-align:center;"><span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#F1C877;">{{ st.deckWord }}</span><span style="font-size:14px; color:rgba(255,240,248,.82);">{{ st.why }}</span></div>
+          <div style="display:flex; justify-content:center; margin-top:auto; padding-top:8px;"><button onClick="{{ st.add }}" disabled="{{ st.added }}" style="{{ st.btnStyle }}">{{ st.btnLabel }}</button></div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="font-size:14px; line-height:1.5; color:rgba(255,240,248,.75); margin-top:24px;">Rituals marked "Asks you first" only prepare things. Nothing is sent until you approve it.</div>
+  </div>
+
+  <sc-if value="{{ editorOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeEditor }}" style="position:fixed; inset:0; z-index:50; background:rgba(10,4,12,.74); display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+      <div onClick="{{ stop }}" role="dialog" aria-label="{{ editorTitle }}" style="width:min(640px,94vw); max-height:92vh; overflow:auto; box-sizing:border-box; padding:28px clamp(20px,4vw,34px); border-radius:20px; background:linear-gradient(180deg,#FFFCF6,#F1E8DC); color:#241A20; box-shadow:0 40px 80px rgba(0,0,0,.55); animation: riseIn .5s cubic-bezier(.22,.8,.3,1) both;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+          <div style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:30px; line-height:1.05;">{{ editorTitle }}</div>
+          <button onClick="{{ closeEditor }}" aria-label="Close" style="font-family:inherit; width:44px; height:44px; border-radius:50%; background:none; border:1px solid rgba(36,26,32,.2); color:#241A20; cursor:pointer;"><span aria-hidden="true" style="font-family:'Material Symbols Rounded'; font-size:20px; line-height:1; font-weight:normal; font-style:normal; letter-spacing:normal; text-transform:none; white-space:nowrap; direction:ltr; font-feature-settings:'liga'; -webkit-font-feature-settings:'liga'; font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20;">close</span></button>
+        </div>
+
+        <div style="font-family:'Cormorant Garamond',serif; font-size:clamp(21px,2.6vw,25px); line-height:1.5; margin-top:18px;">
+          <select aria-label="When" value="{{ draft.when }}" onChange="{{ onWhen }}" style="{{ selStyle }}"><sc-for list="{{ whenOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.v }}</option></sc-for></select>,
+          Claude will
+          <select aria-label="What it does" value="{{ draft.action }}" onChange="{{ onAction }}" style="{{ selStyle }}"><sc-for list="{{ actionOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select>.
+          It will
+          <select aria-label="How much it can do" value="{{ draftTier }}" onChange="{{ onTier }}" style="{{ selStyle }}"><sc-for list="{{ powerOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.phrase }}</option></sc-for></select>.
+        </div>
+
+        <label style="display:block; font-size:14px; font-weight:650; margin-top:18px;">Name (optional)</label>
+        <input value="{{ draft.name }}" onChange="{{ onName }}" placeholder="{{ namePlaceholder }}" style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:20px; width:100%; box-sizing:border-box; margin-top:6px; padding:10px 14px; border-radius:12px; border:1px solid rgba(36,26,32,.2); background:#FFFCF6; color:#241A20;">
+
+        <div style="margin-top:16px; padding:12px 14px; border-radius:12px; background:#F4E5F7; font-size:14px; line-height:1.5;"><strong style="font-weight:650;">✦ An example</strong><br>{{ draftExample }}</div>
+
+        <sc-if value="{{ needConfirm }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:14px; padding:14px 16px; border-radius:12px; background:#FBE4AE; font-size:14px; line-height:1.5;">
+            <strong style="font-weight:650;">Before it acts on its own</strong>
+            <div style="margin-top:6px;">It will be able to:</div>
+            <ul style="margin:4px 0 0; padding-left:20px;"><sc-for list="{{ touchList }}" as="t" hint-placeholder-count="2"><li>{{ t.text }}</li></sc-for></ul>
+            <div style="margin-top:6px;">It will never: {{ draftNever }}</div>
+            <div style="margin-top:6px;">Everything it does is listed under Recent runs, with Undo for 24 hours.</div>
+            <button onClick="{{ allowOwn }}" style="font-family:inherit; margin-top:10px; min-height:44px; padding:0 18px; border-radius:999px; border:1px solid rgba(36,26,32,.35); background:#FFFCF6; color:#241A20; font-size:15.5px; font-weight:650; cursor:pointer;">Allow it to act on its own</button>
+          </div>
+        </sc-if>
+
+        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; margin-top:24px;">
+          <div style="display:flex; gap:18px;">
+            <button onClick="{{ closeEditor }}" style="font-family:inherit; font-size:15.5px; min-height:44px; padding:0; background:none; border:none; color:#4E3B43; cursor:pointer;">Cancel</button>
+            <sc-if value="{{ canDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ deleteSpell }}" style="font-family:inherit; font-size:15.5px; min-height:44px; padding:0; background:none; border:none; color:#7A2E14; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Remove this ritual</button></sc-if>
+          </div>
+          <button onClick="{{ save }}" disabled="{{ saveDisabled }}" style="{{ saveStyle }}">{{ saveLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const STORE_SCHEMA = 1;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { console.warn('[sanctuary] could not read', k, e); return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { console.warn('[sanctuary] could not save', k, e); } }
+};
+const WHEN = ['Every morning at 8:00', 'Every weekday at 8:00', 'Every Friday at 4:00', 'When new mail arrives'];
+const ICONS = {
+  lantern: ['M9 3h6', 'M12 3v2', 'M8 5h8l1 3v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V8z', 'M12 10c1.2 1.4 1.2 3 0 4.5-1.2-1.5-1.2-3.1 0-4.5z'],
+  quill: ['M20 4c-6 1-11 6-13 13', 'M20 4c-1 5-4 9-9 11', 'M7 17l-2 3', 'M11 15l-3-3'],
+  broom: ['M14 3l-3 9', 'M7 12h8l2 9H5z', 'M9 16v5M12 16v5M15 16v5'],
+  scroll: ['M7 4h11v13a3 3 0 0 1-3 3H6', 'M7 4a2 2 0 0 0-2 2v2h2', 'M6 20a3 3 0 0 0 3-3V4', 'M11 9h5M11 13h5'],
+  compass: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', 'M15.5 8.5l-2 5-5 2 2-5z']
+};
+const ACTIONS = [
+  { id:'read', label:'read new mail and messages', name:'Morning reading', icon:'lantern', uses:'Gmail, Slack', does:'reads new mail and messages and turns anything waiting on you into cards.', example:'This morning it would have made 3 cards: Dana’s pricing question, the Lisbon hold and Maya’s form.', touch:['Read your mail and Slack mentions', 'Add cards to your decks'], result:'Made 1 card.' },
+  { id:'chase', label:'chase replies I’m waiting on', name:'Follow-up keeper', icon:'quill', uses:'Gmail', does:'finds threads where you have waited 3 days or more and drafts a gentle follow-up.', example:'Today it would have drafted 2 follow-ups: to Priya and to Ines.', touch:['Write follow-up emails', 'Send them to people you have been waiting on'], result:'Drafted 1 follow-up. It is waiting for you.' },
+  { id:'tidy', label:'tidy my inbox', name:'Inbox sweep', icon:'broom', uses:'Gmail', does:'archives receipts older than 30 days and moves automatic alerts out of your inbox.', example:'Today it would have archived 41 receipts and moved 18 alerts to a folder.', touch:['Archive receipts older than 30 days', 'Move automatic alerts into a folder'], result:'Archived 6 receipts.' },
+  { id:'recap', label:'write a weekly recap', name:'Friday recap', icon:'scroll', uses:'Your decks', does:'writes a short summary of what you resolved and what is still open.', example:'This week it would have listed 6 things resolved and 4 still open.', touch:['Add a recap card to your decks'], result:'Wrote this week’s recap.' },
+  { id:'prep', label:'prepare tomorrow’s meetings', name:'Meeting prep', icon:'compass', uses:'Google Calendar, Gmail', does:'gathers notes and recent threads for tomorrow’s meetings into one card.', example:'Tonight it would have prepared notes for 2 meetings.', touch:['Read your calendar', 'Add a prep card for each meeting'], result:'Prepared notes for 1 meeting.' }
+];
+const POWER = [
+  { id:1, label:'Only reads', phrase:'only read, and change nothing', bg:'#D4EFE6', never:'Changes anything.' },
+  { id:2, label:'Asks you first', phrase:'ask me before anything goes out', bg:'#F4E5F7', never:'Sends or changes anything without your approval.' },
+  { id:3, label:'Acts on its own', phrase:'act on its own, within limits', bg:'#FBE4AE', never:'Deletes anything or writes to people you have not written to before.' }
+];
+const H = 3600000;
+const DEFAULT_SPELLS = () => [
+  { id:'s1', name:'Morning reading', action:'read', when:WHEN[0], tier:1, on:true, runs:[{ at:Date.now() - 2 * H, text:'Made 3 cards.' }, { at:Date.now() - 26 * H, text:'Made 2 cards.' }] },
+  { id:'s2', name:'The thread keeper', action:'chase', when:WHEN[1], tier:2, on:true, runs:[{ at:Date.now() - 2 * H, text:'Drafted follow-ups to Priya and Ines.' }] },
+  { id:'s3', name:'Ward of quiet', action:'tidy', when:WHEN[0], tier:3, on:true, runs:[{ at:Date.now() - 2 * H, text:'Archived 41 receipts. Moved 18 alerts.' }] },
+  { id:'s4', name:'The weekly reckoning', action:'recap', when:WHEN[2], tier:1, on:false, runs:[] }
+];
+const FI = {
+  clock:'M12 3a9 9 0 1 1 0 18a9 9 0 0 1 0-18zM12 7v5l3 2', mail:'M4 6.5h16v11H4zM4 7l8 6 8-6',
+  slack:'M9 4v9M15 11v9M4 15h9M11 9h9', cal:'M4 6.5h16V20H4zM4 10.5h16M8.5 3.5v4M15.5 3.5v4', decks:'M5 6h9v14H5zM10 4h9v14',
+  cards:'M5 6h9v14H5zM10 4h9v14', draft:'M4 20h4L19 9l-4-4L4 16zM13 7l4 4', sweep:'M14 3l-3 9M7 12h8l2 9H5z',
+  recap:'M7 4h11v13a3 3 0 0 1-3 3H6M11 9h5M11 13h5', prep:'M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18zM15.5 8.5l-2 5-5 2 2-5z'
+};
+const OUTCOME = { read:['cards','New cards in your decks'], chase:['draft','Drafts wait for you'], tidy:['sweep','A cleaner inbox'], recap:['recap','A recap card'], prep:['prep','A prep card for each meeting'] };
+const WHEN_SHORT = w => /new mail/i.test(w) ? ['mail','When mail arrives'] : /weekday/i.test(w) ? ['clock','Weekdays 8:00'] : /friday/i.test(w) ? ['clock','Fridays 4:00'] : ['clock','Daily 8:00'];
+const flowOf = (a, when, dark) => {
+  const node = (icon, label, bg) => ({ icon:FI[icon], label, arrow:true, style:'display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:14px; font-weight:600; white-space:nowrap; ' + (dark ? 'background:rgba(255,255,255,.08); color:#FFF6FB; box-shadow:inset 0 0 0 1px rgba(241,200,119,.3);' : 'background:' + bg + '; color:#241A20;' + (bg === '#FFFCF6' ? ' box-shadow:inset 0 0 0 1px rgba(36,26,32,.18);' : '')) });
+  const [wi, wl] = WHEN_SHORT(when), apps = String(a.uses || '').split(/,\s*/).filter(Boolean);
+  const appIcon = n => /slack/i.test(n) ? 'slack' : /calendar/i.test(n) ? 'cal' : /deck/i.test(n) ? 'decks' : 'mail';
+  const out = OUTCOME[a.id] || ['cards', 'Cards in your decks'];
+  const list = [node(wi, wl, '#E2ECF7'), ...apps.map(n => node(appIcon(n), n, '#FFFCF6')), node(out[0], out[1], '#F4E5F7')];
+  list[list.length - 1].arrow = false;
+  return { flow:list, flowAria: wl + ', it uses ' + apps.join(' and ') + ', and you get: ' + out[1].toLowerCase() + '.' };
+};
+const APP = { 'Gmail':['M','#FCD9CF','#8A3A1A'], 'Outlook':['O','#E2ECF7','#2A4A7A'], 'Slack':['S','#F4E5F7','#6A2F7A'], 'Notion':['N','#F1E8DC','#241A20'], 'Google Calendar':['31','#D4EFE6','#1F5F57'], 'Your decks':['✦','#F4E5F7','#6A2F7A'] };
+const CONNECTED = ['Gmail', 'Google Calendar', 'Slack', 'Your decks'];
+const SPELL_APPS = { read:['Gmail','Outlook','Slack'], chase:['Gmail','Outlook'], tidy:['Gmail','Outlook'], recap:['Your decks','Notion'], prep:['Google Calendar','Gmail','Notion'] };
+const EXAMPLES = {
+  read:[
+    { app:'Gmail', in:'Dana asks whether the pilot price can drop to £40 a seat.', out:'Made a card in Work: “Answer Dana on pilot pricing.”' },
+    { app:'Slack', in:'Maya mentions you: “Can you sign off the form by Thursday?”', out:'Made a card in Work with Thursday as the due date.' },
+    { app:'Outlook', in:'A hotel email says your Lisbon hold ends tomorrow.', out:'Made a card in Hearth: “Keep or release the Lisbon hold.”' }
+  ],
+  chase:[
+    { app:'Gmail', in:'You wrote to Priya 4 days ago and have no reply.', out:'Drafted a short follow-up. It waits for you to send it.' },
+    { app:'Gmail', in:'Ines has not answered your quote from last week.', out:'Drafted a reminder with the quote attached again.' },
+    { app:'Outlook', in:'The venue has not confirmed the booking you asked about.', out:'Drafted a polite check-in to the venue.' }
+  ],
+  tidy:[
+    { app:'Gmail', in:'41 receipts older than 30 days are in your inbox.', out:'Archived them. You can find them under Receipts.' },
+    { app:'Gmail', in:'18 automatic alerts arrived overnight.', out:'Moved them to an Alerts folder.' },
+    { app:'Outlook', in:'6 newsletters you have not opened in 3 months.', out:'Moved them to Later. Nothing was unsubscribed.' }
+  ],
+  recap:[
+    { app:'Your decks', in:'You resolved 6 cards this week.', out:'Wrote a recap card listing what was done and what is still open.' },
+    { app:'Notion', in:'Your team asks for a Friday update page.', out:'Drafted the update in Notion for you to review.' },
+    { app:'Your decks', in:'Two cards have waited more than a week.', out:'Put them at the top of the recap.' }
+  ],
+  prep:[
+    { app:'Google Calendar', in:'Tomorrow at 10:00: pilot review with Northlight.', out:'Made a prep card with the last 3 emails and open questions.' },
+    { app:'Gmail', in:'Dana sent the contract draft yesterday.', out:'Added the draft to tomorrow’s prep card.' },
+    { app:'Notion', in:'Last month’s meeting notes mention 2 open actions.', out:'Listed both actions at the top of the prep card.' }
+  ]
+};
+const LOGO_SLUG = { 'Gmail':'gmail', 'Google Calendar':'googlecalendar', 'Notion':'notion' };
+const logoCss = (name, bg) => LOGO_SLUG[name] ? ' background:' + bg + " url('https://cdn.simpleicons.org/" + LOGO_SLUG[name] + "') center / 13px no-repeat; color:transparent;" : '';
+const appChip = name => { const a = APP[name] || ['•','#F1E8DC','#241A20'], off = !CONNECTED.includes(name);
+  return { name: name === 'Google Calendar' ? 'Calendar' : name, mark: LOGO_SLUG[name] ? '' : a[0], off, title: off ? name + ' is not connected yet' : name + ' is connected',
+    style:'display:inline-flex; align-items:center; gap:4px; padding:3px; border-radius:999px; background:' + (off ? '#FFFCF6' : a[1]) + '; color:#241A20; font-size:14px; font-weight:650;' + (off ? ' box-shadow:inset 0 0 0 1px rgba(122,62,18,.45);' : ''),
+    markStyle:'display:inline-flex; align-items:center; justify-content:center; min-width:19px; height:19px; padding:0 3px; box-sizing:border-box; border-radius:999px; background:' + (off ? '#F1E8DC' : '#FFFCF6') + '; color:' + a[2] + '; font-size:11px; font-weight:650;' + logoCss(name, off ? '#F1E8DC' : '#FFFCF6'),
+    dotStyle:'display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:22px; padding:0 4px; box-sizing:border-box; border-radius:999px; background:' + (off ? '#FFFCF6' : a[1]) + '; color:' + a[2] + '; font-size:11px; font-weight:650;' + (off ? ' box-shadow:inset 0 0 0 1px rgba(36,26,32,.2); opacity:.7;' : '') + logoCss(name, off ? '#FFFCF6' : a[1]) }; };
+const DECK_WORD = { pro:'Work', creative:'Craft', home:'Hearth' };
+const SAMPLE_DECKS = [
+  { id:'pro', name:'Professional', cards:[{ title:'Answer Dana on pilot pricing', medium:'Email' }, { title:'Chase Priya on the contract', medium:'Email' }, { title:'Prepare the Northlight review', medium:'Decision' }] },
+  { id:'creative', name:'Creative Work', cards:[{ title:'Decide the shape of essay three', medium:'Document' }, { title:'Read the council transcripts', medium:'Research' }] },
+  { id:'home', name:'Home & Family', cards:[{ title:'Book the boys\u2019 dental check-ups', medium:'Online booking' }, { title:'Ask for the boiler service report', medium:'Email' }, { title:'Review the bank direct debits', medium:'Bank review' }] }
+];
+const NAME_STOP = new Set(['I','A','The','Two','Ask','Book','Decide','Send','Choose','Reply','Answer','Pay','Check','Review','Write','Plan','Call','Find','Keep','Draft','Make','Get','Read','Sort','Tidy','Chase','Prepare','Monday','Tuesday','Wednesday','Thursday','Friday','Claude','Seer','Northlight','Lisbon']);
+const deckIdeas = (decks) => { const out = [];
+  decks.forEach(d => { const cards = d.cards || [], word = DECK_WORD[d.id] || String(d.name || 'Deck').split(/[\s&]+/)[0];
+    const m = c => (c.medium + ' ' + c.type + ' ' + c.title).toLowerCase();
+    const mail = cards.filter(c => /email|reply|answer|chase|follow/.test(m(c))), meet = cards.filter(c => /review|meeting|call|prepare|book|calendar|date/.test(m(c))), docs = cards.filter(c => /document|essay|draft|write|transcript|research/.test(m(c)));
+    const names = [...new Set(mail.flatMap(c => (c.title.match(/\b[A-Z][a-z]{2,}\b/g) || []).filter(w => !NAME_STOP.has(w))))].slice(0, 2);
+    if (mail.length) out.push({ deck:d.id, word, action:'chase', name: names.length ? 'Keep up with ' + names.join(' and ') : 'Follow-ups in ' + word, line:'Drafts a follow-up when someone in ' + word + ' goes quiet for 3 days.', why: mail.length === 1 ? '1 card waits on a reply' : mail.length + ' cards wait on a reply' });
+    if (meet.length) out.push({ deck:d.id, word, action:'prep', name: word + ' prep', line:'The evening before, gathers notes and threads for anything coming up in ' + word + '.', why: meet.length + ' upcoming ' + (meet.length === 1 ? 'event' : 'events') });
+    if (docs.length) out.push({ deck:d.id, word, action:'recap', name: word + ' weekly recap', line:'Every Friday, sums up what moved in ' + word + ' and what is still open.', why: docs.length + ' longer ' + (docs.length === 1 ? 'piece' : 'pieces') + ' of work' });
+  });
+  const seen = new Set(); return out.filter(x => { const k = x.deck + x.action; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 6); };
+const actOf = id => ACTIONS.find(a => a.id === id) || ACTIONS[0];
+const ago = t => { const d = Date.now() - t; if (d < 60000) return 'Just now'; if (d < H) return Math.round(d / 60000) + ' min ago'; if (d < 24 * H) return Math.round(d / H) + ' h ago'; return d < 48 * H ? 'Yesterday' : Math.round(d / (24 * H)) + ' days ago'; };
+
+class Component extends DCLogic {
+  state = { spells:DEFAULT_SPELLS(), editor:null, draft:null, openId:null, casting:null, flash:{}, results:{}, allPaused:false, confirm3:false };
+  later(fn, ms) { if (!this._tids) this._tids = new Set(); const id = setTimeout(() => { this._tids.delete(id); if (!this._gone) fn(); }, ms); this._tids.add(id); return id; }
+  componentDidMount() {
+    const saved = store.get('sanctuary-spells', null);
+    if (saved && saved.length) this.setState({ spells: saved.map(x => ({ runs:[], ...x, action: x.action || (/thread|follow/i.test(x.name) ? 'chase' : /ward|quiet|sweep/i.test(x.name) ? 'tidy' : /reckon|recap/i.test(x.name) ? 'recap' : 'read') })) });
+    this.setState({ allPaused: !!store.get('sanctuary-spells-paused', false) });
+    store.set('sanctuary-spells-ready', 0);
+  }
+  componentWillUnmount() { this._gone = true; if (this._tids) this._tids.forEach(clearTimeout); }
+  save(spells) { store.set('sanctuary-spells', spells); this.setState({ spells }); }
+  show(id, text) { this.setState(s => ({ results:{ ...s.results, [id]:text }, flash:{ ...s.flash, [id]:true } })); this.later(() => this.setState(s => ({ flash:{ ...s.flash, [id]:false } })), 1600); this.later(() => this.setState(s => { const r = { ...s.results }; delete r[id]; return { results:r }; }), 6000); }
+  cast(sp) {
+    if (this.state.casting) return;
+    this.setState({ casting:sp.id });
+    this.later(() => { const text = actOf(sp.action).result;
+      this.save(this.state.spells.map(x => x.id === sp.id ? { ...x, runs:[{ at:Date.now(), text }, ...(x.runs || [])].slice(0, 10) } : x));
+      this.setState({ casting:null }); this.show(sp.id, text); }, 1400);
+  }
+  openEditor(sp, starter) {
+    const d = sp ? { ...sp } : { id:'s' + Date.now(), name:'', action:(starter && starter.id) || 'read', when:WHEN[0], tier:2, on:true, runs:[] };
+    this.setState({ editor: sp ? sp.id : 'new', draft:d, confirm3: !!(sp && sp.tier === 3) });
+  }
+  renderVals() {
+    const lowS = !!(this.props.lowSensory || store.get('sanctuary-low-sensory', false));
+    const s = this.state, d = s.draft || {}, paused = s.allPaused;
+    const ip = k => (ICONS[k] || ICONS.lantern).map(x => ({ d:x }));
+    const da = actOf(d.action), needConfirm = d.tier === 3 && !s.confirm3;
+    return {
+      allPaused: paused, noSpells: s.spells.length === 0,
+      pauseAllLabel: paused ? 'Resume all rituals' : 'Pause all rituals',
+      togglePauseAll: () => { store.set('sanctuary-spells-paused', !paused); this.setState({ allPaused:!paused }); },
+      spells: s.spells.map((sp, idx) => { const a = actOf(sp.action), p = POWER[(sp.tier || 1) - 1], open = s.openId === sp.id, on = sp.on && !paused, casting = s.casting === sp.id, runs = sp.runs || [];
+        const exs = EXAMPLES[a.id] || [], ei = ((s.exIdx || {})[sp.id] || 0) % (exs.length || 1), ex = exs[ei] || { app:'', in:'', out:'' };
+        const setEx = i => this.setState(p => ({ exIdx: { ...(p.exIdx || {}), [sp.id]: (i + exs.length) % exs.length } }));
+        const apps = (SPELL_APPS[a.id] || []).map(appChip), exChip = appChip(ex.app);
+        return { ...flowOf(a, sp.when, false), apps, appsAria: 'Works with ' + apps.map(x => x.name).join(', '),
+          ex: { ...ex, appStyle: exChip.style, markStyle: exChip.markStyle, mark: exChip.mark }, exCount: (ei + 1) + ' of ' + exs.length,
+          exPrev: () => setEx(ei - 1), exNext: () => setEx(ei + 1),
+          exDots: exs.map((_, i) => ({ on: i === ei, label: 'Example ' + (i + 1), go: () => setEx(i), style:'width:' + (i === ei ? '20' : '8') + 'px; height:8px; padding:0; border:none; border-radius:999px; cursor:pointer; transition:width .3s ease, background .3s ease; background:' + (i === ei ? '#6A2F7A' : 'rgba(106,47,122,.3)') + ';' })),
+          open, on, name:sp.name || a.name, iconPaths:ip(a.icon), flash:!!s.flash[sp.id],
+          expand: () => this.setState({ openId: open ? null : sp.id }),
+          chevStyle:'display:inline-block; margin-left:4px; font-family:Karla,sans-serif; font-size:17px; color:#8a7d84; transition:transform .35s ease; transform:rotate(' + (open ? '90deg' : '0deg') + ');',
+          sentence: sp.when + ', it ' + a.does,
+          powerLabel: p.label, powerStyle:'font-size:14px; font-weight:650; padding:3px 10px; border-radius:999px; background:' + p.bg + '; color:#241A20;',
+          hasResult: !!s.results[sp.id], result: s.results[sp.id] || '',
+          last: paused ? 'Paused with all rituals' : !sp.on ? 'Paused' : runs[0] ? 'Last ran ' + ago(runs[0].at).toLowerCase() : 'Has not run yet',
+          example: a.example, uses: a.uses, never: p.never, noRuns: runs.length === 0,
+          runs: runs.slice(0, 3).map((r, i) => { const canUndo = sp.tier === 3 && !r.undone && Date.now() - r.at < 24 * H;
+            return { ago: ago(r.at), text: r.text, canUndo, undone: !!r.undone, textStyle: r.undone ? 'text-decoration:line-through; color:#4E3B43;' : '',
+              undo: () => { this.save(this.state.spells.map(x => x.id === sp.id ? { ...x, runs: x.runs.map((rr, j) => j === i ? { ...rr, undone:true } : rr) } : x)); this.show(sp.id, 'Undone. Everything is back as it was.'); } }; }),
+          symInk: on ? '#8A5E22' : '#6E6168',
+          symStyle:'position:relative; flex:none; width:clamp(120px,16vw,156px); height:clamp(120px,16vw,156px); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:filter .4s ease, transform .4s ease; background:' + (on ? 'radial-gradient(circle, rgba(246,213,142,.55) 0%, rgba(241,200,119,.18) 55%, rgba(241,200,119,0) 72%)' : 'radial-gradient(circle, rgba(36,26,32,.07) 0%, rgba(36,26,32,0) 70%)') + ';' + (s.flash[sp.id] ? ' animation: lightOnce 1.4s ease both;' : '') + (on ? '' : ' filter:grayscale(.6);'),
+          ringStyle:'position:absolute; inset:0;' + (on && !lowS ? ' animation: sigilSpin ' + (38 + (idx % 3) * 8) + 's linear infinite;' : ''),
+          ticks:[0,1,2,3,4,5,6,7].map(k => ({ x:(50 + 46 * Math.cos(k * Math.PI / 4)).toFixed(1), y:(50 + 46 * Math.sin(k * Math.PI / 4)).toFixed(1) })),
+          glyphWrap:'position:relative; display:block; width:50%; height:50%;' + (on && !lowS ? ' animation: sigilFloat 4.5s ease-in-out infinite ' + (idx * .5) + 's;' : ''),
+          motes: on && !lowS ? [0,1,2].map(k => ({ style:'position:absolute; left:50%; top:50%; width:4px; height:4px; margin:-2px 0 0 -2px; border-radius:50%; background:#F6D58E; box-shadow:0 0 6px 2px rgba(246,213,142,.6); --r:' + (56 + k * 7) + 'px; animation: moteOrbit ' + (6 + k * 2.5) + 's linear infinite ' + (k * -1.7) + 's;' })) : [],
+          rowStyle:'display:flex; align-items:flex-start; gap:16px; padding:18px 22px; border-top:1px solid rgba(36,26,32,.08); transition:opacity .4s ease; opacity:' + (on ? '1' : '.62') + ';',
+          edit: () => this.openEditor(sp), cast: () => this.cast(sp), castDisabled: !!s.casting || paused,
+          castLabel: casting ? 'Running…' : 'Run it now',
+          toggle: () => this.save(s.spells.map(x => x.id === sp.id ? { ...x, on:!x.on } : x)),
+          onLabel: on ? 'On' : 'Paused', switchAria: (sp.on ? 'Pause ' : 'Turn on ') + (sp.name || a.name),
+          trackStyle:'position:relative; width:42px; height:24px; border-radius:999px; transition:background .3s ease; background:' + (on ? '#1F7F6B' : 'rgba(36,26,32,.22)') + ';',
+          knobStyle:'position:absolute; top:3px; left:' + (on ? '21px' : '3px') + '; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .3s ease;' }; }),
+      starters: deckIdeas(store.get('sanctuary-deck-snapshot', null) || SAMPLE_DECKS).map((idea, si) => { const a = { ...actOf(idea.action) }; const added = s.spells.some(x => x.name === idea.name);
+        const GLOW = ['rgba(246,213,142,.42)','rgba(154,79,168,.45)','rgba(31,127,107,.45)','rgba(169,82,42,.42)','rgba(120,150,220,.42)'];
+        const extra = { glow: GLOW[si % GLOW.length],
+          cardStyle:'position:relative; display:flex; flex-direction:column; gap:6px; min-height:360px; padding:24px 20px 20px; border-radius:20px; background:radial-gradient(90% 60% at 50% 0%, ' + GLOW[si % GLOW.length].replace(/[\d.]+\)$/, '.22)') + ', rgba(0,0,0,0) 70%), linear-gradient(180deg, #2B1730, #1A0F1D); box-shadow:inset 0 0 0 1px rgba(241,200,119,.3), 0 14px 30px rgba(0,0,0,.35); transition:transform .45s cubic-bezier(.22,.8,.3,1), box-shadow .45s ease;',
+          motes:[0,1,2].map(k => ({ style:'position:absolute; left:50%; top:50%; width:4px; height:4px; margin:-2px 0 0 -2px; border-radius:50%; background:#F6D58E; box-shadow:0 0 6px 2px rgba(246,213,142,.6); --r:' + (60 + k * 7) + 'px; animation: moteOrbit ' + (7 + k * 2) + 's linear infinite ' + (k * -2.1 - si) + 's;' })) };
+        return { ...extra, ...flowOf(a, WHEN[a.id === 'recap' ? 2 : a.id === 'chase' ? 1 : 0], true), name:idea.name, line:idea.line, why:idea.why, deckWord:idea.word, iconPaths:ip(a.icon), added, btnLabel: added ? 'In your book' : 'Add',
+          add: () => { if (added) return; const sp = { id:'s' + Date.now(), name:idea.name, deck:idea.deck, action:a.id, when:a.id === 'recap' ? WHEN[2] : WHEN[0], tier:a.id === 'read' || a.id === 'recap' ? 1 : 2, on:true, runs:[] }; this.save([...s.spells, sp]); this.show(sp.id, 'Added. It first runs ' + sp.when.toLowerCase().replace('every ', 'next ') + '.'); },
+          btnStyle:'font-family:inherit; align-self:flex-start; margin-top:4px; min-height:40px; padding:0 18px; border-radius:999px; font-size:14px; font-weight:650; cursor:' + (added ? 'default' : 'pointer') + '; border:none; background:' + (added ? 'rgba(255,255,255,.1)' : '#1F6F5E') + '; color:' + (added ? 'rgba(255,240,248,.75)' : '#fff') + ';' }; }),
+      openNew: () => this.openEditor(null),
+      editorOpen: !!s.editor, editorTitle: s.editor === 'new' ? 'Write a new ritual' : 'Change this ritual',
+      closeEditor: () => this.setState({ editor:null, draft:null }), stop: (e) => e.stopPropagation(),
+      draft: d, draftTier: String(d.tier || 2),
+      selStyle:'font-family:inherit; font-size:inherit; font-weight:650; color:#241A20; background:#FFFCF6; border:none; border-bottom:2px solid #9A4FA8; border-radius:6px 6px 0 0; padding:2px 6px; margin:0 2px; cursor:pointer; max-width:100%;',
+      whenOpts: WHEN.map(v => ({ v })), actionOpts: ACTIONS.map(a => ({ id:a.id, label:a.label })), powerOpts: POWER.map(p => ({ id:String(p.id), phrase:p.phrase })),
+      onWhen: (e) => this.setState({ draft:{ ...d, when:e.target.value } }),
+      onAction: (e) => this.setState({ draft:{ ...d, action:e.target.value } }),
+      onTier: (e) => this.setState({ draft:{ ...d, tier:+e.target.value } }),
+      onName: (e) => this.setState({ draft:{ ...d, name:e.target.value } }),
+      namePlaceholder: da.name, draftExample: da.example,
+      needConfirm, touchList: da.touch.map(t => ({ text:t })), draftNever: POWER[2].never,
+      allowOwn: () => this.setState({ confirm3:true }),
+      canDelete: s.editor && s.editor !== 'new',
+      deleteSpell: () => { this.save(s.spells.filter(x => x.id !== d.id)); this.setState({ editor:null, draft:null }); },
+      saveDisabled: needConfirm, saveLabel: s.editor === 'new' ? 'Add to your book' : 'Save changes',
+      saveStyle:'font-family:inherit; min-height:52px; padding:0 28px; border-radius:999px; border:none; color:#fff; background:#1F6F5E; font-size:15.5px; font-weight:650; cursor:' + (needConfirm ? 'default' : 'pointer') + '; opacity:' + (needConfirm ? '.5' : '1') + ';',
+      save: () => { if (needConfirm) return; const sp = { ...d, name:(d.name || '').trim() || da.name }; const exists = s.spells.some(x => x.id === sp.id);
+        this.save(exists ? s.spells.map(x => x.id === sp.id ? sp : x) : [...s.spells, sp]); this.setState({ editor:null, draft:null }); this.show(sp.id, exists ? 'Saved.' : 'Added. It first runs ' + sp.when.toLowerCase().replace('every ', 'next ') + '.'); }
+    };
+  }
+}
+</script>
+</body>
+</html>
